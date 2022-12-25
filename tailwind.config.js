@@ -24,9 +24,12 @@ module.exports = {
         hider: { "100%": { width: 0 } },
         logo: {
           "0%": { opacity: ".2" },
-          "20%": { opacity: "1"},
-          "50%": { opacity: ".5"},
-          "75%": { opacity: ".2"},
+          "10%": { opacity: "1"},
+          "30%": { opacity: "0"},
+          "50%": { opacity: "0" },
+          "60%": { opacity: "1"},
+          "70%": { opacity: ".5"},
+          "80%": { opacity: ".2"},
           "100%": { opacity: "1"},
       }
       },
@@ -34,7 +37,7 @@ module.exports = {
     animation: {
       line: "line 2s ease-out forwards",
       hider: "hider 2s ease-out forwards",
-      logo: "logo .5s ease-out forwards"
+      logo: "logo 1s ease-out forwards"
     },
   },
   plugins: [],
