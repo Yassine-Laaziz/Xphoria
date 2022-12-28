@@ -34,7 +34,7 @@ const HeroBanner = () => {
       { property: "circle", duration: 2000 },
       { property: "logo", duration: 2000 },
       { property: "text", duration: 1000 },
-      { property: "scroll", duration: 1000 },
+      { property: "scroll", duration: 1500 },
     ])
   }, [])
 
@@ -96,19 +96,20 @@ const HeroBanner = () => {
       </div>
 
       {/* ====== Scroll-Down ======  */}
-      <motion.div
-        variants={slideIn("up", "tween", 500, 500)}
-        initial="hidden"
-        whileInView="show"
-      >
-        {animate.scroll && (
+      {animate.scroll && (
+        <motion.div
+          variants={slideIn("up", "tween", 0, 1)}
+          initial="hidden"
+          whileInView="show"
+          className="absolute bottom-8 w-full"
+        >
           <BsArrowBarDown
-            className=" text-4xl p-1 text-emerald-700 rounded-full hover:scale-125 transition
-            shadow-[0_0_14px_4px] border-emerald-700 animate-bounce m-auto cursor-pointer"
+            className="text-4xl p-1 text-emerald-700 rounded-full hover:scale-125 transition
+            shadow-[0_0_14px_4px] border-emerald-700 cursor-pointer m-auto"
             onClick={() => scrollDown()}
           />
-        )}
-      </motion.div>
+        </motion.div>
+      )}
     </div>
   )
 }
