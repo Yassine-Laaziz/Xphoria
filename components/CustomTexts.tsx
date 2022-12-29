@@ -4,7 +4,9 @@ import { motion } from "framer-motion"
 import { textContainer } from "../utils/motion"
 import { textVariant } from "../utils/motion"
 
-export const TypingText = ({ title, textStyles }) => (
+type Props = { title: string; textStyles: string }
+
+export const TypingText = ({ title, textStyles }: Props) => (
   <motion.p
     initial="hidden"
     whileInView="show"
@@ -19,7 +21,7 @@ export const TypingText = ({ title, textStyles }) => (
   </motion.p>
 )
 
-export const TitleText = ({ title, textStyles }) => (
+export const TitleText = ({ title, textStyles }: Props) => (
   <motion.h2
     variants={textVariant}
     initial="hidden"
