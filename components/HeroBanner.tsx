@@ -1,28 +1,34 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { TitleText, TypingText } from "../components/CustomTexts"
+import { TitleText, TypingText } from "./CustomTexts"
 import { motion } from "framer-motion"
 import { BsArrowBarDown } from "react-icons/bs"
 import { slideIn } from "../utils/motion"
 
 const HeroBanner = () => {
-  const [animate, setAnimate] = useState({})
+  const [animate, setAnimate] = useState<{
+    line?: boolean
+    circle?: boolean
+    logo?: boolean
+    text?: boolean
+    scroll?: boolean
+  }>({})
 
   useEffect(() => {
     setAnimate({ line: true })
 
     // here i'm using Recursion because multiple setTimeouts should be inside each other
-    const timeouts = (ObjArray) => {
+    const timeouts = (arr: { property: string; duration: number }[]) => {
       let i = 0
 
       const timeout = () => {
-        const { property, duration } = ObjArray[i]
+        const { property, duration } = arr[i]
 
         const id = setTimeout(() => {
           setAnimate((prev) => ({ ...prev, [property]: true }))
           i++
-          if (ObjArray[i]) timeout()
+          if (arr[i]) timeout()
           return () => clearTimeout(id)
         }, duration)
       }
