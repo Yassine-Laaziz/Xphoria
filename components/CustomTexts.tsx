@@ -1,17 +1,17 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { textContainer } from "../utils/motion"
-import { textVariant } from "../utils/motion"
+import { textContainer } from "../lib/motion"
+import { textVariant } from "../lib/motion"
 
-type Props = { title: string; textStyles: string }
+type Props = { title: string; textStyles?: string }
 
 export const TypingText = ({ title, textStyles }: Props) => (
   <motion.p
     initial="hidden"
     whileInView="show"
     variants={textContainer}
-    className={`font-normal text-[14px] ${textStyles}`}
+    className={textStyles}
   >
     {Array.from(title).map((letter, i) => (
       <motion.span variants={textVariant} key={i}>
@@ -26,7 +26,7 @@ export const TitleText = ({ title, textStyles }: Props) => (
     variants={textVariant}
     initial="hidden"
     whileInView="show"
-    className={`mt-[8px] font-bold md:text-[64px] text-[40px] ${textStyles}`}
+    className={textStyles}
   >
     {title}
   </motion.h2>
