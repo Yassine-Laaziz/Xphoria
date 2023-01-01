@@ -4,7 +4,10 @@ import { useEffect, useState } from "react"
 import { TitleText, TypingText } from "./CustomTexts"
 import { motion } from "framer-motion"
 import { BsArrowBarDown } from "react-icons/bs"
-import { slideIn } from "../utils/motion"
+import { slideIn } from "../lib/motion"
+import Image from "next/image"
+import logo from "../public/Green_astronauts.png"
+import styles from "../styles"
 
 const HeroBanner = () => {
   const [animate, setAnimate] = useState<{
@@ -57,7 +60,7 @@ const HeroBanner = () => {
       <div className="relative pt-[14px] h-1/2 flex">
         {/* left line */}
         <div
-          className={`flex-1 bg-emerald-700 h-[5px] relative top-[50%] translate-y-[-50%] shadow-[2px_0_14px_2px] shadow-emerald-700 
+          className={`bg-emerald-700 h-[5px] relative top-[50%] translate-y-[-50%] shadow-[2px_0_14px_2px] shadow-emerald-700 
         ${animate.line ? "animate-line" : ""}`}
         />
         {/* circle */}
@@ -65,8 +68,8 @@ const HeroBanner = () => {
           className="h-full rounded-full shadow-emerald-700 aspect-square
         mx-auto relative top-1/2 translate-y-[-50%] shadow-[0_0_14px_4px,0_0_14px_4px_inset] border-emerald-700 border-[5px] "
         >
-          <img
-            src="Green_astronauts.png"
+          <Image
+            src={logo}
             alt="Green astronauts"
             className={`h-[calc(100%-14px)] w-[calc(100%-14px)] relative top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] ${
               animate.logo ? "animate-logo" : "hidden"
@@ -75,7 +78,7 @@ const HeroBanner = () => {
         </div>
         {/* right line */}
         <div
-          className={`flex-1 bg-emerald-700 h-[5px] relative top-[50%] translate-y-[-50%] shadow-[-2px_0_14px_2px] shadow-emerald-700 
+          className={`bg-emerald-700 h-[5px] relative top-[50%] translate-y-[-50%] shadow-[-2px_0_14px_2px] shadow-emerald-700 
         ${animate.line ? "animate-line" : ""} float-right `}
         />
         {/* hiders */}
@@ -95,8 +98,8 @@ const HeroBanner = () => {
       <div className="text-center [text-shadow:_0_0_20px_var(--tw-shadow-color)] shadow-emerald-700">
         {animate.text && (
           <>
-            <TitleText title="Green Astronauts" textStyles="text-emerald-700" />
-            <TypingText title="we do it better" textStyles="text-emerald-700" />
+            <TitleText title="Green Astronauts" textStyles={`text-emerald-700 ${styles.title}`} />
+            <TypingText title="we do it better" textStyles={`text-emerald-700 ${styles.typingText}`} />
           </>
         )}
       </div>

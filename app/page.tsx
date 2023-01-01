@@ -7,7 +7,6 @@ const Page = () => {
   return (
     <>
       <HeroBanner />
-      <div className="pb-[200vh]" />
       <Products />
     </>
   )
