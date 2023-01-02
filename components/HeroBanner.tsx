@@ -49,7 +49,7 @@ const HeroBanner = () => {
 
   const scrollDown = () => {
     window.scrollTo({
-      top: document.documentElement.clientHeight,
+      top: document.documentElement.clientHeight + 160 - 20, //160: products section padding top
       behavior: "smooth",
     })
   }
@@ -98,8 +98,14 @@ const HeroBanner = () => {
       <div className="text-center [text-shadow:_0_0_20px_var(--tw-shadow-color)] shadow-emerald-700">
         {animate.text && (
           <>
-            <TitleText title="Green Astronauts" textStyles={`text-emerald-700 ${styles.title}`} />
-            <TypingText title="we do it better" textStyles={`text-emerald-700 ${styles.typingText}`} />
+            <TitleText
+              title="Green Astronauts"
+              textStyles={`text-emerald-700 ${styles.title}`}
+            />
+            <TypingText
+              title="we do it better"
+              textStyles={`text-emerald-700 ${styles.typingText}`}
+            />
           </>
         )}
       </div>

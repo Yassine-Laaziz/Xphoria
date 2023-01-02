@@ -38,8 +38,8 @@ module.exports = {
           height: "100%"
         },
         "to": {
-          width: "120%",
-          height: "120%"
+          width: "125%",
+          height: "125%"
         }
       }
       },

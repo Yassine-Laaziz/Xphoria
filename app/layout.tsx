@@ -1,3 +1,4 @@
+import Footer from "../components/Footer"
 import "../styles/globals.css"
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => (
@@ -9,7 +10,10 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => (
         href="https://stijndv.com/fonts/Eudoxus-Sans.css"
       />
     </head>
-    <body>{children}</body>
+    <body>
+      {children}
+      <Footer />
+    </body>
   </html>
 )
 
