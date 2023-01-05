@@ -45,7 +45,7 @@ export const slideIn = (direction: string, type: string, delay: number, duration
 export const footerVariants = {
   hidden: {
     opacity: 0,
-    y: 50,
+    y: 100,
     transition: {
       type: 'spring',
       stiffness: 300,
@@ -57,8 +57,8 @@ export const footerVariants = {
     y: 0,
     transition: {
       type: 'spring',
-      stiffness: 140,
-      delay: 0.5,
+      stiffness: 180,
+      delay: 0,
     },
   },
 };

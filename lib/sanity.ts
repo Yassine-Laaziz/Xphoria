@@ -1,28 +1,32 @@
-import { Product } from '../types';
+import { Product } from "./../types"
 import imageUrlBuilder from "@sanity/image-url"
-import SanityClientConstructor from '@sanity/client';
+import SanityClientConstructor from "@sanity/client"
 
-export const client = async (query: string, duration: number) => {
+export const client = async (query: string, revalidate?: boolean) => {
   const urlEncodedQuery = encodeURIComponent(query)
+  let response: Product | Product[] | null
 
-  let response: Product[] | string
-  try {
-    const req = await fetch(
+  let req
+  if (revalidate) {
+    req = await fetch(
       `https://an49tws5.api.sanity.io/v2022-12-28/data/query/production?query=${urlEncodedQuery}`,
-      { next: { revalidate: duration } } // 10 minutes
+      { next: { revalidate: 600 } }
     )
-    response = (await req?.json())?.result
-  } catch (e) {
-    response = "An error occured!"
+  } else {
+    req = await fetch(
+      `https://an49tws5.api.sanity.io/v2022-12-28/data/query/production?query=${urlEncodedQuery}`
+    )
   }
 
+  response = (await req?.json())?.result
+  
   return response
 }
 
 export const autoClient = SanityClientConstructor({
-  projectId: 'an49tws5',
-  dataset: 'production',
-  apiVersion: '2022-12-28',
+  projectId: "an49tws5",
+  dataset: "production",
+  apiVersion: "2022-12-28",
   token: process.env.NEXT_PUBLIC_SANITY_TOKEN,
   useCdn: false,
 })

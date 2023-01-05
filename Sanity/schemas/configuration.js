@@ -11,7 +11,7 @@ export default {
     {
       name: 'slogan',
       title: 'Slogan',
-      type: 'string'
+      type: 'string',
     },
     {
       name: 'logo',
@@ -34,6 +34,11 @@ export default {
           ],
         },
       ],
+    },
+    {
+      name: 'licence',
+      title: 'License date and type',
+      type: 'string',
     },
   ],
 }

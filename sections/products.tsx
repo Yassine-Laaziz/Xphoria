@@ -17,7 +17,7 @@ const Products = () => {
   useEffect(() => {
     setIsTouchScreen("ontouchstart" in window || navigator.maxTouchPoints > 0)
 
-    client('*[_type == "product"]', 600).then((res: Product[] | string) => {
+    client('*[_type == "product"]', true).then((res: Product[] | string) => {
       if (Array.isArray(res)) setProducts(res)
     })
   }, [])
@@ -65,7 +65,7 @@ const Products = () => {
             </div>
           ) : (
             isTouchScreen && (
-              <div className="relative bg-black opacity-50">
+              <div className="relative border-b-2 border-emerald-500">
                 <TypingText
                   title={product.name}
                   textStyles="text-2xl font-bold"
