@@ -1,15 +1,15 @@
-"use client"
-
 import HeroBanner from "../components/HeroBanner"
+import { fetchData } from "../lib/sanity"
 import Products from "../sections/products"
 
-const Page = () => {
+export default async function Page() {
+  let products = await fetchData('*[_type == "product"]', true)
+  let config = await fetchData('*[_type == "config"]', true)
+
   return (
     <>
-      <HeroBanner />
-      <Products />
+      <HeroBanner config={config} />
+      <Products products={products} />
     </>
   )
 }
-
-export default Page

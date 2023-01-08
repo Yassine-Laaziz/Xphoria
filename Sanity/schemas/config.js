@@ -1,5 +1,5 @@
 export default {
-  name: 'configuration',
+  name: 'config',
   title: 'Configuration',
   type: 'document',
   fields: [

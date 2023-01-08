@@ -1,10 +1,9 @@
-import { Product } from "./../types"
 import imageUrlBuilder from "@sanity/image-url"
 import SanityClientConstructor from "@sanity/client"
 
-export const client = async (query: string, revalidate?: boolean) => {
+export const fetchData = async (query: string, revalidate?: boolean) => {
   const urlEncodedQuery = encodeURIComponent(query)
-  let response: Product | Product[] | null
+  let response: any
 
   let req
   if (revalidate) {
@@ -19,7 +18,7 @@ export const client = async (query: string, revalidate?: boolean) => {
   }
 
   response = (await req?.json())?.result
-  
+
   return response
 }
 
@@ -27,7 +26,7 @@ export const autoClient = SanityClientConstructor({
   projectId: "an49tws5",
   dataset: "production",
   apiVersion: "2022-12-28",
-  token: process.env.NEXT_PUBLIC_SANITY_TOKEN,
+  token: process.env.SANITY_TOKEN,
   useCdn: false,
 })
 
