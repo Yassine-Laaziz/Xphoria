@@ -1,6 +1,14 @@
 export type Product = {
   name: string
+  slogan?: string
   slug: { _type: string; current: string }
   price: number
-  images: object[]
+  image: object
+  noBgImages: { color: string; images: object[] }[]
+  sizes: number[]
+}
+
+export type ProductOptions = {
+  size: number
+  colour: string
 }

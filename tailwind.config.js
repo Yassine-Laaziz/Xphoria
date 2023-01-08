@@ -18,38 +18,42 @@ module.exports = {
       },
       keyframes: {
         line: {
-          "from": { flex: 0 },
-          "to": { flex: 1 },
+          from: { flex: 0 },
+          to: { flex: 1 },
         },
         hider: { "100%": { width: 0 } },
         logo: {
-          "0%": { opacity:  .2 },
-          "10%": { opacity: 1},
-          "30%": { opacity: 0},
+          "0%": { opacity: 0.2 },
+          "10%": { opacity: 1 },
+          "30%": { opacity: 0 },
           "50%": { opacity: 0 },
-          "60%": { opacity: 1},
-          "70%": { opacity: .5},
-          "80%": { opacity: .2},
-          "100%": { opacity: 1},
-      },
-      bigger: {
-        "from": {
-          width: "100%",
-          height: "100%"
+          "60%": { opacity: 1 },
+          "70%": { opacity: 0.5 },
+          "80%": { opacity: 0.2 },
+          "100%": { opacity: 1 },
         },
-        "to": {
-          width: "125%",
-          height: "125%"
-        }
-      }
+        bigger: {
+          from: {
+            width: "100%",
+            height: "100%",
+          },
+          to: {
+            width: "125%",
+            height: "125%",
+          },
+        },
       },
     },
     animation: {
       line: "line 2s ease-out forwards",
       hider: "hider 2s ease-out forwards",
       logo: "logo 1s ease-out forwards",
-      bigger: "bigger .25s ease-out forwards"
+      bigger: "bigger .25s ease-out forwards",
     },
   },
-  plugins: [],
+  plugins: [
+    function ({ addVariant }) {
+      addVariant("c", "& > *") //stands for child
+    },
+  ],
 }

@@ -1,7 +1,7 @@
-import configuration from "./configuration"
+import config from './config'
 import product from "./product"
 
 export const schemaTypes = [
     product,
-    configuration
+    config
 ]

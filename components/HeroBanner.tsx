@@ -9,7 +9,7 @@ import Image from "next/image"
 import logo from "../public/Green_astronauts.png"
 import styles from "../styles"
 
-const HeroBanner = () => {
+const HeroBanner = ({ config }: { config: object }) => {
   const [animate, setAnimate] = useState<{
     line?: boolean
     circle?: boolean
@@ -71,9 +71,9 @@ const HeroBanner = () => {
           <Image
             src={logo}
             alt="Green astronauts"
-            className={`h-[calc(100%-14px)] w-[calc(100%-14px)] relative top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] ${
-              animate.logo ? "animate-logo" : "hidden"
-            }`}
+            className={`h-[calc(100%-14px)] w-[calc(100%-14px)] ${
+              styles.absoluteCenter
+            } ${animate.logo ? "animate-logo" : "hidden"}`}
           />
         </div>
         {/* right line */}
@@ -82,7 +82,7 @@ const HeroBanner = () => {
         ${animate.line ? "animate-line" : ""} float-right `}
         />
         {/* hiders */}
-        <div className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 h-full aspect-square">
+        <div className={`${styles.absoluteCenter} h-full aspect-square`}>
           <div
             className={`bg-black absolute h-[calc(50%+14px)] w-[calc(100%+14px*2)] right-[-14px] top-[-14px]
           ${animate.circle ? "animate-hider" : ""}`}
