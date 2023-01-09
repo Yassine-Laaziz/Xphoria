@@ -42,6 +42,10 @@ module.exports = {
             height: "125%",
           },
         },
+        rotate: {
+          from: {rotate: "0deg"},
+          to: {rotate: "360deg"}
+        }
       },
     },
     animation: {
@@ -49,6 +53,7 @@ module.exports = {
       hider: "hider 2s ease-out forwards",
       logo: "logo 1s ease-out forwards",
       bigger: "bigger .25s ease-out forwards",
+      rotate: "rotate 10s linear infinite"
     },
   },
   plugins: [

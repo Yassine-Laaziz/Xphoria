@@ -10,5 +10,5 @@ export type Product = {
 
 export type ProductOptions = {
   size: number
-  colour: string
+  color: string
 }
