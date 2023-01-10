@@ -47,13 +47,19 @@ module.exports = {
           to: {rotate: "360deg"}
         }
       },
+      slideToLeft: {to: {left: '5%'}},
+      slideToMiddle: {to: {left: '50%', translate: '-50%'}},
+      slideToLeft: {to: {right: '5%'}},
     },
     animation: {
       line: "line 2s ease-out forwards",
       hider: "hider 2s ease-out forwards",
       logo: "logo 1s ease-out forwards",
       bigger: "bigger .25s ease-out forwards",
-      rotate: "rotate 10s linear infinite"
+      rotate: "rotate 10s linear infinite",
+      slideToLeft: "slideToLeft 2s linear forwards",
+      slideToMiddle: "slideToMiddle 2s linear forwards",
+      slideToRight: "slideToRight 2s linear forwards",
     },
   },
   plugins: [
