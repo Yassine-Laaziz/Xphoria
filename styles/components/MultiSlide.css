@@ -1,0 +1,32 @@
+:root {
+  --distance: 100%;
+}
+
+#s1:checked ~ .cards #slide2,
+#s2:checked ~ .cards #slide3,
+#s3:checked ~ .cards #slide1 {
+  transform: translate3d(var(--distance), 0, -200px);
+  box-shadow: 0 25px 50px 0 rgba(0, 0, 0, 50%);
+}
+
+#s1:checked ~ .cards #slide3,
+#s2:checked ~ .cards #slide1,
+#s3:checked ~ .cards #slide2 {
+  transform: translate3d(calc(0% - var(--distance)), 0, -200px);
+  box-shadow: 0 25px 50px 0 rgba(0, 0, 0, 50%);
+}
+
+#s1:checked ~ .cards #slide1,
+#s2:checked ~ .cards #slide2,
+#s3:checked ~ .cards #slide3 {
+  background-color: hsla(0, 0%, 0%, 0.9);
+  transform: translate3d(0, 0, 0);
+  box-shadow: 0 25px 50px 0 hsla(0, 0%, 0%, 0.5);
+  cursor: default;
+}
+
+@media (max-width: 1200px) {
+  :root {
+    --distance: 50%;
+  }
+}
