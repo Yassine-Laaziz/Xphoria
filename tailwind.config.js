@@ -32,24 +32,12 @@ module.exports = {
           "80%": { opacity: 0.2 },
           "100%": { opacity: 1 },
         },
-        bigger: {
-          from: {
-            width: "100%",
-            height: "100%",
-          },
-          to: {
-            width: "125%",
-            height: "125%",
-          },
-        },
+        bigger: { to: { width: "125%", height: "125%" } },
         rotate: {
-          from: {rotate: "0deg"},
-          to: {rotate: "360deg"}
-        }
+          from: { rotate: "0deg" },
+          to: { rotate: "360deg" },
+        },
       },
-      slideToLeft: {to: {left: '5%'}},
-      slideToMiddle: {to: {left: '50%', translate: '-50%'}},
-      slideToLeft: {to: {right: '5%'}},
     },
     animation: {
       line: "line 2s ease-out forwards",
@@ -57,9 +45,6 @@ module.exports = {
       logo: "logo 1s ease-out forwards",
       bigger: "bigger .25s ease-out forwards",
       rotate: "rotate 10s linear infinite",
-      slideToLeft: "slideToLeft 2s linear forwards",
-      slideToMiddle: "slideToMiddle 2s linear forwards",
-      slideToRight: "slideToRight 2s linear forwards",
     },
   },
   plugins: [
