@@ -37,6 +37,7 @@ module.exports = {
           from: { rotate: "0deg" },
           to: { rotate: "360deg" },
         },
+        fade: { from: { opacity: 0 }, to: { opacity: "100%" } },
       },
     },
     animation: {
@@ -45,6 +46,7 @@ module.exports = {
       logo: "logo 1s ease-out forwards",
       bigger: "bigger .25s ease-out forwards",
       rotate: "rotate 10s linear infinite",
+      fade: "fade .3s ease forwards",
     },
   },
   plugins: [

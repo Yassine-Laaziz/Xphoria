@@ -52,6 +52,12 @@ export default {
               validation: (Rule) => Rule.required(),
             },
             {
+              name: 'colorName',
+              type: 'string',
+              title: 'Color name',
+              validation: (Rule) => Rule.required(),
+            },
+            {
               name: 'images',
               type: 'array',
               title: 'Transparent-Background Images',
