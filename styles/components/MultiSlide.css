@@ -2,6 +2,12 @@
   --distance: 100%;
 }
 
+#slide1,
+#slide2,
+#slide3 {
+  background-color: hsla(0, 0%, 0%, 0.7);
+}
+
 #s1:checked ~ .cards #slide2,
 #s2:checked ~ .cards #slide3,
 #s3:checked ~ .cards #slide1 {

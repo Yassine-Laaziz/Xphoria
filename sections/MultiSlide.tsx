@@ -5,7 +5,7 @@ import styles from "../styles"
 import Image from "next/image"
 import { Product, ProductOptions } from "../types"
 import { HiChevronLeft, HiChevronRight } from "react-icons/hi"
-import { GrSend } from "react-icons/gr"
+import { RxThickArrowUp } from "react-icons/rx"
 import { urlFor } from "../lib/sanity"
 import { useState } from "react"
 import { colord } from "colord"
@@ -86,7 +86,7 @@ function MultiSlide({ product }: { product: Product }) {
           className={`z-50 flex justify-between c:text-[50px] w-[calc(80%+50px)] sm:w-[calc(60%+50px)] md:w-[calc(50%+50px)]
           lg:w-[calc(33.33%+50px)] text-green-500 c:rounded-full c:bg-[hsla(0,0%,0%,.9)] c:cursor-pointer h-0 items-center
           ${styles.absoluteCenter}
-          ${!animating ? "animate-fade" : ""}`}
+          ${!animating ? "animate-fadeIn" : ""}`}
         >
           <HiChevronLeft onClick={() => navigate(["s2", "s3", "s1"])} />
           <HiChevronRight onClick={() => navigate(["s3", "s1", "s2"])} />
@@ -97,20 +97,29 @@ function MultiSlide({ product }: { product: Product }) {
       <div
         className="cards relative flex items-center [perspective:1000px] [transform-style:preserve-3d] w-full h-[90%]
         c:absolute c:left-0 c:right-0 c:m-auto c:transition-all c:duration-500 c:w-[80%] sm:c:w-[60%] md:c:w-[50%]
-        lg:c:w-1/3 c:h-full c:p-6 sm:c:p-9 c:bg-[hsla(0,0%,0%,.7)] c:rounded-[35px] c:flex c:flex-col c:justify-between
-        font-black uppercase"
+        lg:c:w-1/3 c:h-full c:p-6 sm:c:p-9 c:rounded-[35px] c:flex c:flex-col c:justify-between font-black uppercase"
       >
         {/* First Slide */}
         <label htmlFor="s1" id="slide1">
           <h2 className="text-white [textShadow:0_0_7px_white] pb-2 text-3xl sm:text-4xl tracking-wider">
             Reviews
           </h2>
-          <section className="flex-1">
+          <div>
 
+          </div>
+          <section className="flex-1 overflow-y-auto py-2">
           </section>
-          <section className="flex">
-            <input className="flex-1" onChange={(e) => setReview(e.target.value)} />
-            <GrSend />
+          <section className="flex rounded-lg border-2 border-gray-700 overflow-hidden">
+            <input
+              className="flex-1 placeholder:text-emerald-600 pl-2 text-emerald-600 bg-black"
+              onChange={(e) => setReview(e.target.value)}
+              placeholder="what do you think of it?"
+            />
+            <RxThickArrowUp
+              color="rgb(4,120,87)"
+              fontSize="30px"
+              className="bg-gray-900 cursor-pointer"
+            />
           </section>
         </label>
         {/* Second Slide */}

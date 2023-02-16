@@ -17,3 +17,19 @@ export type ProductOptions = {
   color: string
   colorName: string
 }
+
+export type Config = {
+  brand: string
+  slogan: string
+  logo: object
+  socials: social[]
+  license: string
+}
+
+export type social = {
+  name: string
+  url: string
+  logo: object
+}
+
+export type User = { username: string; email: string }
