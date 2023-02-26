@@ -1,12 +1,13 @@
+import type { NextApiRequest, NextApiResponse } from "next"
 import { verify } from "../../../lib/jwt"
 import { serialize } from "cookie"
 
-const profile = async (req, res) => {
+const profile = async (req: NextApiRequest, res: NextApiResponse) => {
   const { objective } = req.body
   if (objective === "check") {
     try {
       const { jwtToken } = req.cookies
-      if (!jwtToken) return res.status(400).send('no token')
+      if (!jwtToken) return res.status(400).send("no token")
       const { payload } = await verify(jwtToken)
       let correct,
         verified = false

@@ -104,11 +104,8 @@ function MultiSlide({ product }: { product: Product }) {
           <h2 className="text-white [textShadow:0_0_7px_white] pb-2 text-3xl sm:text-4xl tracking-wider">
             Reviews
           </h2>
-          <div>
-
-          </div>
-          <section className="flex-1 overflow-y-auto py-2">
-          </section>
+          <div></div>
+          <section className="flex-1 overflow-y-auto py-2"></section>
           <section className="flex rounded-lg border-2 border-gray-700 overflow-hidden">
             <input
               className="flex-1 placeholder:text-emerald-600 pl-2 text-emerald-600 bg-black"
@@ -138,14 +135,14 @@ function MultiSlide({ product }: { product: Product }) {
                 product.noBgImages[index.color].images[index.mainImage]
               ).url()}
               fill={true}
-              alt={`Green-Astronauts-${product.name}`}
+              alt={`Xphoria-${product.name}`}
               quality={100}
             />
           </section>
           <section className="relative mt-auto pt-4 mx-auto flex gap-5 justify-center w-fit">
             {product.noBgImages[index.color].images.map((img, i) => (
               <div
-                key={`Green-Astronauts-${img}${i}`}
+                key={`Xphoria-img-${i}`}
                 className={`border-emerald-700 rounded-md w-14 aspect-video p-1 flex items-center
                   ${
                     index.mainImage === i
@@ -157,8 +154,8 @@ function MultiSlide({ product }: { product: Product }) {
                 }
               >
                 <Image
-                  src={urlFor(product.noBgImages[index.color].images[i]).url()}
-                  alt={`Green-Astronauts-${product.name}${i}`}
+                  src={urlFor(img).url()}
+                  alt={`Xphoria-${product.name}${i}`}
                   quality={100}
                   width={1200}
                   height={1200}
@@ -167,11 +164,8 @@ function MultiSlide({ product }: { product: Product }) {
             ))}
           </section>
           <h2
-            className="absolute -bottom-5 left-1/2 -translate-x-1/2 bg-[hsla(0,0%,0%,.9)] text-white [text-shadow:0_0_4px_white]
-              rounded-md p-2 before:content-[''] before:w-[110%] before:h-8 before:bg-gradient-to-l before:from-white
-              before:to-green-600 before:animate-rotate before:-z-10 before:top-1/2 before:left-1/2 before:[translate:-50%_-50%]
-              before:absolute z-10 overflow-hidden after:absolute after:bg-black after:inset-1 after:rounded-md after:-z-10
-              cursor-pointer hover:scale-110 transition"
+            className={`absolute -bottom-5 left-1/2 -translate-x-1/2 bg-[hsla(0,0%,0%,.9)] text-white 
+            cursor-pointer hover:scale-110 transition ${styles.loopingBorder} [text-shadow:0_0_4px_white]`}
           >
             Add to bag
           </h2>

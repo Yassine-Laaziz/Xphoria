@@ -35,7 +35,7 @@ const Products = ({ products }: { products: Product[] }) => {
               height={1200}
               quality={100}
               src={urlFor(product.image).url()}
-              alt="Green Astronauts"
+              alt={`Xphoria ${product.name}`}
               className="h-full rounded-md"
             />
             {selected === i ? (

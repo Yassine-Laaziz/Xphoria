@@ -1,9 +1,10 @@
+import type { NextApiRequest, NextApiResponse } from 'next'
 import UserModel from "../../../models/Users"
 import bcrypt from "bcrypt"
 import { createToken } from "../../../lib/jwt"
 import { connect } from "../../../lib/mongodb"
 
-const handler = async (req, res) => {
+const handler = async (req:NextApiRequest, res:NextApiResponse) => {
   try {
     connect()
     let { email, password } = req.body

@@ -24,6 +24,8 @@ export type Config = {
   logo: object
   socials: social[]
   license: string
+  footerText: string
+  recommended: string
 }
 
 export type social = {
