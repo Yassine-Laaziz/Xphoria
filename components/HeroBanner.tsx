@@ -6,10 +6,11 @@ import { motion } from "framer-motion"
 import { BsArrowBarDown } from "react-icons/bs"
 import { slideIn } from "../lib/motion"
 import Image from "next/image"
-import logo from "../public/Green_astronauts.png"
 import styles from "../styles"
+import { urlFor } from "../lib/sanity"
+import { Config } from "../types"
 
-const HeroBanner = ({ config }: { config: object }) => {
+const HeroBanner = ({ config }: { config: Config }) => {
   const [animate, setAnimate] = useState<{
     line?: boolean
     circle?: boolean
@@ -69,11 +70,13 @@ const HeroBanner = ({ config }: { config: object }) => {
         mx-auto relative top-1/2 translate-y-[-50%] shadow-[0_0_14px_4px,0_0_14px_4px_inset] border-emerald-700 border-[5px] "
         >
           <Image
-            src={logo}
-            alt="Green astronauts"
-            className={`h-[calc(100%-14px)] w-[calc(100%-14px)] ${
-              styles.absoluteCenter
-            } ${animate.logo ? "animate-logo" : "hidden"}`}
+            src={urlFor(config.logo).url()}
+            alt={config.brand}
+            className={`h-[calc(100%-14px)] w-[calc(100%-14px)] 
+            ${styles.absoluteCenter}
+            ${animate.logo ? "animate-logo" : "hidden"}`}
+            width={1200}
+            height={1200}
           />
         </div>
         {/* right line */}
@@ -99,11 +102,11 @@ const HeroBanner = ({ config }: { config: object }) => {
         {animate.text && (
           <>
             <TitleText
-              title="Green Astronauts"
+              title={config.brand}
               textStyles={`text-emerald-700 ${styles.title}`}
             />
             <TypingText
-              title="we do it better"
+              title={config.slogan}
               textStyles={`text-emerald-700 ${styles.typingText}`}
             />
           </>

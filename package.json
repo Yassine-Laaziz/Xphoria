@@ -1,5 +1,5 @@
 {
-  "name": "green_astronauts",
+  "name": "xphoria",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -14,17 +14,25 @@
     "@sanity/image-url": "^1.0.1",
     "axios": "^1.2.2",
     "colord": "^2.9.3",
+    "cookie": "^0.5.0",
     "eslint-config-next": "^12.0.4",
     "framer-motion": "^7.6.7",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^6.9.1",
     "next": "13.0.3",
+    "nodemailer": "^6.9.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.7.1",
     "swr": "^2.0.0"
   },
   "devDependencies": {
+    "@types/cookie": "^0.5.1",
+    "@types/jsonwebtoken": "^9.0.1",
     "@types/node": "18.11.18",
+    "@types/nodemailer": "^6.4.7",
     "@types/react": "18.0.26",
+    "@types/validator": "^13.7.12",
     "autoprefixer": "^10.4.13",
     "eslint": "^8.27.0",
     "eslint-config-airbnb": "^19.0.4",

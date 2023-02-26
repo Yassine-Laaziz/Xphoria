@@ -9,6 +9,10 @@ const styles = {
   typingText: "font-normal text-[14px]",
   innerWidth: "2xl:max-w-[1280px] w-full",
   paddings: "sm:p-16 xs:p-8 px-6 py-12",
+
+  loopingBorder: `absolute rounded-md p-2 before:content-[''] before:w-[110%] before:h-8 before:bg-gradient-to-l before:from-white
+  before:to-green-600 before:animate-rotate before:-z-10 before:top-1/2 before:left-1/2 before:[translate:-50%_-50%]
+  before:absolute z-10 overflow-hidden after:absolute after:bg-black after:inset-1 after:rounded-md after:-z-10`,
 }
 
 export default styles

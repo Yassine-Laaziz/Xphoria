@@ -7,16 +7,19 @@ export default {
       name: 'brand',
       title: 'Brand',
       type: 'string',
+      validation: (Rule) => Rule.required(),
     },
     {
       name: 'slogan',
       title: 'Slogan',
       type: 'string',
+      validation: (Rule) => Rule.required(),
     },
     {
       name: 'logo',
       title: 'Logo',
       type: 'image',
+      validation: (Rule) => Rule.required(),
     },
     {
       name: 'socials',
@@ -39,6 +42,19 @@ export default {
       name: 'licence',
       title: 'License date and type',
       type: 'string',
+      validation: (Rule) => Rule.required(),
+    },
+    {
+      name: 'footerText',
+      title: 'Footer Text',
+      type: 'string',
+      validation: (Rule) => Rule.required(),
+    },
+    {
+      name: 'recommended',
+      title: 'Recommended product url',
+      type: 'url',
+      validation: (Rule) => Rule.required(),
     },
   ],
 }

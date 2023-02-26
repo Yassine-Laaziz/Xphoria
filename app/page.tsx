@@ -4,7 +4,7 @@ import Products from "../sections/products"
 
 export default async function Page() {
   let products = await fetchData('*[_type == "product"]', true)
-  let config = await fetchData('*[_type == "config"]', true)
+  let config = await fetchData('*[_type == "config"][0]', true)
 
   return (
     <>
