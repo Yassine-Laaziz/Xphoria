@@ -34,4 +34,9 @@ export type social = {
   logo: object
 }
 
-export type User = { username: string; email: string }
+export type User = {
+  username: string
+  email: string
+  id: string
+  img: string | null
+}

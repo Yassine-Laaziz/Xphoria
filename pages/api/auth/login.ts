@@ -1,41 +1,48 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import UserModel from "../../../models/Users"
-import bcrypt from "bcrypt"
-import { createToken } from "../../../lib/jwt"
-import { connect } from "../../../lib/mongodb"
+import { connect } from '../../../lib/mongodb'
+import sendVerificationEmail from '../../../lib/utils/sendEmail'
+import { sign } from 'jsonwebtoken'
+import UserModel from '../../../models/Users'
+import styles from '../../../styles'
+import { User } from '../../../types'
 
-const handler = async (req:NextApiRequest, res:NextApiResponse) => {
+export default async function Login(req: NextApiRequest, res: NextApiResponse) {
+  const err = 'Something went wrong! please retry or check again later'
+
   try {
-    connect()
-    let { email, password } = req.body
-    email = email.toLowerCase()
-    // validation
-    // 1 all fields filled?
-    if (!email || !password)
-      return res.status(422).send("All fields must be filled!")
+    await connect()
+    const email: string = req.body.email
+    if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))
+      return res.status(400).send(err)
 
-    // 2 Correct email?
-    const user = await UserModel.findOne({ email, verified: true })
-    if (!user) return res.status(404).send("account not registered")
+    const user: User | null = await UserModel.findOne({ email })
+    if (!user)
+      return res
+        .status(400)
+        .send(
+          `there is no account with this email address, please consider signing up instead `
+        )
 
-    // 3 Correct password ?
-    const match = await bcrypt.compare(password, user.password)
-    if (!match) return res.status(422).send("Incorrect password!")
-
-    // refreshing Token
-    const { jwtToken, serialized } = await createToken({
-      signedUp: true,
-      verified: true,
-      user,
+    const token = sign({ email, role: 'login' }, process.env.JWT_SECRET_KEY, {
+      expiresIn: '2h',
     })
 
-    res.setHeader("Set-Cookie", serialized)
-    res.status(200).send(jwtToken)
-  } catch (error) {
     res
-      .status(400)
-      .send("Something went wrong! please retry or come back later")
+      .status(200)
+      .send({ msg: 'An email was sent to you, please check your inbox' })
+
+    sendVerificationEmail(
+      user.email,
+      `Hello there, someone tried to Login to our website using your email address You can click the verify
+      button below to Login, if this is not you, you can still login through the verify button you're totally safe.
+      <a
+        href="${process.env.BASE_URL}/auth/verify?t=${token}"
+        style="${styles.htmlVerifyButton}"
+        >
+        verify
+      </a>`
+    )
+  } catch (e) {
+    res.status(400).send(err)
   }
 }
-
-export default handler

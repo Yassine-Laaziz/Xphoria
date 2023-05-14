@@ -1,135 +1,73 @@
-"use client"
+'use client'
+import { motion } from 'framer-motion'
+import { BsArrowBarDown } from 'react-icons/bs'
+import styles from '../styles'
+import Image from 'next/image'
+import { Config } from '../types'
+import { urlFor } from '../lib/sanity'
 
-import { useEffect, useState } from "react"
-import { TitleText, TypingText } from "./CustomTexts"
-import { motion } from "framer-motion"
-import { BsArrowBarDown } from "react-icons/bs"
-import { slideIn } from "../lib/motion"
-import Image from "next/image"
-import styles from "../styles"
-import { urlFor } from "../lib/sanity"
-import { Config } from "../types"
-
-const HeroBanner = ({ config }: { config: Config }) => {
-  const [animate, setAnimate] = useState<{
-    line?: boolean
-    circle?: boolean
-    logo?: boolean
-    text?: boolean
-    scroll?: boolean
-  }>({})
-
-  useEffect(() => {
-    setAnimate({ line: true })
-
-    // here i'm using Recursion because multiple setTimeouts should be inside each other
-    const timeouts = (arr: { property: string; duration: number }[]) => {
-      let i = 0
-
-      const timeout = () => {
-        const { property, duration } = arr[i]
-
-        const id = setTimeout(() => {
-          setAnimate((prev) => ({ ...prev, [property]: true }))
-          i++
-          if (arr[i]) timeout()
-          return () => clearTimeout(id)
-        }, duration)
-      }
-
-      timeout()
-    }
-
-    timeouts([
-      { property: "circle", duration: 2000 },
-      { property: "logo", duration: 2000 },
-      { property: "text", duration: 1000 },
-      { property: "scroll", duration: 1500 },
-    ])
-  }, [])
-
+interface props {
+  config: Config
+}
+export default function HeroBanner({ config }: props) {
   const scrollDown = () => {
     window.scrollTo({
-      top: document.documentElement.clientHeight + 160 - 20, //160: products section padding top
-      behavior: "smooth",
+      top: document.documentElement.clientHeight + 160 - 20,
+      behavior: 'smooth',
     })
   }
 
   return (
-    <div className="relative h-[100vh] bg-black flex-col">
-      {/* ====== The Circle and two lines ====== */}
-      <div className="relative pt-[14px] h-1/2 flex">
+    <div className="relative h-[calc(100vh-64px)] bg-black flex-col">
+      {/* The Circle and two lines */}
+      <div className="relative h-1/2 flex">
         {/* left line */}
-        <div
-          className={`bg-emerald-700 h-[5px] relative top-[50%] translate-y-[-50%] shadow-[2px_0_14px_2px] shadow-emerald-700 
-        ${animate.line ? "animate-line" : ""}`}
+        <motion.div
+          className="bg-emerald-700 h-[5px] relative top-[50%] translate-y-[-50%] shadow-[2px_0_14px_2px] shadow-emerald-700"
+          animate={{ flex: 1 }}
+          transition={{ duration: 2, ease: 'easeOut' }}
         />
         {/* circle */}
-        <div
-          className="h-full rounded-full shadow-emerald-700 aspect-square
-        mx-auto relative top-1/2 translate-y-[-50%] shadow-[0_0_14px_4px,0_0_14px_4px_inset] border-emerald-700 border-[5px] "
-        >
-          <Image
-            src={urlFor(config.logo).url()}
-            alt={config.brand}
-            className={`h-[calc(100%-14px)] w-[calc(100%-14px)] 
-            ${styles.absoluteCenter}
-            ${animate.logo ? "animate-logo" : "hidden"}`}
-            width={1200}
-            height={1200}
-          />
-        </div>
+        <Image
+          className="h-full rounded-full shadow-emerald-700 aspect-square relative top-1/2 w-auto mx-auto
+          translate-y-[-50%] shadow-[0_0_14px_4px,0_0_14px_4px_inset] border-emerald-700 border-[5px]"
+          src={urlFor(config.logo).url()}
+          alt="Xphoria logo"
+          width={300}
+          height={300}
+          quality={100}
+        />
         {/* right line */}
-        <div
-          className={`bg-emerald-700 h-[5px] relative top-[50%] translate-y-[-50%] shadow-[-2px_0_14px_2px] shadow-emerald-700 
-        ${animate.line ? "animate-line" : ""} float-right `}
+        <motion.div
+          className="bg-emerald-700 h-[5px] relative top-[50%] translate-y-[-50%] shadow-[-2px_0_14px_2px] shadow-emerald-700 float-right"
+          animate={{ flex: 1 }}
+          transition={{ duration: 2, ease: 'easeOut' }}
         />
         {/* hiders */}
         <div className={`${styles.absoluteCenter} h-full aspect-square`}>
-          <div
-            className={`bg-black absolute h-[calc(50%+14px)] w-[calc(100%+14px*2)] right-[-14px] top-[-14px]
-          ${animate.circle ? "animate-hider" : ""}`}
+          <motion.div
+            className="bg-black absolute h-[calc(50%+14px)] w-[calc(100%+14px*2)] right-[-14px] top-[-14px]"
+            animate={{ width: 0 }}
+            transition={{ delay: 2, duration: 2, ease: 'easeOut' }}
           />
-          <div
-            className={`bg-black absolute h-[calc(50%+14px)] w-[calc(100%+14px*2)] left-[-14px] bottom-[-14px]
-          ${animate.circle ? "animate-hider" : ""}`}
+          <motion.div
+            className="bg-black absolute h-[calc(50%+14px)] w-[calc(100%+14px*2)] left-[-14px] bottom-[-14px]"
+            animate={{ width: 0 }}
+            transition={{ delay: 2, duration: 2, ease: 'easeOut' }}
           />
         </div>
       </div>
 
-      {/* ====== The-Text ====== */}
-      <div className="text-center [text-shadow:_0_0_20px_var(--tw-shadow-color)] shadow-emerald-700">
-        {animate.text && (
-          <>
-            <TitleText
-              title={config.brand}
-              textStyles={`text-emerald-700 ${styles.title}`}
-            />
-            <TypingText
-              title={config.slogan}
-              textStyles={`text-emerald-700 ${styles.typingText}`}
-            />
-          </>
-        )}
-      </div>
-
-      {/* ====== Scroll-Down ======  */}
-      {animate.scroll && (
-        <motion.div
-          variants={slideIn("up", "tween", 0, 1)}
-          initial="hidden"
-          whileInView="show"
-          className="absolute bottom-8 w-full"
-        >
-          <BsArrowBarDown
-            className="text-4xl p-1 text-emerald-700 rounded-full hover:scale-125 transition
-            shadow-[0_0_14px_4px] border-emerald-700 cursor-pointer m-auto"
-            onClick={() => scrollDown()}
-          />
-        </motion.div>
-      )}
+      {/* Scroll Down Button */}
+      <motion.button
+        className="selection:text-emerald-500 text-emerald-700 absolute bottom-8 left-1/2"
+        onClick={scrollDown}
+        initial={{ opacity: 0, y: -20, x: '-50%' }}
+        animate={{ opacity: 1, y: 0, x: '-50%' }}
+        transition={{ delay: 3, duration: 1 }}
+      >
+        <BsArrowBarDown className="text-3xl" />
+      </motion.button>
     </div>
   )
 }
-
-export default HeroBanner

@@ -2,6 +2,7 @@
 const nextConfig = {
   experimental: {
     appDir: true,
+    serverActions: true,
   },
   images: {
     remotePatterns: [
@@ -9,10 +10,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'cdn.sanity.io',
         port: '',
-        pathname: '/images/an49tws5/production/**'
-      }
-    ]
-  }
-};
+        pathname: '/images/an49tws5/production/**',
+      },
+    ],
+  },
+}
 
-module.exports = nextConfig;
+module.exports = nextConfig
