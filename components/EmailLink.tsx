@@ -28,14 +28,14 @@ export default function EmailLink({ email, goBack }: Props) {
   }
 
   return (
-    <div>
-      <h2 className={`text-center relative ${link.name ? "pb-16" : ""}`}>
+    <div className="text-center">
+      <h2 className={`relative ${link.name ? "pb-16" : ""}`}>
         An email was sent to {email}, please check your {link.name || "email"}{" "}
         inbox
         {link.name && (
           <Link
             href={link.url}
-            className={`bg-gray-900 text-blue-700 [text-shadow:0_0_2px_rgb(29_78_216)] 
+            className={`bg-gray-900 text-blue-700 [text-shadow:0_0_2px_rgb(29_78_216)]
             cursor-pointer hover:scale-110 transition ${styles.loopingBorder}
             left-1/2 -translate-x-1/2 bottom-0`}
           >

@@ -1,21 +1,21 @@
-"use client"
+'use client'
 
-import Image from "next/image"
-import { useEffect, useState } from "react"
-import { urlFor } from "../lib/sanity"
-import { TitleText, TypingText } from "../components/CustomTexts"
-import { motion } from "framer-motion"
-import { slideIn } from "../lib/motion"
-import Link from "next/link"
-import { Product } from "../types"
-import styles from "../styles"
+import Image from 'next/image'
+import { useEffect, useState } from 'react'
+import { urlFor } from '../lib/sanity'
+import { TitleText, TypingText } from '../components/CustomTexts'
+import { motion } from 'framer-motion'
+import { slideIn } from '../lib/motion'
+import Link from 'next/link'
+import { Product } from '../types'
+import styles from '../styles'
 
 const Products = ({ products }: { products: Product[] }) => {
   const [isTouchScreen, setIsTouchScreen] = useState<boolean>(false)
   const [selected, setSelected] = useState<number>()
 
   useEffect(() => {
-    setIsTouchScreen("ontouchstart" in window || navigator.maxTouchPoints > 0)
+    setIsTouchScreen('ontouchstart' in window || navigator.maxTouchPoints > 0)
   }, [])
 
   const select = (i: number) => {
@@ -39,12 +39,14 @@ const Products = ({ products }: { products: Product[] }) => {
               className="h-full rounded-md"
             />
             {selected === i ? (
-              <div
+              <motion.div
                 className={`${styles.absoluteCenter} hidden group-hover:inline-block
-              overflow-hidden rounded-md shadow-[0_0_50px_6px] shadow-emerald-900 animate-bigger`}
+                overflow-hidden rounded-md shadow-[0_0_50px_6px] shadow-emerald-900`}
+                animate={{ width: '125%', height: '125%' }}
+                viewport={{ once: false }}
               >
                 <motion.div
-                  variants={slideIn("top", "tween", 0, 0.2)}
+                  variants={slideIn('top', 'tween', 0, 0.2)}
                   className="absolute bottom-0 bg-[hsla(0,0%,0%,50%)] w-full"
                   initial="hidden"
                   whileInView="show"
@@ -58,7 +60,7 @@ const Products = ({ products }: { products: Product[] }) => {
                     textStyles="text-2xl font-['east_sea_dokdo'] text-emerald-400 absolute right-2 bottom-0"
                   />
                 </motion.div>
-              </div>
+              </motion.div>
             ) : (
               isTouchScreen && (
                 <div className="relative border-b-2 border-emerald-500">
