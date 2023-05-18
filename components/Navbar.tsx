@@ -6,6 +6,8 @@ import { FaUserAstronaut } from 'react-icons/fa'
 import Link from 'next/link'
 import Image from 'next/image'
 import classNames from '../lib/utils/ClassNames'
+import { useUserContext } from '../lib/contexts/UserContext'
+import { useRouter } from 'next/navigation'
 
 const navigation = [
   { name: 'Dashboard', href: '#', current: true },
@@ -13,7 +15,8 @@ const navigation = [
 ]
 
 export default function Navbar() {
-  const signedIn: boolean = true
+  const { user } = useUserContext()
+  const { refresh } = useRouter()
 
   return (
     <Disclosure as="nav" className="bg-black">
@@ -60,7 +63,13 @@ export default function Navbar() {
                   <Menu.Button className="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                     <span className="sr-only">Open user menu</span>
                     <FaUserAstronaut className="h-full w-full" />
-                    {/* <Image className="h-8 w-8 rounded-full" src="" alt="" /> */}
+                    {user.img && (
+                      <Image
+                        className="h-8 w-8 rounded-full"
+                        src={user.img}
+                        alt=""
+                      />
+                    )}
                   </Menu.Button>
                 </div>
                 <Transition
@@ -73,7 +82,23 @@ export default function Navbar() {
                   leaveTo="transform opacity-0 scale-95"
                 >
                   <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                    {signedIn ? (
+                    {user.username ? (
+                      <Menu.Item>
+                        {({ active }) => (
+                          <button
+                            onClick={() =>
+                              fetch('/api/auth/expire').then(() => refresh())
+                            }
+                            className={classNames(
+                              active ? 'bg-gray-100' : '',
+                              'block px-4 py-2 text-sm text-gray-700'
+                            )}
+                          >
+                            Sign out
+                          </button>
+                        )}
+                      </Menu.Item>
+                    ) : (
                       <>
                         <Menu.Item>
                           {({ active }) => (
@@ -102,20 +127,6 @@ export default function Navbar() {
                           )}
                         </Menu.Item>
                       </>
-                    ) : (
-                      <Menu.Item>
-                        {({ active }) => (
-                          <Link
-                            href="/auth/signup"
-                            className={classNames(
-                              active ? 'bg-gray-100' : '',
-                              'block px-4 py-2 text-sm text-gray-700'
-                            )}
-                          >
-                            Sign up
-                          </Link>
-                        )}
-                      </Menu.Item>
                     )}
                   </Menu.Items>
                 </Transition>
