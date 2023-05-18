@@ -34,9 +34,16 @@ export type social = {
   logo: object
 }
 
-export type User = {
+export class User {
   username: string
   email: string
   id: string
-  img: string | null
+  img?: string
+
+  constructor(username: string, email: string, id: string, img?: string) {
+    this.username = username
+    this.email = email
+    this.id = id
+    this.img = img
+  }
 }

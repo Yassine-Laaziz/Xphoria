@@ -3,6 +3,7 @@
 import axios from 'axios'
 import { ChangeEvent, FormEvent, useState } from 'react'
 import EmailLink from '../../../components/EmailLink'
+import { err } from '../../../lib/constants'
 import clientSideCheck from '../../../lib/utils/clientSideCheck'
 
 export default function Signup() {
@@ -42,7 +43,7 @@ export default function Signup() {
         setIsFirstSection(false)
         setError('')
       })
-      .catch(err => setError(err.response.data))
+      .catch(res => setError(res.response.data.err || err))
       .finally(() => setDisabled(false))
   }
   const [isFirstSection, setIsFirstSection] = useState<boolean>(true)
@@ -61,12 +62,14 @@ export default function Signup() {
         value={user.username}
         onChange={e => handleChange(e, 'username')}
         spellCheck={false}
+        autoComplete="username"
       />
       <input
         placeholder="email"
         value={user.email}
         onChange={e => handleChange(e, 'email')}
         spellCheck={false}
+        autoComplete="email"
       />
       <button
         disabled={disabled}

@@ -3,6 +3,7 @@ import Navbar from '../components/Navbar'
 import { fetchData, urlFor } from '../lib/sanity'
 import '../styles/globals.css'
 import { Config } from '../types'
+import Providers from './Providers'
 
 async function RootLayout({ children }: { children: React.ReactNode }) {
   const config: Config = await fetchData('*[_type == "config"][0]', true)
@@ -20,9 +21,11 @@ async function RootLayout({ children }: { children: React.ReactNode }) {
         />
       </head>
       <body>
-        <Navbar brand={config.brand} loggedIn={false} />
-        {children}
-        <Footer config={config} />
+        <Providers>
+          <Navbar brand={config.brand} loggedIn={false} />
+          {children}
+          <Footer config={config} />
+        </Providers>
       </body>
     </html>
   )

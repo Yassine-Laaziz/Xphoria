@@ -1,6 +1,6 @@
-import HeroBanner from "../components/HeroBanner"
-import { fetchData } from "../lib/sanity"
-import Products from "../sections/products"
+import HeroBanner from '../components/HeroBanner'
+import { fetchData } from '../lib/sanity'
+import Products from '../sections/products'
 
 export default async function Page() {
   let products = await fetchData('*[_type == "product"]', true)
