@@ -12,23 +12,30 @@ export const initialUser = new User('', '', '')
 
 interface UserContextProps {
   user: User
+  refreshContext: () => void
 }
 
-const UserContext = createContext<UserContextProps>({ user: initialUser })
+const UserContext = createContext<UserContextProps>({
+  user: initialUser,
+  refreshContext: () => {},
+})
 
 export function UserProvider({ children }: PropsWithChildren<{}>) {
   const [user, setUser] = useState<User>(initialUser)
 
-  useEffect(() => {
+  useEffect(() => refreshContext(), [])
+
+  function refreshContext() {
     axios.get('/api/auth/user').then(res => {
-      const user = res.data.user as unknown
-      if (!(user instanceof User)) return
-      setUser(user)
+      const user = res.data.user as User | null
+      setUser(user || initialUser)
     })
-  }, [])
+  }
 
   return (
-    <UserContext.Provider value={{ user }}>{children}</UserContext.Provider>
+    <UserContext.Provider value={{ user, refreshContext }}>
+      {children}
+    </UserContext.Provider>
   )
 }
 

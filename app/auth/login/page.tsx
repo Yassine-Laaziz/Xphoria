@@ -49,7 +49,7 @@ export default function () {
       <input
         onChange={handleChange}
         placeholder="Enter your email address"
-        className="text-blue-700 rounded-lg py-3 pl-2"
+        className="rounded-lg py-3 pl-2 text-blue-700"
         autoComplete="email"
       />
       <button
@@ -58,7 +58,7 @@ export default function () {
       >
         Login
       </button>
-      <div className="text-rose-700 text-center">{error}</div>
+      <div className="text-center text-rose-700">{error}</div>
     </form>
   ) : (
     <EmailLink email={email} goBack={() => setIsFirstSection(true)} />

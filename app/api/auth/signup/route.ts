@@ -1,29 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { connect } from '../../../../lib/mongodb'
 import clientSideCheck from '../../../../lib/utils/clientSideCheck'
-import sendVerificationEmail from '../../../../lib/utils/sendEmail'
 import UserModel from '../../../../models/Users'
 import { User } from '../../../../types'
 import styles from '../../../../styles'
 import { sign } from '../../../../lib/jwtAuth'
 import { err } from '../../../../lib/constants'
+import sendEmail from '../../../../lib/utils/sendEmail'
 
 export async function POST(request: NextRequest) {
-  const req = await request.json()
+  const body = await request.json()
 
   try {
     await connect()
-    const user: User = req.body.user
-    const { username, email } = user
+    const user: User = body.user
     if (!clientSideCheck(user).isCorrect)
       return NextResponse.json({ err }, { status: 400 })
 
-    if (await UserModel.findOne({ username }))
+    if (await UserModel.findOne({ username: user.username }))
       return NextResponse.json(
         { err: 'This username has been taken!' },
         { status: 422 }
       )
 
+    const email = user.email.toLowerCase()
     if (await UserModel.findOne({ email })) {
       return NextResponse.json(
         { err: 'This email address has been taken!' },
@@ -31,22 +31,20 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const token = sign({ user, role: 'signup' }, '2h')
+    const token = await sign({ user, role: 'signup' }, '2h')
 
-    sendVerificationEmail(
+    sendEmail(
       user.email,
-      `Hello there, someone tried to Sign up to our website using your email address
-      if this is you click the verify button below you're gonna Sign up with the username
-      <span style="color:rgb(4,120,87)">"${user.username}"</span>
+      'Sign up!',
+      `Hello there, someone tried to Sign up to our website using your email address.
+      If this is you, click the verify button below to sign up with the username
+      <span style="color:rgb(4,120,87)">"${user.username}"</span>.
       <p>
-      if this is not you please ignore this email and we'd love it if you considered visiting our
+      If this is not you, please ignore this email. We'd love it if you considered visiting our
       <a href="${process.env.BASE_URL}" style="color:rgb(29,78,216)">website</a>.
       </p>
-      <a
-        href="${process.env.BASE_URL}/auth/verify?t=${token}"
-        style="${styles.htmlVerifyButton}"
-      >
-        verify
+      <a href="${process.env.BASE_URL}/auth/verify?t=${token}" style="${styles.htmlVerifyButton}">
+        Verify
       </a>`
     )
 

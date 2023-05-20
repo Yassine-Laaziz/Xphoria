@@ -7,6 +7,7 @@ import { MdMarkEmailRead, MdMarkEmailUnread } from 'react-icons/md'
 import { BiMessageAltError } from 'react-icons/bi'
 import Link from 'next/link'
 import { TypingText } from '../../../components/CustomTexts'
+import { useUserContext } from '../../../lib/contexts/UserContext'
 
 export default function verify() {
   const [status, setStatus] = useState<'pending' | 'success' | 'error'>(
@@ -14,13 +15,17 @@ export default function verify() {
   )
 
   const searchParams = useSearchParams()
+  const { refreshContext } = useUserContext()
   useEffect(() => {
-    let jwtToken: string | null = ''
-    if (searchParams) jwtToken = searchParams.get('t')
-    if (jwtToken) {
+    let user_token: string | null = ''
+    if (searchParams) user_token = searchParams.get('t')
+    if (user_token) {
       axios
-        .post('/api/auth/verify', { jwtToken })
-        .then(() => setStatus('success'))
+        .post('/api/auth/verify', { user_token })
+        .then(() => {
+          setStatus('success')
+          refreshContext()
+        })
         .catch(() => setStatus('error'))
     } else () => setStatus('error')
   }, [])
@@ -41,14 +46,14 @@ export default function verify() {
           <TypingText title="Verified & logged in successfully!" />
           <Link
             href="/"
-            className="block w-fit mx-auto my-2 px-4 py-2 border-blue-800"
+            className="mx-auto my-2 block w-fit border-blue-800 px-4 py-2"
           />
         </>
       )}
       {status === 'error' && (
         <>
           <BiMessageAltError className={icon} />
-          <p className="c:text-blue-700 c:font-bold c:underline">
+          <p className="c:font-bold c:text-blue-700 c:underline">
             too much time passed since we sent you the verification email,
             please <Link href="/auth/login">Login</Link> or{' '}
             <Link href="/auth/signup">Sign up</Link> again

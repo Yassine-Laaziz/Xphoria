@@ -53,9 +53,9 @@ export default function Signup() {
   ) : (
     <form
       onSubmit={e => submit(e)}
-      className="flex flex-col gap-5
-        mx-auto text-center c:rounded-md c:py-2 c:placeholder:text-gray-700 c:placeholder:font-bold
-        focus-visible:c:outline-teal-600 [&>input]:font-black [&>input]:pl-1 [&>input]:text-emerald-500"
+      className="mx-auto flex flex-col
+        gap-5 text-center c:rounded-md c:py-2 c:placeholder:font-bold c:placeholder:text-gray-700
+        focus-visible:c:outline-teal-600 [&>input]:pl-1 [&>input]:font-black [&>input]:text-emerald-500"
     >
       <input
         placeholder="username"
@@ -74,13 +74,13 @@ export default function Signup() {
       <button
         disabled={disabled}
         type="submit"
-        className="hover:text-teal-500 border-2 border-teal-400 duration-200 mx-auto px-5
+        className="mx-auto border-2 border-teal-400 px-5 duration-200 hover:text-teal-500
             disabled:bg-gray-900"
       >
         Sign up
       </button>
       <div
-        className={`text-rose-700 text-sm font-bold
+        className={`text-sm font-bold text-rose-700
         ${error ? 'animate-fadeIn' : 'animate-fadeOut'}`}
       >
         {error}
