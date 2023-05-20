@@ -22,7 +22,7 @@ async function RootLayout({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <Providers>
-          <Navbar brand={config.brand} loggedIn={false} />
+          <Navbar />
           {children}
           <Footer config={config} />
         </Providers>
