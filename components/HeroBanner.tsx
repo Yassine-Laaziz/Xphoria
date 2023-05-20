@@ -18,40 +18,50 @@ export default function HeroBanner({ config }: props) {
   }
 
   return (
-    <div className="relative h-[calc(100vh-64px)] bg-black flex-col">
+    <div className="relative h-[calc(100vh-64px)] flex-col bg-black">
       {/* The Circle and two lines */}
-      <div className="relative h-1/2 flex">
+      <div className="relative flex h-1/2">
         {/* left line */}
         <motion.div
-          className="bg-emerald-700 h-[5px] relative top-[50%] translate-y-[-50%] shadow-[2px_0_14px_2px] shadow-emerald-700"
+          className="relative top-[50%] h-[5px] translate-y-[-50%] bg-emerald-700 shadow-[2px_0_14px_2px] shadow-emerald-700"
           animate={{ flex: 1 }}
           transition={{ duration: 2, ease: 'easeOut' }}
         />
         {/* circle */}
-        <Image
-          className="h-full rounded-full shadow-emerald-700 aspect-square relative top-1/2 w-auto mx-auto
-          translate-y-[-50%] shadow-[0_0_14px_4px,0_0_14px_4px_inset] border-emerald-700 border-[5px]"
-          src={urlFor(config.logo).url()}
-          alt="Xphoria logo"
-          width={300}
-          height={300}
-          quality={100}
-        />
+        <div
+          className="relative top-1/2 mx-auto aspect-square h-full w-auto translate-y-[-50%] rounded-full
+            border-[5px] border-emerald-700 shadow-[0_0_14px_4px,0_0_14px_4px_inset] shadow-emerald-700"
+        >
+          <motion.div
+            className="hidden"
+            animate={{ display: 'block' }}
+            transition={{ delay: 4, duration: 1 }}
+          >
+            <Image
+              className={`absolute ${styles.absoluteCenter} aspect-square h-full w-auto translate-y-[-50%] overflow-hidden`}
+              src={urlFor(config.logo).url()}
+              alt="Xphoria logo"
+              width={300}
+              height={300}
+              quality={100}
+            />
+          </motion.div>
+        </div>
         {/* right line */}
         <motion.div
-          className="bg-emerald-700 h-[5px] relative top-[50%] translate-y-[-50%] shadow-[-2px_0_14px_2px] shadow-emerald-700 float-right"
+          className="relative top-[50%] float-right h-[5px] translate-y-[-50%] bg-emerald-700 shadow-[-2px_0_14px_2px] shadow-emerald-700"
           animate={{ flex: 1 }}
           transition={{ duration: 2, ease: 'easeOut' }}
         />
         {/* hiders */}
-        <div className={`${styles.absoluteCenter} h-full aspect-square`}>
+        <div className={`${styles.absoluteCenter} aspect-square h-full`}>
           <motion.div
-            className="bg-black absolute h-[calc(50%+14px)] w-[calc(100%+14px*2)] right-[-14px] top-[-14px]"
+            className="absolute right-[-14px] top-[-14px] h-[calc(50%+14px)] w-[calc(100%+14px*2)] bg-black"
             animate={{ width: 0 }}
             transition={{ delay: 2, duration: 2, ease: 'easeOut' }}
           />
           <motion.div
-            className="bg-black absolute h-[calc(50%+14px)] w-[calc(100%+14px*2)] left-[-14px] bottom-[-14px]"
+            className="absolute bottom-[-14px] left-[-14px] h-[calc(50%+14px)] w-[calc(100%+14px*2)] bg-black"
             animate={{ width: 0 }}
             transition={{ delay: 2, duration: 2, ease: 'easeOut' }}
           />
@@ -60,7 +70,7 @@ export default function HeroBanner({ config }: props) {
 
       {/* Scroll Down Button */}
       <motion.button
-        className="selection:text-emerald-500 text-emerald-700 absolute bottom-8 left-1/2"
+        className="absolute bottom-8 left-1/2 text-emerald-700 selection:text-emerald-500"
         onClick={scrollDown}
         initial={{ opacity: 0, y: -20, x: '-50%' }}
         animate={{ opacity: 1, y: 0, x: '-50%' }}
