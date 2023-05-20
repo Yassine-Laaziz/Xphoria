@@ -5,16 +5,13 @@ declare global {
       MONGO_URI: string
       BASE_URL: string
       JWT_SECRET_KEY: string
-      // verification
+      // auth
       USER: string
       PASS: string
       SERVICE: string
       HOST: string
       SECURE: boolean
       EMAIL_PORT: number
-      // providers
-      GOOGLE_CLIENT_ID: string
-      GOOGLE_CLIENT_SECRET: string
     }
   }
 }

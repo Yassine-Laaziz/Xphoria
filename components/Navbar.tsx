@@ -7,16 +7,15 @@ import Link from 'next/link'
 import Image from 'next/image'
 import classNames from '../lib/utils/ClassNames'
 import { useUserContext } from '../lib/contexts/UserContext'
-import { useRouter } from 'next/navigation'
+import axios from 'axios'
 
 const navigation = [
-  { name: 'Dashboard', href: '#', current: true },
+  { name: 'Dashboard', href: '/', current: true },
   { name: 'Calendar', href: '#', current: false },
 ]
 
 export default function Navbar() {
-  const { user } = useUserContext()
-  const { refresh } = useRouter()
+  const { user, refreshContext } = useUserContext()
 
   return (
     <Disclosure as="nav" className="bg-black">
@@ -36,7 +35,7 @@ export default function Navbar() {
                 </Disclosure.Button>
               </div>
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-                <h2 className="text-white self-center">Xphoria</h2>
+                <h2 className="self-center text-white">Xphoria</h2>
                 <div className="hidden sm:ml-6 sm:block">
                   <div className="flex space-x-4">
                     {navigation.map(item => (
@@ -87,11 +86,13 @@ export default function Navbar() {
                         {({ active }) => (
                           <button
                             onClick={() =>
-                              fetch('/api/auth/expire').then(() => refresh())
+                              axios
+                                .post('/api/auth/expire')
+                                .then(refreshContext)
                             }
                             className={classNames(
                               active ? 'bg-gray-100' : '',
-                              'block px-4 py-2 text-sm text-gray-700'
+                              'block w-full px-4 py-2 text-sm text-gray-700'
                             )}
                           >
                             Sign out
