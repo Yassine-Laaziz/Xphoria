@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
 
     const token = await sign({ user, role: 'signup' }, '2h')
 
-    sendEmail(
+    await sendEmail(
       user.email,
       'Sign up!',
       `Hello there, someone tried to Sign up to our website using your email address.
