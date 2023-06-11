@@ -6,23 +6,13 @@ export default {
     {
       name: 'name',
       title: 'Name',
-      type: 'string',
+      type: 'slug',
       validation: (Rule) => Rule.required(),
     },
     {
       name: 'slogan',
       title: 'Slogan',
       type: 'string',
-    },
-    {
-      name: 'slug',
-      title: 'Slug',
-      type: 'slug',
-      options: {
-        source: 'name',
-        maxLength: 90,
-      },
-      validation: (Rule) => Rule.required(),
     },
     {
       name: 'price',

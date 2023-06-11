@@ -9,6 +9,7 @@ export default defineConfig({
 
   projectId: 'an49tws5',
   dataset: 'production',
+  basePath: '/admin',
 
   plugins: [deskTool(), visionTool()],
 

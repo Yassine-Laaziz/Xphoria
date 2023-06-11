@@ -1,7 +1,6 @@
-export type Product = {
+export interface Product {
   name: string
   slogan?: string
-  slug: { _type: string; current: string }
   price: number
   image: object
   noBgImages: {
@@ -12,23 +11,22 @@ export type Product = {
   }[]
 }
 
-export type ProductOptions = {
+export interface ProductOptions {
   size: number
   color: string
   colorName: string
 }
 
-export type Config = {
-  brand: string
-  slogan: string
-  logo: object
-  socials: social[]
-  license: string
-  footerText: string
-  recommended: string
+export interface Review {
+  product: string
+  username: string
+  userID: string
+  img: string
+  rating: number
+  comment: string
 }
 
-export type social = {
+export interface social {
   name: string
   url: string
   logo: object

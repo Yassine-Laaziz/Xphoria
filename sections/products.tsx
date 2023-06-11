@@ -6,29 +6,38 @@ import { urlFor } from '../lib/sanity'
 import { TitleText, TypingText } from '../components/CustomTexts'
 import { motion } from 'framer-motion'
 import { slideIn } from '../lib/motion'
-import Link from 'next/link'
-import { Product } from '../types'
+import { Product, Review } from '../types'
 import styles from '../styles'
+import ProductModal from './ProductModal'
 
-const Products = ({ products }: { products: Product[] }) => {
+const Products = ({ products, reviews }: { products: Product[]; reviews: Review[] }) => {
   const [isTouchScreen, setIsTouchScreen] = useState<boolean>(false)
-  const [selected, setSelected] = useState<number>()
+  const [hovered, setHovered] = useState<number>()
+  const [currentProduct, setCurrentProduct] = useState<number>(0)
+  const [showModal, setShowModal] = useState<boolean>(false)
 
   useEffect(() => {
     setIsTouchScreen('ontouchstart' in window || navigator.maxTouchPoints > 0)
   }, [])
 
   const select = (i: number) => {
-    if (!isTouchScreen) setSelected(i)
+    if (!isTouchScreen) setHovered(i)
+  }
+
+  function handleClick(i: number) {
+    setCurrentProduct(i)
+    setShowModal(true)
   }
 
   return (
-    <div className="text-white flex justify-center max-w-4xl w-[70%] gap-5 m-auto py-40">
-      {products?.map((product, i) => (
-        <Link href={`/Product/${product.slug.current}`} key={`products-${i}`}>
+    <>
+      <div className='m-auto flex w-[70%] max-w-4xl justify-center gap-14 py-40 text-white'>
+        {products?.map((product, i) => (
           <div
-            className="w-56 h-64 relative group rounded-md cursor-pointer shadow-[0_0_25px_6px]  shadow-gray-700"
+            key={`product-${product.name}`}
+            className='group relative h-64 w-56 cursor-pointer rounded-md shadow-[0_0_25px_6px]  shadow-gray-700'
             onMouseOver={() => select(i)}
+            onClick={() => handleClick(i)}
           >
             <Image
               width={1000}
@@ -36,24 +45,24 @@ const Products = ({ products }: { products: Product[] }) => {
               quality={100}
               src={urlFor(product.image).url()}
               alt={`Xphoria ${product.name}`}
-              className="h-full rounded-md"
+              className='h-full rounded-md'
             />
-            {selected === i ? (
+            {hovered === i ? (
               <motion.div
-                className={`${styles.absoluteCenter} hidden group-hover:inline-block
-                overflow-hidden rounded-md shadow-[0_0_50px_6px] shadow-emerald-900`}
+                className={`${styles.absoluteCenter} hidden overflow-hidden
+                rounded-md shadow-[0_0_50px_6px] shadow-emerald-900 group-hover:inline-block`}
                 animate={{ width: '125%', height: '125%' }}
                 viewport={{ once: false }}
               >
                 <motion.div
                   variants={slideIn('top', 'tween', 0, 0.2)}
-                  className="absolute bottom-0 bg-[hsla(0,0%,0%,50%)] w-full"
-                  initial="hidden"
-                  whileInView="show"
+                  className='absolute bottom-0 w-full bg-[hsla(0,0%,0%,50%)]'
+                  initial='hidden'
+                  whileInView='show'
                 >
                   <TypingText
                     title={product.name}
-                    textStyles="text-2xl font-bold"
+                    textStyles='text-2xl font-bold'
                   />
                   <TitleText
                     title={`$${product.price}`}
@@ -63,10 +72,10 @@ const Products = ({ products }: { products: Product[] }) => {
               </motion.div>
             ) : (
               isTouchScreen && (
-                <div className="relative border-b-2 border-emerald-500">
+                <div className='relative border-b-2 border-emerald-500'>
                   <TypingText
                     title={product.name}
-                    textStyles="text-2xl font-bold"
+                    textStyles='text-2xl font-bold'
                   />
                   <TitleText
                     title={`$${product.price}`}
@@ -76,9 +85,16 @@ const Products = ({ products }: { products: Product[] }) => {
               )
             )}
           </div>
-        </Link>
-      ))}
-    </div>
+        ))}
+      </div>
+      <ProductModal
+        key={`${products[currentProduct].name} Modal`}
+        product={products[currentProduct]}
+        showModal={showModal}
+        setShowModal={setShowModal}
+        reviews={reviews}
+      />
+    </>
   )
 }
 
