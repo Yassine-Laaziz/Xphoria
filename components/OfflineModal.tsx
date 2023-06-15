@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import Modal from './Modal'
 
 export default function OfflineModal() {
-  const [isOffline, setIsOffline] = useState<boolean>(!navigator.onLine)
+  const [isOffline, setIsOffline] = useState<boolean>(false)
 
   useEffect(() => {
     window.addEventListener('offline', () => setIsOffline(true))

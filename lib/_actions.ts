@@ -19,7 +19,7 @@ export async function sendReview(comment: string, rating: number): Promise<SendR
   try {
     await connect()
   } catch (e) {
-    console.log(e)
+    console.log(`e: ${e}`)
   }
 
   // check if user bought the product

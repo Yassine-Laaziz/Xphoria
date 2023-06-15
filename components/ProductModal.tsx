@@ -203,19 +203,14 @@ function FirstCard({ reviews, reviewInput, setReviewInput }: FirstCardProps) {
         ))
       ) : (
         <section className='flex flex-col gap-2'>
-          <div className=''>
-            <div className='mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500 text-white'>
-              <ExclamationCircleIcon />
-            </div>
-            <h3 className='mt-4 text-center text-lg font-medium [textShadow:0_0_7px_white]'>No reviews yet</h3>
-            <p className='mt-2 text-center text-sm text-gray-500'>Be the first one to leave a review for this product.</p>
-          </div>
+          <ExclamationCircleIcon className='mx-auto flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500 text-white sm:h-12 sm:w-12' />
+          <h3 className='mt-4 text-center font-medium [textShadow:0_0_7px_white] sm:text-lg'>No reviews yet</h3>
         </section>
       )}
       <section className='flex flex-col gap-3'>
         <div className='flex overflow-hidden rounded-md border-2 border-gray-400'>
           <input
-            className='flex-1 bg-black px-2 text-emerald-600 placeholder:text-emerald-600'
+            className='flex-1 bg-black px-2 text-emerald-600 outline-0 placeholder:text-emerald-600'
             value={reviewInput.comment}
             maxLength={200}
             onChange={e => setReviewInput(prev => ({ ...prev, comment: e.target.value }))}
