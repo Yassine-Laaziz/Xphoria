@@ -1,20 +1,31 @@
+import axios from 'axios'
 import HeroBanner from '../components/HeroBanner'
 import { fetchData } from '../lib/sanity'
+import Products from '../components/Products'
 import ReviewModel from '../models/Reviews'
-import Products from '../sections/products'
+import { connect } from '../lib/mongodb'
+import { sortedReviews, Review } from '../types'
 
 export default async function Page() {
   const products = (await fetchData('*[_type == "product"]', true)) || []
-  const reviews = await ReviewModel.find()
+
+  // product reviews
+  await connect()
+  const unsortedReviews: Review[] = await ReviewModel.find()
+  const reviews: sortedReviews = {}
+  unsortedReviews.forEach(review => {
+    if (!reviews[review.product]) {
+      reviews[review.product] = []
+    }
+    reviews[review.product].push(review)
+  })
 
   return (
     <>
       <HeroBanner />
       <Products
         products={products}
-        reviews={[
-          { comment: "This stuff'z bussinngggg,", img: '', product: 'T-shirt', rating: 4.5, userID: 'AwdicfJ21498xAj', username: 'AYo' },
-        ]}
+        reviews={reviews}
       />
     </>
   )

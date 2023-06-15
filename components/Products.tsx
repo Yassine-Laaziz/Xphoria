@@ -3,14 +3,14 @@
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { urlFor } from '../lib/sanity'
-import { TitleText, TypingText } from '../components/CustomTexts'
+import { TitleText, TypingText } from './CustomTexts'
 import { motion } from 'framer-motion'
 import { slideIn } from '../lib/motion'
-import { Product, Review } from '../types'
+import { Product, sortedReviews } from '../types'
 import styles from '../styles'
 import ProductModal from './ProductModal'
 
-const Products = ({ products, reviews }: { products: Product[]; reviews: Review[] }) => {
+const Products = ({ products, reviews }: { products: Product[]; reviews: sortedReviews }) => {
   const [isTouchScreen, setIsTouchScreen] = useState<boolean>(false)
   const [hovered, setHovered] = useState<number>()
   const [currentProduct, setCurrentProduct] = useState<number>(0)
@@ -90,9 +90,9 @@ const Products = ({ products, reviews }: { products: Product[]; reviews: Review[
       <ProductModal
         key={`${products[currentProduct].name} Modal`}
         product={products[currentProduct]}
+        reviews={reviews[products[currentProduct].name]}
         showModal={showModal}
         setShowModal={setShowModal}
-        reviews={reviews}
       />
     </>
   )

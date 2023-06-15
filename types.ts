@@ -26,6 +26,10 @@ export interface Review {
   comment: string
 }
 
+export interface sortedReviews {
+  [key: string]: Review[]
+}
+
 export interface social {
   name: string
   url: string

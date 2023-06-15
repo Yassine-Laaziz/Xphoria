@@ -4,6 +4,7 @@ import Navbar from '../components/Navbar'
 import '../styles/globals.css'
 import Providers from './Providers'
 import { brand, brandSlogan } from '../lib/constants'
+import OfflineModal from '../components/OfflineModal'
 
 export const metadata: Metadata = {
   title: brand,
@@ -22,6 +23,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body>
         <Providers>
+          <OfflineModal />
           <Navbar />
           {children}
           <Footer />
