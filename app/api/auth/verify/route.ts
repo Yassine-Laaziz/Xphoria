@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import UserModel from '../../../../models/Users'
 import { connect } from '../../../../lib/mongodb'
 import sendEmail from '../../../../lib/utils/sendEmail'
-import { sign, verifyAuth } from '../../../../lib/jwtAuth'
+import { sign, verify } from '../../../../lib/jwt'
 import { err } from '../../../../lib/constants'
 import { serialize } from 'cookie'
 
@@ -13,14 +13,10 @@ export async function POST(request: NextRequest) {
   try {
     await connect()
 
-    type Payload =
-      | null
-      | { role: 'login'; email: string }
-      | { role: 'signup'; user: User }
+    type Payload = null | { role: 'login'; email: string } | { role: 'signup'; user: User }
 
-    if (typeof user_token !== 'string')
-      return NextResponse.json({ err }, { status: 400 })
-    const payload = (await verifyAuth(user_token)) as Payload
+    if (typeof user_token !== 'string') return NextResponse.json({ err }, { status: 400 })
+    const payload = (await verify(user_token)) as Payload
     if (!payload?.role) return NextResponse.json({ err }, { status: 400 })
 
     let user
@@ -64,10 +60,7 @@ export async function POST(request: NextRequest) {
       path: '/',
     })
 
-    return NextResponse.json(
-      { msg },
-      { status: 200, headers: { 'Set-Cookie': serialized } }
-    )
+    return NextResponse.json({ msg }, { status: 200, headers: { 'Set-Cookie': serialized } })
   } catch (e) {
     return NextResponse.json({ err }, { status: 400 })
   }

@@ -17,6 +17,25 @@ export interface ProductOptions {
   colorName: string
 }
 
+export class CartItem {
+  product: string
+  qty: number
+  chosenOptions: ProductOptions
+
+  constructor(product: string, qty: number, chosenOptions: ProductOptions) {
+    this.product = product
+    this.qty = qty
+    this.chosenOptions = chosenOptions
+  }
+}
+
+export interface Purchase {
+  user: string
+  product: string
+  purchaseDate: Date
+  quantity: number
+}
+
 export interface Review {
   product: string
   username: string
@@ -40,12 +59,18 @@ export class User {
   username: string
   email: string
   id: string
+  purchases: Purchase[]
+  reviews: Review[]
+  cart: CartItem[]
   img?: string
 
-  constructor(username: string, email: string, id: string, img?: string) {
+  constructor(username: string, email: string, id: string, purchases: Purchase[], reviews: Review[], cart: CartItem[], img?: string) {
     this.username = username
     this.email = email
     this.id = id
+    this.purchases = purchases
+    this.reviews = reviews
+    this.cart = cart
     this.img = img
   }
 }

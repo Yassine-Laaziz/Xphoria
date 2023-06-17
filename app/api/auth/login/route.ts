@@ -3,7 +3,7 @@ import { connect } from '../../../../lib/mongodb'
 import UserModel from '../../../../models/Users'
 import styles from '../../../../styles'
 import { User } from '../../../../types'
-import { sign } from '../../../../lib/jwtAuth'
+import { sign } from '../../../../lib/jwt'
 import { err } from '../../../../lib/constants'
 import sendEmail from '../../../../lib/utils/sendEmail'
 
@@ -14,8 +14,7 @@ export async function POST(request: NextRequest) {
     await connect()
 
     const email = body.email.toLowerCase()
-    if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))
-      return NextResponse.json({ err }, { status: 400 })
+    if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) return NextResponse.json({ err }, { status: 400 })
 
     const user: User | null = await UserModel.findOne({ email })
     if (!user)

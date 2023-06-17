@@ -10,10 +10,12 @@ import { Dispatch, SetStateAction, useState } from 'react'
 import { colord } from 'colord'
 import Modal from './Modal'
 import { ExclamationCircleIcon, StarIcon } from '@heroicons/react/24/outline'
-import { sendReview } from '../lib/_actions'
+import { sendReview, addToBag } from '../lib/serverActions'
 import { motion } from 'framer-motion'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { useRouter } from 'next/navigation'
+import { useUserContext } from '../lib/contexts/UserContext'
 
 export default function ProductModal({ product, showModal, setShowModal, reviews }: props) {
   const [index, setIndex] = useState<Tindex>({
@@ -116,6 +118,7 @@ export default function ProductModal({ product, showModal, setShowModal, reviews
               reviews={reviews}
               reviewInput={reviewInput}
               setReviewInput={setReviewInput}
+              productSlug={product.name}
             />
           </label>
           {/* Second Slide */}
@@ -127,6 +130,7 @@ export default function ProductModal({ product, showModal, setShowModal, reviews
               product={product}
               index={index}
               setIndex={setIndex}
+              chosenOptions={chosenOptions}
             />
           </label>
           {/* Third Slide */}
@@ -148,9 +152,12 @@ export default function ProductModal({ product, showModal, setShowModal, reviews
   )
 }
 
-function FirstCard({ reviews, reviewInput, setReviewInput }: FirstCardProps) {
+function FirstCard({ reviews, reviewInput, setReviewInput, productSlug }: FirstCardProps) {
   const [isDragging, setIsDragging] = useState<boolean>(false)
   const [isSending, setIsSending] = useState<boolean>(false)
+  const { user, refreshContext } = useUserContext()
+  const userAlreadyReviewed = user.reviews.some(review => review.product === productSlug) || null
+
   const handleStarClick = (stars: number) => {
     setReviewInput(prev => ({ ...prev, rating: stars }))
   }
@@ -169,18 +176,27 @@ function FirstCard({ reviews, reviewInput, setReviewInput }: FirstCardProps) {
     }
   }
 
+  const { push } = useRouter()
   async function hydrateSendReview() {
     if (isSending) return
     setIsSending(true)
-    // below i'm going to use an almost instant server function so i wouldn't need a loading state even for low-end connection
+    // below i'm using an almost instant server function so i wouldn't need a loading/optimistic state even for a low-end connection
 
-    const res = await sendReview(reviewInput.comment, reviewInput.rating)
+    const res = await sendReview(reviewInput.comment, reviewInput.rating, productSlug)
     setIsSending(false)
 
+    if (res.redirect) return push(res.redirect)
+
     if (res.success) {
-      toast('Review Sent!', { type: 'success', toastId: 'success', className: 'text-xs' })
-    } else {
-      toast(res.msg, { type: 'error', toastId: 'error', className: 'text-xs' })
+      refreshContext()
+    } else if (typeof res.msg === 'string') {
+      toast(res.msg, {
+        type: 'warning',
+        toastId: 'error',
+        className: 'text-xs',
+        autoClose: res.msg?.split('').length * 80 + 500,
+        progressStyle: { background: 'linear-gradient(90deg, rgba(26,73,0,1) 0%, rgba(44,209,0,1) 100%)' },
+      })
     }
   }
 
@@ -207,57 +223,64 @@ function FirstCard({ reviews, reviewInput, setReviewInput }: FirstCardProps) {
           <h3 className='mt-4 text-center font-medium [textShadow:0_0_7px_white] sm:text-lg'>No reviews yet</h3>
         </section>
       )}
-      <section className='flex flex-col gap-3'>
-        <div className='flex overflow-hidden rounded-md border-2 border-gray-400'>
-          <input
-            className='flex-1 bg-black px-2 text-emerald-600 outline-0 placeholder:text-emerald-600'
-            value={reviewInput.comment}
-            maxLength={200}
-            onChange={e => setReviewInput(prev => ({ ...prev, comment: e.target.value }))}
-            placeholder='what do you think of it?'
-          />
-          <ToastContainer
-            position='top-center'
-            autoClose={7000}
-            closeOnClick
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme='dark'
-          />
-          <StarIcon
-            color='#22C55E'
-            className='h-10 w-10 cursor-pointer bg-gray-900 p-2'
-            onClick={hydrateSendReview}
-          />
-        </div>
-        <div
-          className='m-auto flex max-w-min items-center'
-          onMouseDown={handleMouseDown}
-          onMouseUp={handleMouseLeave}
-          onMouseLeave={handleMouseLeave}
-        >
-          {[...Array(5)].map((_, index) => (
-            <motion.div
-              key={index}
-              className='cursor-pointer'
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              onMouseEnter={() => handleMouseEnter(index + 1)}
-              onClick={() => handleStarClick(index + 1)}
-            >
-              <StarIcon
-                className='h-6 w-6'
-                fill={index < reviewInput.rating ? '#22C55E' : '#D1D5DB'}
-              />
-            </motion.div>
-          ))}
-        </div>
-      </section>
+      {!userAlreadyReviewed && (
+        <section className='flex flex-col gap-3'>
+          <div className='flex overflow-hidden rounded-md border-2 border-gray-400'>
+            <input
+              className='flex-1 bg-black px-2 text-emerald-600 outline-0 placeholder:text-emerald-600'
+              value={reviewInput.comment}
+              maxLength={200}
+              onChange={e => setReviewInput(prev => ({ ...prev, comment: e.target.value }))}
+              placeholder='what do you think of it?'
+            />
+            <ToastContainer
+              position='top-center'
+              autoClose={7000}
+              closeOnClick
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme='dark'
+            />
+            <StarIcon
+              color='#22C55E'
+              className='h-10 w-10 cursor-pointer bg-gray-900 p-2'
+              onClick={hydrateSendReview}
+            />
+          </div>
+          <div
+            className='m-auto flex max-w-min items-center'
+            onMouseDown={handleMouseDown}
+            onMouseUp={handleMouseLeave}
+            onMouseLeave={handleMouseLeave}
+          >
+            {[...Array(5)].map((_, index) => (
+              <motion.div
+                key={index}
+                className='cursor-pointer'
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onMouseEnter={() => handleMouseEnter(index + 1)}
+                onClick={() => handleStarClick(index + 1)}
+              >
+                <StarIcon
+                  className='h-6 w-6'
+                  fill={index < reviewInput.rating ? '#22C55E' : '#D1D5DB'}
+                />
+              </motion.div>
+            ))}
+          </div>
+        </section>
+      )}
     </>
   )
 }
-function SecondCard({ product, index, setIndex }: SecondCardProps) {
+function SecondCard({ product, index, setIndex, chosenOptions }: SecondCardProps) {
+  async function handleAddToBag() {
+    const res = await addToBag(product.name, 1, chosenOptions)
+    console.log(res)
+  }
+
   return (
     <>
       <section>
@@ -293,6 +316,7 @@ function SecondCard({ product, index, setIndex }: SecondCardProps) {
       <h2
         className={`absolute -bottom-5 left-1/2 -translate-x-1/2 cursor-pointer bg-[hsla(0,0%,0%,.9)] text-white
          transition hover:scale-110 ${styles.loopingBorder} whitespace-nowrap [text-shadow:0_0_4px_white]`}
+        onClick={handleAddToBag}
       >
         Add to bag
       </h2>
@@ -375,11 +399,13 @@ interface FirstCardProps {
   reviews: Review[]
   reviewInput: ReviewInput
   setReviewInput: Dispatch<SetStateAction<ReviewInput>>
+  productSlug: string
 }
 interface SecondCardProps {
   product: Product
   index: Tindex
   setIndex: Dispatch<SetStateAction<Tindex>>
+  chosenOptions: ProductOptions
 }
 interface ThirdCardProps {
   product: Product

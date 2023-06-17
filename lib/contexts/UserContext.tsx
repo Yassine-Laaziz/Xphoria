@@ -1,14 +1,8 @@
-import axios from 'axios'
-import {
-  createContext,
-  PropsWithChildren,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
+import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react'
 import { User } from '../../types'
+import { getUserByJWT } from '../serverFunctions/getUser'
 
-export const initialUser = new User('', '', '')
+export const initialUser = new User('', '', '', [], [])
 
 interface UserContextProps {
   user: User
@@ -23,20 +17,16 @@ const UserContext = createContext<UserContextProps>({
 export function UserProvider({ children }: PropsWithChildren<{}>) {
   const [user, setUser] = useState<User>(initialUser)
 
-  useEffect(() => refreshContext(), [])
+  useEffect(() => {
+    refreshContext()
+  }, [])
 
-  function refreshContext() {
-    axios.get('/api/auth/user').then(res => {
-      const user = res.data.user as User | null
-      setUser(user || initialUser)
-    })
+  async function refreshContext() {
+    const user = await getUserByJWT()
+    if (user) setUser(user)
   }
 
-  return (
-    <UserContext.Provider value={{ user, refreshContext }}>
-      {children}
-    </UserContext.Provider>
-  )
+  return <UserContext.Provider value={{ user, refreshContext }}>{children}</UserContext.Provider>
 }
 
 export const useUserContext = (): UserContextProps => useContext(UserContext)

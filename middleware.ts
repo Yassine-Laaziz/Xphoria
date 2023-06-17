@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { verifyAuth } from './lib/jwtAuth'
+import { verify } from './lib/jwt'
 
 export default async function middleware(req: NextRequest) {
-  const verified = await verifyAuth(req.cookies.get('user_token')?.value || '')
+  const verified = await verify(req.cookies.get('user_token')?.value || '')
 
   const { pathname } = req.nextUrl
 

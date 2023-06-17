@@ -4,7 +4,7 @@ import clientSideCheck from '../../../../lib/utils/clientSideCheck'
 import UserModel from '../../../../models/Users'
 import { User } from '../../../../types'
 import styles from '../../../../styles'
-import { sign } from '../../../../lib/jwtAuth'
+import { sign } from '../../../../lib/jwt'
 import { err } from '../../../../lib/constants'
 import sendEmail from '../../../../lib/utils/sendEmail'
 
@@ -14,21 +14,14 @@ export async function POST(request: NextRequest) {
   try {
     await connect()
     const user: User = body.user
-    if (!clientSideCheck(user).isCorrect)
-      return NextResponse.json({ err }, { status: 400 })
+    if (!clientSideCheck(user).isCorrect) return NextResponse.json({ err }, { status: 400 })
 
     if (await UserModel.findOne({ username: user.username }))
-      return NextResponse.json(
-        { err: 'This username has been taken!' },
-        { status: 422 }
-      )
+      return NextResponse.json({ err: 'This username has been taken!' }, { status: 422 })
 
     const email = user.email.toLowerCase()
     if (await UserModel.findOne({ email })) {
-      return NextResponse.json(
-        { err: 'This email address has been taken!' },
-        { status: 422 }
-      )
+      return NextResponse.json({ err: 'This email address has been taken!' }, { status: 422 })
     }
 
     const token = await sign({ user, role: 'signup' }, '2h')
@@ -48,10 +41,7 @@ export async function POST(request: NextRequest) {
       </a>`
     )
 
-    return NextResponse.json(
-      { msg: 'An email was sent to you, please check your inbox' },
-      { status: 200 }
-    )
+    return NextResponse.json({ msg: 'An email was sent to you, please check your inbox' }, { status: 200 })
   } catch (e) {
     return NextResponse.json({ err }, { status: 400 })
   }
