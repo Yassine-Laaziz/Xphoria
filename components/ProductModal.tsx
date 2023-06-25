@@ -16,6 +16,7 @@ import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useRouter } from 'next/navigation'
 import { useUserContext } from '../lib/contexts/UserContext'
+import { useCartContext } from '../lib/contexts/CartContext'
 
 export default function ProductModal({ product, showModal, setShowModal, reviews }: props) {
   const [index, setIndex] = useState<Tindex>({
@@ -53,6 +54,8 @@ export default function ProductModal({ product, showModal, setShowModal, reviews
     setIndex(prev => ({ ...prev, color: i, mainImage: 0 }))
     setChosenOptions({ size: product.noBgImages[i].sizes[0], color, colorName })
   }
+
+  const { push } = useRouter()
 
   return (
     <Modal
@@ -119,6 +122,7 @@ export default function ProductModal({ product, showModal, setShowModal, reviews
               reviewInput={reviewInput}
               setReviewInput={setReviewInput}
               productSlug={product.name}
+              push={push}
             />
           </label>
           {/* Second Slide */}
@@ -131,6 +135,7 @@ export default function ProductModal({ product, showModal, setShowModal, reviews
               index={index}
               setIndex={setIndex}
               chosenOptions={chosenOptions}
+              push={push}
             />
           </label>
           {/* Third Slide */}
@@ -148,11 +153,20 @@ export default function ProductModal({ product, showModal, setShowModal, reviews
           </label>
         </div>
       </div>
+      <ToastContainer
+        position='top-center'
+        autoClose={7000}
+        closeOnClick
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme='dark'
+      />
     </Modal>
   )
 }
 
-function FirstCard({ reviews, reviewInput, setReviewInput, productSlug }: FirstCardProps) {
+function FirstCard({ reviews, reviewInput, setReviewInput, productSlug, push }: FirstCardProps) {
   const [isDragging, setIsDragging] = useState<boolean>(false)
   const [isSending, setIsSending] = useState<boolean>(false)
   const { user, refreshContext } = useUserContext()
@@ -176,7 +190,6 @@ function FirstCard({ reviews, reviewInput, setReviewInput, productSlug }: FirstC
     }
   }
 
-  const { push } = useRouter()
   async function hydrateSendReview() {
     if (isSending) return
     setIsSending(true)
@@ -233,15 +246,6 @@ function FirstCard({ reviews, reviewInput, setReviewInput, productSlug }: FirstC
               onChange={e => setReviewInput(prev => ({ ...prev, comment: e.target.value }))}
               placeholder='what do you think of it?'
             />
-            <ToastContainer
-              position='top-center'
-              autoClose={7000}
-              closeOnClick
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-              theme='dark'
-            />
             <StarIcon
               color='#22C55E'
               className='h-10 w-10 cursor-pointer bg-gray-900 p-2'
@@ -275,10 +279,16 @@ function FirstCard({ reviews, reviewInput, setReviewInput, productSlug }: FirstC
     </>
   )
 }
-function SecondCard({ product, index, setIndex, chosenOptions }: SecondCardProps) {
+function SecondCard({ product, index, setIndex, chosenOptions, push }: SecondCardProps) {
+  const { setCartItems } = useCartContext()
   async function handleAddToBag() {
     const res = await addToBag(product.name, 1, chosenOptions)
-    console.log(res)
+    if (!res) return
+    if (res.redirect) push(res.redirect)
+    else if (res.cart) {
+      toast.success('Added !')
+      setCartItems(res.cart)
+    }
   }
 
   return (
@@ -400,12 +410,14 @@ interface FirstCardProps {
   reviewInput: ReviewInput
   setReviewInput: Dispatch<SetStateAction<ReviewInput>>
   productSlug: string
+  push: (href: string) => void
 }
 interface SecondCardProps {
   product: Product
   index: Tindex
   setIndex: Dispatch<SetStateAction<Tindex>>
   chosenOptions: ProductOptions
+  push: (href: string) => void
 }
 interface ThirdCardProps {
   product: Product

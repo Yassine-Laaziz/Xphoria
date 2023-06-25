@@ -2,7 +2,7 @@ import { createContext, PropsWithChildren, useContext, useEffect, useState } fro
 import { User } from '../../types'
 import { getUserByJWT } from '../serverFunctions/getUser'
 
-export const initialUser = new User('', '', '', [], [])
+export const initialUser = new User('', '', '', [], [], [])
 
 interface UserContextProps {
   user: User

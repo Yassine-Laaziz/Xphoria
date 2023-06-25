@@ -1,23 +1,23 @@
-import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react'
-import { Product, ProductOptions, CartItem as TCartItem } from '../../types'
+import { createContext, Dispatch, PropsWithChildren, SetStateAction, useContext, useEffect, useState } from 'react'
+import { CartItem as TCartItem } from '../../types'
 
 interface useCartContext {
   cartItems: TCartItem[]
-  addItem: (product: Product, chosenOptions: ProductOptions) => void
-  removeItem: () => void
+  setCartItems: Dispatch<SetStateAction<TCartItem[]>>
+  showCart: boolean
+  setShowCart: Dispatch<SetStateAction<boolean>>
 }
 
 const CartContext = createContext<useCartContext>({
   cartItems: [],
-  addItem: () => {},
-  removeItem: () => {},
+  setCartItems: () => {},
+  showCart: false,
+  setShowCart: () => {},
 })
 
-export function UserProvider({ children }: PropsWithChildren<{}>) {
+export function CartProvider({ children }: PropsWithChildren<{}>) {
   const [cartItems, setCartItems] = useState<TCartItem[]>([])
-
-  function addItem(product: Product, chosenOptions: ProductOptions) {}
-  function removeItem() {}
+  const [showCart, setShowCart] = useState<boolean>(false)
 
   useEffect(() => {
     const retrievedCartItems = localStorage.getItem('cart')
@@ -25,7 +25,7 @@ export function UserProvider({ children }: PropsWithChildren<{}>) {
     setCartItems(retrievedCartItems)
   }, [])
 
-  return <CartContext.Provider value={{ cartItems, addItem, removeItem }}>{children}</CartContext.Provider>
+  return <CartContext.Provider value={{ cartItems, setCartItems, showCart, setShowCart }}>{children}</CartContext.Provider>
 }
 
 export const useCartContext = (): useCartContext => useContext(CartContext)

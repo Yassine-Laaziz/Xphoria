@@ -31,7 +31,7 @@ const Products = ({ products, reviews }: { products: Product[]; reviews: sortedR
 
   return (
     <>
-      <div className='m-auto flex w-[70%] max-w-4xl justify-center gap-14 py-40 text-white'>
+      <div className='m-auto flex w-[70%] max-w-4xl flex-wrap justify-center gap-14 py-40 text-white'>
         {products?.map((product, i) => (
           <div
             key={`product-${product.name}`}

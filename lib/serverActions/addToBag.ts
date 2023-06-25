@@ -1,70 +1,61 @@
+'use server'
+
 import { connect } from '../mongodb'
-import { err } from '../constants'
 import UserModel from '../../models/Users'
 import { CartItem, Product, ProductOptions, User } from '../../types'
 import { getUserByJWT } from '../serverFunctions/getUser'
 import { fetchData } from '../sanity'
 
-interface ReturnT {
-  msg?: string
+type ReturnT = {
   redirect?: string
-  success?: boolean
-  username?: string
-  img?: string
+  cart?: CartItem[]
 }
 
-export default async function addToBag(product: string, qty: number, chosenOptions: ProductOptions): Promise<ReturnT> {
+export default async function addToBag(product: string, qty: number, chosenOptions: ProductOptions): Promise<ReturnT | undefined> {
   try {
-    // await connect()
+    await connect()
 
-    // const userJWT = await getUserByJWT()
-    // const user: User | null = await UserModel.findById(userJWT?.id)
-    // if (!user) {
-    //   return { redirect: '/auth/login' }
-    // }
+    const userJWT = await getUserByJWT()
+    const user: User | null = await UserModel.findById(userJWT?.id)
+    if (!user) {
+      return { redirect: '/auth/login' }
+    }
 
-    // const cart = [...user.cart]
+    // clear the non-mutable MongoDB ObjectId
+    const cart = user.cart.map(cartItem => {
+      const { product, qty, chosenOptions } = cartItem
+      return { product, qty, chosenOptions }
+    })
 
-    // // Sanitization
-    // const allProducts: Product[] = await fetchData('*[_type == "product"]', true)
-    // if (!allProducts) return { msg: err }
+    // Sanitization
+    const allProducts: Product[] = await fetchData('*[_type == "product"]', true)
+    if (!allProducts) return
 
-    // const matchingProduct = allProducts.find(p => p.name === product)
-    // if (!matchingProduct) {
-    //   return { msg: `Product "${product}" not found.` }
-    // }
+    const matchingProduct = allProducts.find(p => p.name === product)
+    if (!matchingProduct) return
 
-    // const matchingOptions = matchingProduct.noBgImages.find(
-    //   opt => opt.color === chosenOptions.color && opt.sizes.includes(chosenOptions.size)
-    // )
-    // if (!matchingOptions) {
-    //   return { msg: `Options not available for product "${product}".` }
-    // }
+    const matchingOptions = matchingProduct.noBgImages.find(
+      opt => opt.color === chosenOptions.color && opt.sizes.includes(chosenOptions.size)
+    )
+    if (!matchingOptions) return
 
-    // // Check if a similar product with different options already exists in the cart
-    // const existingItemIndex = cart.findIndex(
-    //   item =>
-    //     item.product === product && (item.chosenOptions.color !== chosenOptions.color || item.chosenOptions.size !== chosenOptions.size)
-    // )
+    // Check if a similar product with different options already exists in the cart
+    const existingItemIndex = cart.findIndex(
+      item => item.product === product && item.chosenOptions.color === chosenOptions.color && item.chosenOptions.size === chosenOptions.size
+    )
 
-    // if (existingItemIndex !== -1) {
-    //   // Separate the product with different options in the cart
-    //   const existingItem = cart.splice(existingItemIndex, 1)[0]
-    //   const newItem = new CartItem(product, qty, chosenOptions)
-    //   cart.push(existingItem) // Add back the existing item with different options
-    //   cart.push(newItem) // Add the new item
-    // } else {
-    //   // No existing product with different options, simply add the new item to the cart
-    //   cart.push(new CartItem(product, qty, chosenOptions))
-    // }
+    if (existingItemIndex !== -1) {
+      // Update the quantity of the existing item
+      cart[existingItemIndex].qty += qty
+    } else {
+      // No existing product with the same options, add a new item to the cart
+      cart.push({ product, qty, chosenOptions })
+    }
 
-    // console.log(cart)
-
-    // await UserModel.findByIdAndUpdate(user.id, { cart })
-
-    return { success: true }
+    await UserModel.findByIdAndUpdate(user.id, { cart })
+    return { cart }
   } catch (e) {
     console.log(`e${e}`)
-    return { msg: err }
+    return
   }
 }

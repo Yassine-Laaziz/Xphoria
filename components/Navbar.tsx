@@ -7,7 +7,9 @@ import Link from 'next/link'
 import Image from 'next/image'
 import classNames from '../lib/utils/ClassNames'
 import { useUserContext } from '../lib/contexts/UserContext'
+import { useCartContext } from '../lib/contexts/CartContext'
 import axios from 'axios'
+import { BsCart } from 'react-icons/bs'
 
 const navigation = [
   { name: 'Dashboard', href: '/', current: true },
@@ -16,6 +18,7 @@ const navigation = [
 
 export default function Navbar() {
   const { user, refreshContext } = useUserContext()
+  const { setShowCart } = useCartContext()
 
   return (
     <Disclosure
@@ -68,20 +71,20 @@ export default function Navbar() {
                 as='div'
                 className='relative ml-3'
               >
-                <div>
+                <div className='flex gap-5 sm:gap-7'>
                   {user.username ? (
-                    <Menu.Button className='flex text-sm focus:outline-none'>
+                    <Menu.Button className='focus:outline-none'>
                       <span className='sr-only'>Open user menu</span>
-                      <button className='h-8 w-8 overflow-hidden rounded-full'>
+                      <div className='overflow-hidden rounded-full'>
                         {user.img ? (
                           <Image
                             src={user.img}
                             alt={`${user.username} image`}
                           />
                         ) : (
-                          <FaUserAstronaut className='text-xl text-emerald-500' />
+                          <FaUserAstronaut className='h-8 w-8 text-emerald-500' />
                         )}
-                      </button>
+                      </div>
                     </Menu.Button>
                   ) : (
                     <Link
@@ -91,6 +94,13 @@ export default function Navbar() {
                       SIGN IN
                     </Link>
                   )}
+                  <button
+                    className='focus:outline-none'
+                    onClick={() => setShowCart(true)}
+                  >
+                    <span className='sr-only'>Open cart menu</span>
+                    <BsCart className='h-8 w-8 cursor-pointer text-emerald-500' />
+                  </button>
                 </div>
                 <Transition
                   as={Fragment}
