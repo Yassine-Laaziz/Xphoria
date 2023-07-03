@@ -3,9 +3,8 @@
 import '../styles/components/MultiSlide.css'
 import styles from '../styles'
 import Image from 'next/image'
-import { Product, ProductOptions, Review } from '../types'
+import { Product, ProductOptions, Review, User } from '../types'
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi'
-import { urlFor } from '../lib/sanity'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { colord } from 'colord'
 import Modal from './Modal'
@@ -16,7 +15,7 @@ import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useRouter } from 'next/navigation'
 import { useUserContext } from '../lib/contexts/UserContext'
-import { useCartContext } from '../lib/contexts/CartContext'
+import { err } from '../lib/constants'
 
 export default function ProductModal({ product, showModal, setShowModal, reviews }: props) {
   const [index, setIndex] = useState<Tindex>({
@@ -169,8 +168,8 @@ export default function ProductModal({ product, showModal, setShowModal, reviews
 function FirstCard({ reviews, reviewInput, setReviewInput, productSlug, push }: FirstCardProps) {
   const [isDragging, setIsDragging] = useState<boolean>(false)
   const [isSending, setIsSending] = useState<boolean>(false)
-  const { user, refreshContext } = useUserContext()
-  const userAlreadyReviewed = user.reviews.some(review => review.product === productSlug) || null
+  const { user, setUser } = useUserContext()
+  const userAlreadyReviewed = user.reviews.some(review => review.productSlug === productSlug) || null
 
   const handleStarClick = (stars: number) => {
     setReviewInput(prev => ({ ...prev, rating: stars }))
@@ -192,6 +191,8 @@ function FirstCard({ reviews, reviewInput, setReviewInput, productSlug, push }: 
 
   async function hydrateSendReview() {
     if (isSending) return
+    if (userAlreadyReviewed) return
+
     setIsSending(true)
     // below i'm using an almost instant server function so i wouldn't need a loading/optimistic state even for a low-end connection
 
@@ -200,14 +201,15 @@ function FirstCard({ reviews, reviewInput, setReviewInput, productSlug, push }: 
 
     if (res.redirect) return push(res.redirect)
 
-    if (res.success) {
-      refreshContext()
-    } else if (typeof res.msg === 'string') {
-      toast(res.msg, {
+    if (res.updatedReviews) {
+      const updatedUser: User = { ...user, reviews: res.updatedReviews }
+      setUser(updatedUser)
+    } else {
+      toast(res.msg || err, {
         type: 'warning',
         toastId: 'error',
         className: 'text-xs',
-        autoClose: res.msg?.split('').length * 80 + 500,
+        autoClose: res.msg?.split('').length || 100 * 80 + 500,
         progressStyle: { background: 'linear-gradient(90deg, rgba(26,73,0,1) 0%, rgba(44,209,0,1) 100%)' },
       })
     }
@@ -280,14 +282,15 @@ function FirstCard({ reviews, reviewInput, setReviewInput, productSlug, push }: 
   )
 }
 function SecondCard({ product, index, setIndex, chosenOptions, push }: SecondCardProps) {
-  const { setCartItems } = useCartContext()
+  const { user, setUser } = useUserContext()
   async function handleAddToBag() {
     const res = await addToBag(product.name, 1, chosenOptions)
     if (!res) return
     if (res.redirect) push(res.redirect)
     else if (res.cart) {
       toast.success('Added !')
-      setCartItems(res.cart)
+      const updatedUser: User = { ...user, cart: res.cart }
+      setUser(updatedUser)
     }
   }
 
@@ -299,7 +302,7 @@ function SecondCard({ product, index, setIndex, chosenOptions, push }: SecondCar
       </section>
       <section className='relative m-auto aspect-video max-w-full flex-1'>
         <Image
-          src={urlFor(product.noBgImages[index.color].images[index.mainImage]).url()}
+          src={product.noBgImages[index.color].images[index.mainImage]}
           fill={true}
           alt={`Xphoria-${product.name}`}
           quality={100}
@@ -314,7 +317,7 @@ function SecondCard({ product, index, setIndex, chosenOptions, push }: SecondCar
             onMouseOver={() => setIndex(prev => ({ ...prev, mainImage: i }))}
           >
             <Image
-              src={urlFor(img).url()}
+              src={img}
               alt={`Xphoria-${product.name}${i}`}
               quality={100}
               width={1200}

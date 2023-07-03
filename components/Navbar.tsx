@@ -10,6 +10,7 @@ import { useUserContext } from '../lib/contexts/UserContext'
 import { useCartContext } from '../lib/contexts/CartContext'
 import axios from 'axios'
 import { BsCart } from 'react-icons/bs'
+import { User } from '../types'
 
 const navigation = [
   { name: 'Dashboard', href: '/', current: true },
@@ -17,8 +18,13 @@ const navigation = [
 ]
 
 export default function Navbar() {
-  const { user, refreshContext } = useUserContext()
+  const { user, setUser } = useUserContext()
   const { setShowCart } = useCartContext()
+
+  function signOut() {
+    const initializedUser = new User('', '', '', [], [], [])
+    axios.post('/api/auth/expire').then(() => setUser(initializedUser))
+  }
 
   return (
     <Disclosure
@@ -96,7 +102,7 @@ export default function Navbar() {
                   )}
                   <button
                     className='focus:outline-none'
-                    onClick={() => setShowCart(true)}
+                    onClick={() => {}}
                   >
                     <span className='sr-only'>Open cart menu</span>
                     <BsCart className='h-8 w-8 cursor-pointer text-emerald-500' />
@@ -116,7 +122,7 @@ export default function Navbar() {
                       <Menu.Item>
                         {({ active }) => (
                           <button
-                            onClick={() => axios.post('/api/auth/expire').then(refreshContext)}
+                            onClick={signOut}
                             className={classNames(active ? 'bg-gray-100' : '', 'block w-full px-4 py-2 text-sm text-gray-700')}
                           >
                             Sign out

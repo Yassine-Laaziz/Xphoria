@@ -2,7 +2,6 @@
 
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
-import { urlFor } from '../lib/sanity'
 import { TitleText, TypingText } from './CustomTexts'
 import { motion } from 'framer-motion'
 import { slideIn } from '../lib/motion'
@@ -43,7 +42,7 @@ const Products = ({ products, reviews }: { products: Product[]; reviews: sortedR
               width={1000}
               height={1200}
               quality={100}
-              src={urlFor(product.image).url()}
+              src={product.image}
               alt={`Xphoria ${product.name}`}
               className='h-full rounded-md'
             />

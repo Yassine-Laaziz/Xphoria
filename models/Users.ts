@@ -1,13 +1,14 @@
 import { Schema, model, models } from 'mongoose'
 
 const CartItemSchema = new Schema({
-  product: { type: String, required: true },
+  productSlug: { type: String, required: true },
   qty: { type: Number, required: true },
   chosenOptions: {
-    type: Object,
-    // size: { type: Number, required: true },
-    // color: { type: String, required: true },
-    // colorName: { type: String, required: true },
+    type: {
+      size: { type: Number, required: true },
+      color: { type: String, required: true },
+      colorName: { type: String, required: true },
+    },
     required: true,
   },
 })

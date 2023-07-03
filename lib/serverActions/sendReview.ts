@@ -3,16 +3,14 @@
 import { connect } from '../mongodb'
 import { err } from '../constants'
 import UserModel from '../../models/Users'
-import { User } from '../../types'
+import { Review, User } from '../../types'
 import ReviewModel from '../../models/Reviews'
 import { getUserByJWT } from '../serverFunctions/getUser'
 
-interface ReturnT {
+type ReturnT = {
   msg?: string
   redirect?: string
-  success?: boolean
-  username?: string
-  img?: string
+  updatedReviews?: Review[]
 }
 
 export default async function sendReview(comment: string, rating: number, product: string): Promise<ReturnT> {
@@ -28,10 +26,10 @@ export default async function sendReview(comment: string, rating: number, produc
     await connect()
 
     const userJWT = await getUserByJWT()
+    if (!userJWT) return { redirect: '/auth/login' }
+
     const user: User | null = await UserModel.findById(userJWT?.id)
-    if (!user) {
-      return { redirect: '/auth/login' }
-    }
+    if (!user) return { redirect: '/auth/login' }
 
     const hasBoughtProduct = user.purchases.some(purchase => purchase.product === product)
     if (!hasBoughtProduct) return { msg: 'You need to try the product before reviewing it' }
@@ -47,9 +45,15 @@ export default async function sendReview(comment: string, rating: number, produc
       comment,
       rating,
     })
+
+    const updatedReviews: Review[] = [
+      ...user.reviews,
+      { product, username: user.username, userID: user.id, img: user.img, comment, rating },
+    ]
+    await UserModel.findByIdAndUpdate(userJWT.id, { reviews: updatedReviews })
+
+    return { updatedReviews }
   } catch (e) {
     return { msg: err }
   }
-
-  return { success: true }
 }

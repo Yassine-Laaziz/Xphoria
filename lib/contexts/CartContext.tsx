@@ -1,31 +1,36 @@
 import { createContext, Dispatch, PropsWithChildren, SetStateAction, useContext, useEffect, useState } from 'react'
-import { CartItem as TCartItem } from '../../types'
+import { FullCartItem } from '../../types'
+import { getUserByServer } from '../serverFunctions/getUser'
+import cleanCart from '../utils/cleanCart'
 
-interface useCartContext {
-  cartItems: TCartItem[]
-  setCartItems: Dispatch<SetStateAction<TCartItem[]>>
+interface CartContextProps {
   showCart: boolean
   setShowCart: Dispatch<SetStateAction<boolean>>
+  cartItems: FullCartItem[]
+  setCartItems: Dispatch<SetStateAction<FullCartItem[]>>
 }
 
-const CartContext = createContext<useCartContext>({
-  cartItems: [],
-  setCartItems: () => {},
+const CartContext = createContext<CartContextProps>({
   showCart: false,
   setShowCart: () => {},
+  cartItems: [],
+  setCartItems: () => {},
 })
 
-export function CartProvider({ children }: PropsWithChildren<{}>) {
-  const [cartItems, setCartItems] = useState<TCartItem[]>([])
+export async function CartProvider({ children }: PropsWithChildren<{}>) {
   const [showCart, setShowCart] = useState<boolean>(false)
+  const [cartItems, setCartItems] = useState<FullCartItem[]>([])
 
-  useEffect(() => {
-    const retrievedCartItems = localStorage.getItem('cart')
-    if (!Array.isArray(retrievedCartItems)) return
-    setCartItems(retrievedCartItems)
-  }, [])
+  // useEffect(() => {
+  // getUserByServer().then(async user => {
+  //   if (user) {
+  //     const cleanedCart = await cleanCart(user.cart)
+  //     if (cleanedCart) setCartItems(cleanedCart)
+  //   }
+  // })
+  // }, [])
 
-  return <CartContext.Provider value={{ cartItems, setCartItems, showCart, setShowCart }}>{children}</CartContext.Provider>
+  return <CartContext.Provider value={{ showCart, setShowCart, cartItems, setCartItems }}>{children}</CartContext.Provider>
 }
 
-export const useCartContext = (): useCartContext => useContext(CartContext)
+export const useCartContext = (): CartContextProps => useContext(CartContext)

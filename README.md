@@ -1,8 +1,14 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Installation and Setup
+
+1. Clone the repository: `git clone https://github.com/Yassine-Laaziz/Xphoria.git`
+2. Install dependencies: `npm install` or `yarn install`
+3. Prerequisites: Next.js (others are based on tasks...)
+4. Each developer will be given a .env config for development...
+5. For more details, refer to the README folder.
 
 ## Getting Started
 
-First, run the development server:
+run the following command to run the developement server at "http://localhost:3000"
 
 ```bash
 npm run dev
@@ -10,25 +16,33 @@ npm run dev
 yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+the page auto-updates as you edit, you can get started on the tasks.
 
 ## Learn More
 
+To Have a wider code structure understanding check out the [README](README) folder
+
 To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- Make sure to select (App dir) while navigating [Next.js Documentation](https://nextjs.org/docs)
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+[Next.js deployment documentation](https://nextjs.org/docs/deployment)
+commit, push to your branch, check the build log in vercel, check the deployed website at the link assigned by vercel.
+in order to push to main, you can open a PR, the code reviewer will then check for inconsistencies and accept or not.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Technologies
+
+Next.js, HeadlessUI, FramerMotion, TailwindCSS, Sanity, Nodemailer, Typescript, Mongoose (mongodb), Vitest...
+
+- Sanity: product editing for admin
+
+- MongoDB: For storing everything excluding the products
+
+- Shopify: product fulfillment and shipment
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

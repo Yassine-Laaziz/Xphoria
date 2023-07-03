@@ -2,11 +2,11 @@ export interface Product {
   name: string
   slogan?: string
   price: number
-  image: object
+  image: string
   noBgImages: {
     color: string
     colorName: string
-    images: object[]
+    images: string[]
     sizes: number[]
   }[]
 }
@@ -17,30 +17,31 @@ export interface ProductOptions {
   colorName: string
 }
 
-export class CartItem {
-  product: string
+export interface CartItem {
+  productSlug: string
   qty: number
   chosenOptions: ProductOptions
-
-  constructor(product: string, qty: number, chosenOptions: ProductOptions) {
-    this.product = product
-    this.qty = qty
-    this.chosenOptions = chosenOptions
-  }
+}
+export interface FullCartItem {
+  productSlug: string
+  img: string
+  price: number
+  qty: number
+  chosenOptions: ProductOptions
 }
 
 export interface Purchase {
   user: string
-  product: string
+  productSlug: string
   purchaseDate: Date
   quantity: number
 }
 
 export interface Review {
-  product: string
+  productSlug: string
   username: string
   userID: string
-  img: string
+  img?: string
   rating: number
   comment: string
 }

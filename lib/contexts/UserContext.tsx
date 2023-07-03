@@ -1,32 +1,29 @@
-import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react'
+import { createContext, Dispatch, PropsWithChildren, SetStateAction, useContext, useEffect, useState } from 'react'
 import { User } from '../../types'
-import { getUserByJWT } from '../serverFunctions/getUser'
+import { getUserByServer } from '../serverFunctions/getUser'
 
 export const initialUser = new User('', '', '', [], [], [])
 
 interface UserContextProps {
   user: User
-  refreshContext: () => void
+  setUser: Dispatch<SetStateAction<User>>
 }
 
 const UserContext = createContext<UserContextProps>({
   user: initialUser,
-  refreshContext: () => {},
+  setUser: () => {},
 })
 
 export function UserProvider({ children }: PropsWithChildren<{}>) {
   const [user, setUser] = useState<User>(initialUser)
 
-  useEffect(() => {
-    refreshContext()
-  }, [])
+  // useEffect(() => {
+  //   getUserByServer().then(user => {
+  //     if (user) setUser(user)
+  //   })
+  // }, [])
 
-  async function refreshContext() {
-    const user = await getUserByJWT()
-    if (user) setUser(user)
-  }
-
-  return <UserContext.Provider value={{ user, refreshContext }}>{children}</UserContext.Provider>
+  return <UserContext.Provider value={{ user, setUser }}>{children}</UserContext.Provider>
 }
 
 export const useUserContext = (): UserContextProps => useContext(UserContext)
