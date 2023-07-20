@@ -5,8 +5,8 @@ import { Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { FullCartItem } from '../types'
-// import { addToBag } from '../lib/serverActions'
-// import { removeFromBag } from '../lib/serverActions'
+import { addToBag } from '../lib/serverActions'
+import { removeFromBag } from '../lib/serverActions'
 
 export default function CartModal() {
   const { showCart, setShowCart, cartItems } = useCartContext()

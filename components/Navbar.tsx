@@ -11,15 +11,18 @@ import { useCartContext } from '../lib/contexts/CartContext'
 import axios from 'axios'
 import { BsCart } from 'react-icons/bs'
 import { User } from '../types'
-
-const navigation = [
-  { name: 'Dashboard', href: '/', current: true },
-  { name: 'Calendar', href: '#', current: false },
-]
+import Switch from './ToggleSwitch'
+import { usePathname } from 'next/navigation'
 
 export default function Navbar() {
   const { user, setUser } = useUserContext()
   const { setShowCart } = useCartContext()
+  const pathname = usePathname()
+
+  const navigation = [
+    { name: 'Dashboard', href: '/', current: pathname === '/' },
+    { name: 'Checkout', href: '/Checkout', current: pathname === '/Checkout' },
+  ]
 
   function signOut() {
     const initializedUser = new User('', '', '', [], [], [])
@@ -29,7 +32,7 @@ export default function Navbar() {
   return (
     <Disclosure
       as='nav'
-      className='bg-black'
+      className='z-40 border-b-2 border-black bg-gradient-to-b from-sky-400 to-cyan-200 dark:from-gray-900 dark:to-gray-800'
     >
       {({ open }) => (
         <>
@@ -37,7 +40,10 @@ export default function Navbar() {
             <div className='relative flex h-16 items-center justify-between'>
               <div className='absolute inset-y-0 left-0 flex items-center sm:hidden'>
                 {/* Mobile menu button*/}
-                <Disclosure.Button className='inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white'>
+                <Disclosure.Button
+                  className='inline-flex items-center justify-center rounded-md p-2 text-gray-400
+                hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white'
+                >
                   <span className='sr-only'>Open main menu</span>
                   {open ? (
                     <XMarkIcon
@@ -53,15 +59,17 @@ export default function Navbar() {
                 </Disclosure.Button>
               </div>
               <div className='flex flex-1 items-center justify-center sm:items-stretch sm:justify-start'>
-                <h2 className='self-center text-white'>Xphoria</h2>
-                <div className='hidden sm:ml-6 sm:block'>
+                <h2 className='self-center text-lg font-bold text-white'>Xphoria</h2>
+                <div className='hidden border-l-2 border-gray-200 pl-4 sm:ml-6 sm:block'>
                   <div className='flex space-x-4'>
                     {navigation.map(item => (
                       <Link
                         key={item.name}
                         href={item.href}
                         className={classNames(
-                          item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                          item.current
+                            ? 'cursor-default bg-sky-500 font-bold text-white dark:bg-green-500'
+                            : 'bg-gray-700 text-white transition-all duration-200 hover:bg-teal-400 dark:bg-gray-600 dark:hover:bg-emerald-700',
                           'rounded-md px-3 py-2 text-sm font-medium'
                         )}
                         aria-current={item.current ? 'page' : undefined}
@@ -72,41 +80,45 @@ export default function Navbar() {
                   </div>
                 </div>
               </div>
-              {/* Profile dropdown */}
+
               <Menu
+                className='relative ml-3 rounded-3xl p-1 shadow-[black_inset_0_0_50px]'
                 as='div'
-                className='relative ml-3'
               >
-                <div className='flex gap-5 sm:gap-7'>
+                <div className='flex items-center gap-5 sm:gap-7'>
+                  {/* Theme Toggle Switch */}
+                  <Switch />
                   {user.username ? (
-                    <Menu.Button className='focus:outline-none'>
-                      <span className='sr-only'>Open user menu</span>
-                      <div className='overflow-hidden rounded-full'>
-                        {user.img ? (
-                          <Image
-                            src={user.img}
-                            alt={`${user.username} image`}
-                          />
-                        ) : (
-                          <FaUserAstronaut className='h-8 w-8 text-emerald-500' />
-                        )}
-                      </div>
-                    </Menu.Button>
+                    <>
+                      <button
+                        className='focus:outline-none'
+                        onClick={() => setShowCart(true)}
+                      >
+                        <span className='sr-only'>Open cart menu</span>
+                        <BsCart className='h-8 w-8 text-sky-400 dark:text-emerald-500' />
+                      </button>
+                      <Menu.Button className='focus:outline-none'>
+                        <span className='sr-only'>Open user menu</span>
+                        <div className='overflow-hidden rounded-full'>
+                          {user.img ? (
+                            <Image
+                              src={user.img}
+                              alt={`${user.username} image`}
+                            />
+                          ) : (
+                            <FaUserAstronaut className='h-8 w-8 text-cyan-400 dark:text-emerald-500' />
+                          )}
+                        </div>
+                      </Menu.Button>
+                    </>
                   ) : (
                     <Link
-                      className='rounded-md border-2 border-emerald-500 px-3 py-2 font-bold text-white transition-all hover:border-green-400'
+                      className='mr-2 rounded-md border-2 px-3 py-2 font-bold text-white transition-all hover:border-sky-500 dark:hover:border-green-300'
                       href='/auth/login'
                     >
                       SIGN IN
                     </Link>
                   )}
-                  <button
-                    className='focus:outline-none'
-                    onClick={() => {}}
-                  >
-                    <span className='sr-only'>Open cart menu</span>
-                    <BsCart className='h-8 w-8 cursor-pointer text-emerald-500' />
-                  </button>
                 </div>
                 <Transition
                   as={Fragment}

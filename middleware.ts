@@ -4,11 +4,11 @@ import { verify } from './lib/jwt'
 export default async function middleware(req: NextRequest) {
   const verified = await verify(req.cookies.get('user_token')?.value || '')
 
-  const { pathname } = req.nextUrl
+  const pathname = req.nextUrl.pathname.toLowerCase()
 
   // for unverified users
   if (!verified && pathname.startsWith('/checkout')) {
-    return NextResponse.redirect(newUrl('/'))
+    return NextResponse.redirect(newUrl('/auth/login'))
   }
 
   // for verified users

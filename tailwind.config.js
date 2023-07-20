@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: 'class',
   content: [
     './app/**/*.{html,ts,tsx}',
     './components/**/*.{html,ts,tsx}',
@@ -9,6 +10,9 @@ module.exports = {
   mode: 'jit',
   theme: {
     extend: {
+      backgroundImage: {
+        'radial-gradient': 'radial-gradient(var(--tw-gradient-stops))',
+      },
       colors: {
         'primary-black': '#1A232E',
         'secondary-white': '#c7c7c7',

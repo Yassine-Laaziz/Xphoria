@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { BsArrowBarDown } from 'react-icons/bs'
 import styles from '../styles'
 import Image from 'next/image'
+import { useThemeContext } from '../lib/contexts/ThemeContext'
 
 export default function HeroBanner() {
   const scrollDown = () => {
@@ -11,6 +12,8 @@ export default function HeroBanner() {
       behavior: 'smooth',
     })
   }
+
+  const { theme } = useThemeContext()
 
   return (
     <div className='relative h-[calc(100vh-64px)] flex-col bg-black'>
@@ -32,14 +35,25 @@ export default function HeroBanner() {
             animate={{ opacity: [0, 0.5, 0.5, 1, 1, 0.2, 0.5, 0.2, 1, 0.2, 1] }}
             transition={{ delay: 4, duration: 1 }}
           >
-            <Image
-              className='object-cover'
-              src='/logo.png'
-              alt='Xphoria logo'
-              width={300}
-              height={300}
-              quality={100}
-            />
+            {theme === 'dark' ? (
+              <Image
+                className='object-cover'
+                src='/logo.png'
+                alt='Xphoria logo'
+                width={300}
+                height={300}
+                quality={100}
+              />
+            ) : (
+              <Image
+                className='object-cover'
+                src='/cyan_logo.png'
+                alt='Xphoria logo'
+                width={300}
+                height={300}
+                quality={100}
+              />
+            )}
           </motion.div>
         </div>
         {/* right line */}

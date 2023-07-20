@@ -12,20 +12,15 @@
   scroll-behavior: smooth;
 }
 
-body {
-  background-color: black;
-}
-
 ::selection {
-  background-color: hsla(0, 0%, 10%);
-  text-shadow: 0 0 5px white;
+  background-color: black;
+  color: white
 }
 
 ::-webkit-scrollbar {
   width: 8px;
 }
 ::-webkit-scrollbar-thumb {
-  border-radius: 999px;
   background-color: hsl(161, 94%, 60%);
 }
 ::-webkit-scrollbar-thumb:hover {

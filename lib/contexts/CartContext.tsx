@@ -17,18 +17,18 @@ const CartContext = createContext<CartContextProps>({
   setCartItems: () => {},
 })
 
-export async function CartProvider({ children }: PropsWithChildren<{}>) {
+export function CartProvider({ children }: PropsWithChildren<{}>) {
   const [showCart, setShowCart] = useState<boolean>(false)
   const [cartItems, setCartItems] = useState<FullCartItem[]>([])
 
-  // useEffect(() => {
-  // getUserByServer().then(async user => {
-  //   if (user) {
-  //     const cleanedCart = await cleanCart(user.cart)
-  //     if (cleanedCart) setCartItems(cleanedCart)
-  //   }
-  // })
-  // }, [])
+  useEffect(() => {
+    getUserByServer().then(async user => {
+      if (user) {
+        const cleanedCart = await cleanCart(user.cart)
+        if (cleanedCart) setCartItems(cleanedCart)
+      }
+    })
+  }, [])
 
   return <CartContext.Provider value={{ showCart, setShowCart, cartItems, setCartItems }}>{children}</CartContext.Provider>
 }

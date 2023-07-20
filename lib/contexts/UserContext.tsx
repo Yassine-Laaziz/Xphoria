@@ -17,11 +17,11 @@ const UserContext = createContext<UserContextProps>({
 export function UserProvider({ children }: PropsWithChildren<{}>) {
   const [user, setUser] = useState<User>(initialUser)
 
-  // useEffect(() => {
-  //   getUserByServer().then(user => {
-  //     if (user) setUser(user)
-  //   })
-  // }, [])
+  useEffect(() => {
+    getUserByServer().then(user => {
+      if (user) setUser(user)
+    })
+  }, [])
 
   return <UserContext.Provider value={{ user, setUser }}>{children}</UserContext.Provider>
 }
