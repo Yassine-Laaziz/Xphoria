@@ -4,6 +4,7 @@ import { cookies } from 'next/headers'
 import { verify } from '../jwt'
 import { User } from '../../types'
 import UserModel from '../../models/Users'
+import { connect } from '../mongodb'
 
 const user_token = cookies().get('user_token')?.value
 
@@ -17,6 +18,7 @@ export async function getUserByServer(): Promise<User | null | undefined> {
   const jwtUser = await getUserByJWT()
   if (!jwtUser) return null
 
+  connect()
   const serverUser: User | null = await UserModel.findById(jwtUser.id)
   if (!serverUser) return null
 
