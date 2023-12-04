@@ -6,9 +6,9 @@ import { useState, useEffect } from 'react'
 import { MdMarkEmailRead, MdMarkEmailUnread } from 'react-icons/md'
 import { BiMessageAltError } from 'react-icons/bi'
 import Link from 'next/link'
-import { TypingText } from '../../../components/CustomTexts'
-import { useUserContext } from '../../../lib/contexts/UserContext'
-import { getUserByServer } from '../../../lib/serverFunctions/getUser'
+import { TypingText } from '../../../../components/CustomTexts'
+import { useUserContext } from '../../../../lib/contexts/UserContext'
+import { getUserByServer } from '../../../../lib/serverFunctions/getUser'
 
 export default function verify() {
   const [status, setStatus] = useState<'pending' | 'success' | 'error'>('pending')

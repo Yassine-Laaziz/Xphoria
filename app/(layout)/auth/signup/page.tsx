@@ -2,9 +2,9 @@
 
 import axios from 'axios'
 import { ChangeEvent, FormEvent, useState } from 'react'
-import EmailLink from '../../../components/EmailLink'
-import { err } from '../../../lib/constants'
-import clientSideCheck from '../../../lib/utils/clientSideCheck'
+import EmailLink from '../../../../components/EmailLink'
+import { err } from '../../../../lib/constants'
+import clientSideCheck from '../../../../lib/utils/clientSideCheck'
 
 export default function Signup() {
   const [user, setUser] = useState({
@@ -17,10 +17,7 @@ export default function Signup() {
   const [error, setError] = useState<string>('')
   const [disabled, setDisabled] = useState<boolean>(false)
 
-  function handleChange(
-    e: ChangeEvent<HTMLInputElement>,
-    field: 'username' | 'email'
-  ) {
+  function handleChange(e: ChangeEvent<HTMLInputElement>, field: 'username' | 'email') {
     if (error) setError('')
     const newUser = { ...user, [field]: e.target.value }
     setUser(newUser)
@@ -34,8 +31,7 @@ export default function Signup() {
 
   async function submit(e: FormEvent) {
     e.preventDefault()
-    if (!clientSideCheck(user).isCorrect)
-      return setError('All fields must be set!')
+    if (!clientSideCheck(user).isCorrect) return setError('All fields must be set!')
     setDisabled(true)
     axios
       .post('/api/auth/signup', { user })
@@ -49,33 +45,36 @@ export default function Signup() {
   const [isFirstSection, setIsFirstSection] = useState<boolean>(true)
 
   return !isFirstSection ? (
-    <EmailLink email={user.email} goBack={() => setIsFirstSection(true)} />
+    <EmailLink
+      email={user.email}
+      goBack={() => setIsFirstSection(true)}
+    />
   ) : (
     <form
       onSubmit={e => submit(e)}
-      className="mx-auto flex flex-col
+      className='mx-auto flex flex-col
         gap-5 text-center c:rounded-md c:py-2 c:placeholder:font-bold c:placeholder:text-gray-700
-        focus-visible:c:outline-teal-600 [&>input]:pl-1 [&>input]:font-black [&>input]:text-emerald-500"
+        focus-visible:c:outline-teal-600 [&>input]:pl-1 [&>input]:font-black [&>input]:text-emerald-500'
     >
       <input
-        placeholder="username"
+        placeholder='username'
         value={user.username}
         onChange={e => handleChange(e, 'username')}
         spellCheck={false}
-        autoComplete="username"
+        autoComplete='username'
       />
       <input
-        placeholder="email"
+        placeholder='email'
         value={user.email}
         onChange={e => handleChange(e, 'email')}
         spellCheck={false}
-        autoComplete="email"
+        autoComplete='email'
       />
       <button
         disabled={disabled}
-        type="submit"
-        className="mx-auto border-2 border-teal-400 px-5 duration-200 hover:text-teal-500
-            disabled:bg-gray-900"
+        type='submit'
+        className='mx-auto border-2 border-teal-400 px-5 duration-200 hover:text-teal-500
+            disabled:bg-gray-900'
       >
         Sign up
       </button>

@@ -1,9 +1,9 @@
-import HeroBanner from '../components/HeroBanner'
-import ReviewModel from '../models/Reviews'
-import { connect } from '../lib/mongodb'
-import { sortedReviews, Review, Product } from '../types'
-import Products from '../components/Products'
-import { fetchData, urlForImage } from '../lib/sanity'
+import HeroBanner from '../../components/HeroBanner'
+import ReviewModel from '../../models/Reviews'
+import { connect } from '../../lib/mongodb'
+import { sortedReviews, Review, Product } from '../../types'
+import Products from '../../components/Products'
+import { fetchData, urlForImage } from '../../lib/sanity'
 
 export default async function Page() {
   // images retrieved from sanity are objects in default so we use the urlForImage function to make them urls
