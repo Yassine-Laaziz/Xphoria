@@ -1,19 +1,20 @@
 import { revalidateTag } from 'next/cache'
+import { NextResponse } from 'next/server'
 
 export async function POST(request: Request) {
   try {
     // verication
     const signature = request.headers.get('sanity-webhook-signature')
     const authorization = request.headers.get('authorization')
-    if (!signature || !authorization) return Response.error()
+    if (!signature || !authorization) return NextResponse.error()
 
     const secret = process.env.SANITY_WEBHOOK_SECRET
-    if (!verifyWebhookSignature(signature, authorization, secret)) return Response.error()
+    if (!verifyWebhookSignature(signature, authorization, secret)) return NextResponse.error()
 
     revalidateTag('sanity') // revalidate Sanity Cache
-    return Response.json({}, { status: 200 })
+    return NextResponse.json({}, { status: 200 })
   } catch (err) {
-    return Response.error()
+    return NextResponse.error()
   }
 }
 
