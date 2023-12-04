@@ -297,7 +297,7 @@ function SecondCard({ product, index, setIndex, chosenOptions, push }: SecondCar
   return (
     <>
       <section>
-        <h2 className='pb-2 text-3xl tracking-wider text-white [textShadow:0_0_7px_white] sm:text-4xl'>product.name</h2>
+        <h2 className='pb-2 text-3xl tracking-wider text-white [textShadow:0_0_7px_white] sm:text-4xl'>{product.name}</h2>
         <h4 className='pb-4 text-xs text-green-500 [textShadow:0_0_10px_green] sm:text-sm'>{product.slogan}</h4>
       </section>
       <section className='relative m-auto aspect-video max-w-full flex-1'>
