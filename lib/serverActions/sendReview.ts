@@ -13,7 +13,7 @@ type ReturnT = {
   updatedReviews?: Review[]
 }
 
-export default async function sendReview(comment: string, rating: number, product: string): Promise<ReturnT> {
+export default async function sendReview(comment: string, rating: number, productSlug: string): Promise<ReturnT> {
   if (!comment || !rating) {
     return { msg: 'please make sure to write a comment and to rate the product' }
   }
@@ -31,25 +31,24 @@ export default async function sendReview(comment: string, rating: number, produc
     const user: User | null = await UserModel.findById(userJWT?.id)
     if (!user) return { redirect: '/auth/login' }
 
-    const hasBoughtProduct = user.purchases.some(purchase => purchase.product === product)
+    const { id, purchases, reviews, username, img } = user
+
+    const hasBoughtProduct = purchases.some(purchase => purchase.productSlug === productSlug)
     if (!hasBoughtProduct) return { msg: 'You need to try the product before reviewing it' }
 
-    const hasReviewedProduct = user.reviews.some(review => review.product === product)
+    const hasReviewedProduct = reviews.some(review => review.productSlug === productSlug)
     if (!hasReviewedProduct) return { msg: err }
 
     await ReviewModel.create({
-      product,
-      username: user.username,
-      userID: user.id,
-      img: user.img,
+      productSlug,
+      username,
+      userId: id,
+      img,
       comment,
       rating,
     })
 
-    const updatedReviews: Review[] = [
-      ...user.reviews,
-      { product, username: user.username, userID: user.id, img: user.img, comment, rating },
-    ]
+    const updatedReviews: Review[] = [...reviews, { productSlug, username, userID: id, img, comment, rating }]
     await UserModel.findByIdAndUpdate(userJWT.id, { reviews: updatedReviews })
 
     return { updatedReviews }
