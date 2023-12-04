@@ -1,17 +1,19 @@
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
+      // sanity
       SANITY_TOKEN: string
+      SANITY_WEBHOOK_SECRET: string
+      NEXT_PUBLIC_SANITY_PROJECT_ID?: string
+      NEXT_PUBLIC_SANITY_DATASET?: string
+      NEXT_PUBLIC_SANITY_API_VERSION?: string
+      // nodemailer
+      USER: string
+      PASS: string
+      // misc
       MONGO_URI: string
       BASE_URL: string
       JWT_SECRET_KEY: string
-      // auth
-      USER: string
-      PASS: string
-      SERVICE: string
-      HOST: string
-      SECURE: boolean
-      EMAIL_PORT: number
     }
   }
 }

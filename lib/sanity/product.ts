@@ -1,3 +1,5 @@
+import { Rule } from 'sanity'
+
 export default {
   name: 'product',
   title: 'Product',
@@ -6,8 +8,8 @@ export default {
     {
       name: 'name',
       title: 'Name',
-      type: 'slug',
-      validation: (Rule) => Rule.required(),
+      type: 'string',
+      validation: (Rule: Rule) => Rule.required(),
     },
     {
       name: 'slogan',
@@ -18,14 +20,14 @@ export default {
       name: 'price',
       title: 'Price',
       type: 'number',
-      validation: (Rule) => Rule.required(),
+      validation: (Rule: Rule) => Rule.required(),
     },
     {
       name: 'image',
       title: 'Main Image',
       type: 'image',
-      options: {hotspot: true},
-      validation: (Rule) => Rule.required(),
+      options: { hotspot: true },
+      validation: (Rule: Rule) => Rule.required(),
     },
     {
       name: 'noBgImages',
@@ -39,27 +41,27 @@ export default {
               name: 'color',
               type: 'string',
               title: 'Color Hex code',
-              validation: (Rule) => Rule.required(),
+              validation: (Rule: Rule) => Rule.required(),
             },
             {
               name: 'colorName',
               type: 'string',
               title: 'Color name',
-              validation: (Rule) => Rule.required(),
+              validation: (Rule: Rule) => Rule.required(),
             },
             {
               name: 'images',
               type: 'array',
               title: 'Transparent-Background Images',
-              of: [{type: 'image', options: {hotspot: true}}],
-              validation: (Rule) => Rule.required().min(1).max(3),
+              of: [{ type: 'image', options: { hotspot: true } }],
+              validation: (Rule: Rule) => Rule.required().min(1).max(3),
             },
             {
               name: 'sizes',
               title: 'Sizes',
               type: 'array',
-              of: [{type: 'string'}],
-              validation: (Rule) => Rule.required().min(1),
+              of: [{ type: 'string' }],
+              validation: (Rule: Rule) => Rule.required().min(1),
             },
           ],
         },
@@ -67,7 +69,7 @@ export default {
       options: {
         hotspot: true,
       },
-      validation: (Rule) => Rule.required().min(1),
+      validation: (Rule: Rule) => Rule.required().min(1),
     },
   ],
 }

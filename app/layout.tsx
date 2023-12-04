@@ -10,19 +10,12 @@ import CartModal from '../components/CartModal'
 export const metadata: Metadata = {
   title: brand,
   description: brandSlogan,
-  icons: '/favicon.ico',
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang='en'>
-      <head>
-        <meta
-          name='viewport'
-          content='width=device-width, initial-scale=1'
-        />
-      </head>
-      <body>
+      <body className='dark:bg-black'>
         <Providers>
           <OfflineModal />
           <Navbar />

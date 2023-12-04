@@ -1,19 +1,19 @@
 import HeroBanner from '../components/HeroBanner'
-import { fetchProducts, urlFor } from '../lib/sanity'
 import ReviewModel from '../models/Reviews'
 import { connect } from '../lib/mongodb'
 import { sortedReviews, Review, Product } from '../types'
 import Products from '../components/Products'
+import { fetchData, urlForImage } from '../lib/sanity'
 
 export default async function Page() {
-  // images retrieved from sanity are objects in default so we use the urlFor function to make them urls
-  const res: DirectSanityProduct[] = await fetchProducts()
+  // images retrieved from sanity are objects in default so we use the urlForImage function to make them urls
+  const res: DirectSanityProduct[] = await fetchData('*[_type == "product"]')
   const products: Product[] = res.map(product => ({
     ...product,
-    image: urlFor(product.image).url(),
+    image: urlForImage(product.image).url(),
     noBgImages: product.noBgImages.map(noBgImage => ({
       ...noBgImage,
-      images: noBgImage.images.map(image => urlFor(image).url()),
+      images: noBgImage.images.map(image => urlForImage(image).url()),
     })),
   }))
 

@@ -1,11 +1,11 @@
 import { FullCartItem, Product, ProductOptions } from '../../types'
-import { fetchProducts } from '../sanity'
+import { fetchData } from '../sanity'
 
 export default async function cleanCart(cart: dirtyCartItem[]): Promise<FullCartItem[] | undefined> {
   // this function takes in a cart, the cart may contain unvalid products or may contain no images
   // and prices to save db storage, this function provides the image and prices and eliminates unvalid products
 
-  const allProducts: Product[] = await fetchProducts(true)
+  const allProducts: Product[] = await fetchData('*[_type == "product"]')
   if (!allProducts) return
 
   const cleanedCart: FullCartItem[] = []

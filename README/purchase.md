@@ -30,10 +30,9 @@ interface Review {
 - note: a noBgImages object contains a color and it's colorName, it's images, and it's currently available sizes
 - note: the product string in the review object allows us to know to which product this review belongs.
 
-5. the user adds a product to the bag, we save the product to a mongodb cart because it contains product options that
-   shouldn't be tampered with, in order to do that we have to make the user have an account first so we don't get spammed.
-6. in the addToBag server action we redirect the user to login if he isn't logged already.
-7. the user logs in and attempts to buy again.
+6. the user attempts to add a product to the cart. in the addToBag server action if the user isn't logged in we redirect him to [login](Authorization.md).
+7. the user adds a product to the bag, we save the product to a mongodb cart because it contains product options that
+   shouldn't be tampered with (at this stage the user already has an account so we're almost safe from spamming)
 8. we pass the following props to the addToBag server action:
 
 ```typescript
