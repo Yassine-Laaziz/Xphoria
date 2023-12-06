@@ -5,11 +5,11 @@ import { useEffect, useState } from 'react'
 import { TitleText, TypingText } from './CustomTexts'
 import { motion } from 'framer-motion'
 import { slideIn } from '../lib/motion'
-import { Product, sortedReviews } from '../types'
+import { DisplayProduct } from '../types'
 import styles from '../styles'
 import ProductModal from './ProductModal'
 
-const Products = ({ products, reviews }: { products: Product[]; reviews: sortedReviews }) => {
+const Products = ({ products }: { products: DisplayProduct[] }) => {
   const [isTouchScreen, setIsTouchScreen] = useState<boolean>(false)
   const [hovered, setHovered] = useState<number>()
   const [currentProduct, setCurrentProduct] = useState<number>(0)
@@ -31,7 +31,8 @@ const Products = ({ products, reviews }: { products: Product[]; reviews: sortedR
   return (
     products[0] && (
       <>
-        <div className='m-auto flex w-[70%] max-w-4xl flex-wrap justify-center gap-14 py-40 text-white'>
+        <h2 className='text-5xl my-20 font-bold text-center text-sky-400 dark:text-white'>Products</h2>
+        <div className='m-auto flex w-[70%] max-w-4xl flex-wrap justify-center gap-14 pb-40 text-white'>
           {products.map((product, i) => (
             <div
               key={`product-${product.name}`}
@@ -50,7 +51,7 @@ const Products = ({ products, reviews }: { products: Product[]; reviews: sortedR
               {hovered === i ? (
                 <motion.div
                   className={`${styles.absoluteCenter} hidden overflow-hidden
-                rounded-md shadow-[0_0_50px_6px] shadow-emerald-900 group-hover:inline-block`}
+                  rounded-md shadow-[0_0_50px_6px_inset] shadow-cyan-400 dark:shadow-emerald-900 group-hover:inline-block`}
                   animate={{ width: '125%', height: '125%' }}
                   viewport={{ once: false }}
                 >
@@ -66,13 +67,13 @@ const Products = ({ products, reviews }: { products: Product[]; reviews: sortedR
                     />
                     <TitleText
                       title={`$${product.price}`}
-                      textStyles="text-2xl font-['east_sea_dokdo'] text-emerald-400 absolute right-2 bottom-0"
+                      textStyles="text-2xl font-['east_sea_dokdo'] text-sky-300 dark:text-emerald-400 absolute right-2 bottom-0"
                     />
                   </motion.div>
                 </motion.div>
               ) : (
                 isTouchScreen && (
-                  <div className='relative border-b-2 border-emerald-500'>
+                  <div className='relative border-b-2 border-cyan-400 dark:border-emerald-500'>
                     <TypingText
                       title={product.name}
                       textStyles='text-2xl font-bold'
@@ -90,7 +91,6 @@ const Products = ({ products, reviews }: { products: Product[]; reviews: sortedR
         <ProductModal
           key={`${products[currentProduct].name} Modal`}
           product={products[currentProduct]}
-          reviews={reviews[products[currentProduct].name]}
           showModal={showModal}
           setShowModal={setShowModal}
         />

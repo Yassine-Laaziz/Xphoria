@@ -1,14 +1,14 @@
 import { createContext, Dispatch, PropsWithChildren, SetStateAction, useContext, useEffect, useState } from 'react'
-import { FullCartItem } from '../../types'
+import { DisplayProduct } from '../../types'
 import { getUserByServer } from '../serverFunctions/getUser'
-import cleanCart from '../utils/cleanCart'
+import hydrateCart from '../serverFunctions/hydrateCart'
 
 interface LayoutContextProps {
   cart: {
     showCart: boolean
     setShowCart: Dispatch<SetStateAction<boolean>>
-    cartItems: FullCartItem[]
-    setCartItems: Dispatch<SetStateAction<FullCartItem[]>>
+    cartItems: DisplayProduct[]
+    setCartItems: Dispatch<SetStateAction<DisplayProduct[]>>
   }
 }
 
@@ -23,13 +23,14 @@ const LayoutContext = createContext<LayoutContextProps>({
 
 export function CartProvider({ children }: PropsWithChildren<{}>) {
   const [showCart, setShowCart] = useState<boolean>(false)
-  const [cartItems, setCartItems] = useState<FullCartItem[]>([])
+  const [cartItems, setCartItems] = useState<DisplayProduct[]>([])
 
   useEffect(() => {
     getUserByServer().then(async user => {
       if (user) {
-        const cleanedCart = await cleanCart(user.cart)
-        if (cleanedCart) setCartItems(cleanedCart)
+        const cart = user.cart.map(item => ({ productID: item.productID, qty: item.qty, chosenOptions: item.chosenOptions }))
+        const cartWithData = await hydrateCart(cart)
+        setCartItems(cartWithData)
       }
     })
   }, [])

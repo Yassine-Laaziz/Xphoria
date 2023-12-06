@@ -1,7 +1,7 @@
 'use client'
 
 import axios from 'axios'
-import { useSearchParams } from 'next/navigation'
+import { redirect, useRouter, useSearchParams } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import { MdMarkEmailRead, MdMarkEmailUnread } from 'react-icons/md'
 import { BiMessageAltError } from 'react-icons/bi'
@@ -16,6 +16,7 @@ export default function verify() {
 
   const searchParams = useSearchParams()
   const { setUser } = useUserContext()
+  const { push } = useRouter()
   useEffect(() => {
     let user_token: string | null = ''
     if (searchParams) user_token = searchParams.get('t')
@@ -27,8 +28,12 @@ export default function verify() {
           const updatedUser = await getUserByServer()
           if (!updatedUser) return
           setUser(updatedUser)
+          setTimeout(() => push('/'), 20000)
         })
-        .catch(() => setStatus('error'))
+        .catch(() => {
+          setStatus('error')
+          setTimeout(() => push('/Auth/Signup'), 10000)
+        })
     } else () => setStatus('error')
   }, [])
 

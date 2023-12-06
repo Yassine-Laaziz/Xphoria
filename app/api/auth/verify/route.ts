@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
     } else if (payload.role === 'signup') {
       payload.user.email = payload.user.email.toLowerCase()
       user = await UserModel.create(payload.user)
-      sendEmail(
+      await sendEmail(
         payload.user.email,
         'Congratulations !',
         `

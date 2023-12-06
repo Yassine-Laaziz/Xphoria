@@ -1,32 +1,31 @@
-import { CartItem, Product, ProductOptions } from '../../types'
+import { CartItem, ProductOptions, SanityProduct } from '../../types'
 import { fetchData } from '../sanity'
 
-export default async function cleanCart(cart: dirtyCartItem[]): Promise<CartItem[] | undefined> {
+export default async function cleanCart(cart: CartItem[]): Promise<CartItem[] | undefined> {
   // this function takes in a cart and validates the products and removes anything other than
-  // productSlug, qty, chosenOptions
+  // name, qty, chosenOptions
 
-  const allProducts: Product[] = await fetchData('*[_type == "product"]')
+  const allProducts: SanityProduct[] = await fetchData('*[_type == "product"]')
   if (!allProducts) return
 
   const cleanedCart: CartItem[] = []
 
   for (const cartItem of cart) {
-    const { productSlug, qty, chosenOptions } = cartItem
+    const { _id, qty, chosenOptions } = cartItem
 
     // Check if this is an actual product
-    const matchingProduct = allProducts.find(p => p.name === productSlug)
+    const matchingProduct = allProducts.find(p => p._id === _id)
     if (!matchingProduct) continue
 
     // check if these are valid chosen options
-    const matchingOptions = matchingProduct.noBgImages.find(opt => opt.color === chosenOptions.color)
+    const matchingOptions = matchingProduct.noBgImages.find(
+      opt => opt.color === chosenOptions.color && opt.sizes.find(size => size === chosenOptions.size)
+    )
     if (!matchingOptions) continue
 
     // Check if a similar product with similiar options already exists in the sanitized cart
     const existingItemIndex = cleanedCart.findIndex(
-      item =>
-        item.productSlug === productSlug &&
-        item.chosenOptions.color === chosenOptions.color &&
-        item.chosenOptions.size === Number(chosenOptions.size)
+      item => item._id === _id && item.chosenOptions.color === chosenOptions.color && item.chosenOptions.size === chosenOptions.size
     )
 
     if (existingItemIndex !== -1) {
@@ -34,8 +33,7 @@ export default async function cleanCart(cart: dirtyCartItem[]): Promise<CartItem
       cleanedCart[existingItemIndex].qty += qty
     } else {
       // No existing product with the same options, add a new item to the sanitized cart
-      console.log(cartItem)
-      cleanedCart.push({ productSlug, qty, chosenOptions })
+      cleanedCart.push({ _id, qty, chosenOptions })
     }
   }
 
@@ -43,9 +41,7 @@ export default async function cleanCart(cart: dirtyCartItem[]): Promise<CartItem
 }
 
 interface dirtyCartItem {
-  productSlug: string
+  _id: string
   qty: number
   chosenOptions: ProductOptions
-  price?: number
-  img?: string
 }

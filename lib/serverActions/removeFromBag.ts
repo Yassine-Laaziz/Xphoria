@@ -21,8 +21,7 @@ export default async function removeFromBag(product: string, chosenOptions: Prod
 
     // Find the index of the item to be removed
     const existingItemIndex = cart.findIndex(
-      item =>
-        item.productSlug === product && item.chosenOptions.color === chosenOptions.color && item.chosenOptions.size === chosenOptions.size
+      item => item.name === product && item.chosenOptions.color === chosenOptions.color && item.chosenOptions.size === chosenOptions.size
     )
 
     if (existingItemIndex !== -1) cart.splice(existingItemIndex, 1)

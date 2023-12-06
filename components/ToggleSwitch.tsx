@@ -8,7 +8,7 @@ export default function Switch() {
     <Hswitch
       checked={theme === 'dark'}
       onChange={switchTheme}
-      className={`${theme === 'dark' ? 'bg-teal-500' : 'bg-teal-300'}
+      className={`${theme === 'dark' ? 'bg-teal-500' : 'bg-sky-300'}
           relative inline-flex h-[38px] w-[74px] shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
     >
       <span className='sr-only'>Use setting</span>

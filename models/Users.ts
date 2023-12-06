@@ -1,11 +1,24 @@
+import { ObjectId } from 'mongodb'
 import { Schema, model, models } from 'mongoose'
 
+const PurchaseSchema = new Schema({
+  productID: { type: ObjectId, ref: 'User', required: true },
+  purchaseDate: { type: Date, required: true, default: Date.now },
+  quantity: { type: Number, required: true, default: 1 },
+})
+
+const ReviewSchema = new Schema({
+  productID: { type: String, required: true },
+  comment: { type: String, required: true },
+  rating: { type: Number, required: true, min: 1, max: 5 },
+})
+
 const CartItemSchema = new Schema({
-  productSlug: { type: String, required: true },
+  productID: { type: String, required: true },
   qty: { type: Number, required: true },
   chosenOptions: {
     type: {
-      size: { type: Number, required: true },
+      size: { type: String, required: true },
       color: { type: String, required: true },
       colorName: { type: String, required: true },
     },
@@ -17,8 +30,8 @@ const UserSchema = new Schema({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
   img: { type: String },
-  reviews: [{ type: Schema.Types.ObjectId, ref: 'Review', default: [] }],
-  purchases: [{ type: Schema.Types.ObjectId, ref: 'Purchase', default: [] }],
+  reviews: [{ type: [PurchaseSchema], default: [] }],
+  purchases: [{ type: [ReviewSchema], default: [] }],
   cart: { type: [CartItemSchema], default: [] },
 })
 

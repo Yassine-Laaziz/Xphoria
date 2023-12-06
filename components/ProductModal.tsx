@@ -3,7 +3,7 @@
 import '../styles/components/MultiSlide.css'
 import styles from '../styles'
 import Image from 'next/image'
-import { Product, ProductOptions, Review, User } from '../types'
+import { DisplayProduct, ProductOptions, User } from '../types'
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { colord } from 'colord'
@@ -18,7 +18,7 @@ import { useUserContext } from '../lib/contexts/UserContext'
 import { err } from '../lib/constants'
 import { useLayoutContext } from '../lib/contexts/LayoutContext'
 
-export default function ProductModal({ product, showModal, setShowModal, reviews }: props) {
+export default function ProductModal({ product, showModal, setShowModal }: props) {
   const [index, setIndex] = useState<Tindex>({
     mainImage: 0,
     color: 0,
@@ -65,7 +65,7 @@ export default function ProductModal({ product, showModal, setShowModal, reviews
     >
       <div
         className='[transform-style: preserve-3d] relative mx-auto flex h-screen max-h-[500px] w-full
-       max-w-7xl select-none items-center justify-center overflow-hidden
+       max-w-7xl select-none items-center justify-center overflow-hidden dark:bg-gradient-to-tr
        rounded-2xl bg-[hsla(183,100%,50%,.1)] text-center text-white dark:shadow-emerald-200
         dark:from-emerald-900 dark:to-green-400 sm:h-[90vh]'
       >
@@ -119,10 +119,9 @@ export default function ProductModal({ product, showModal, setShowModal, reviews
             id='slide1'
           >
             <FirstCard
-              reviews={reviews}
+              product={product}
               reviewInput={reviewInput}
               setReviewInput={setReviewInput}
-              productSlug={product.name}
               push={push}
             />
           </label>
@@ -167,11 +166,11 @@ export default function ProductModal({ product, showModal, setShowModal, reviews
   )
 }
 
-function FirstCard({ reviews, reviewInput, setReviewInput, productSlug, push }: FirstCardProps) {
+function FirstCard({ reviewInput, setReviewInput, product, push }: FirstCardProps) {
   const [isDragging, setIsDragging] = useState<boolean>(false)
   const [isSending, setIsSending] = useState<boolean>(false)
   const { user, setUser } = useUserContext()
-  const userAlreadyReviewed = user.reviews.some(review => review.productSlug === productSlug) || null
+  const userAlreadyReviewed = user.reviews.some(review => review.productID === product._id) || null
 
   const handleStarClick = (stars: number) => {
     setReviewInput(prev => ({ ...prev, rating: stars }))
@@ -198,7 +197,7 @@ function FirstCard({ reviews, reviewInput, setReviewInput, productSlug, push }: 
     setIsSending(true)
 
     // below i'm using an almost instant server function so i wouldn't need a loading/optimistic state even for a low-end connection
-    const res = await sendReview(reviewInput.comment, reviewInput.rating, productSlug)
+    const res = await sendReview(reviewInput.comment, reviewInput.rating, product._id)
     setIsSending(false)
 
     if (res.redirect) return push(res.redirect)
@@ -221,19 +220,16 @@ function FirstCard({ reviews, reviewInput, setReviewInput, productSlug, push }: 
   return (
     <>
       <h2 className='pb-2 text-3xl tracking-wider text-white dark:[textShadow:0_0_7px_white] sm:text-4xl'>Reviews</h2>
-      {reviews ? (
-        reviews.map(review => (
-          <section className='flex-1 overflow-y-auto py-2'>
-            <div key={review.username}>
-              <p>{review.rating}</p>
-              <p>{review.username}</p>
-              <img
-                src={review.img}
-                alt={review.username}
-              />
-              <p>{review.comment}</p>
-            </div>
-          </section>
+      {product.reviews ? (
+        product.reviews.map(review => (
+          <div
+            key={'review' + review.userID}
+            className='flex-1 overflow-y-auto py-2'
+          >
+            <p>{review.rating}</p>
+            <p>{review.username}</p>
+            <p>{review.comment}</p>
+          </div>
         ))
       ) : (
         <section className='flex flex-col gap-2 [textShadow:0_0_7px_cyan]'>
@@ -287,14 +283,21 @@ function SecondCard({ product, index, setIndex, chosenOptions, push }: SecondCar
   } = useLayoutContext()
 
   async function handleAddToBag() {
-    const res = await addToBag(product.name, 1, chosenOptions)
+    const res = await addToBag(product._id, 1, chosenOptions)
     if (!res) return
     if (res.redirect) push(res.redirect)
     else if (res.cart) {
       toast.success('Added !')
       refreshUser()
       const newCart = [...cartItems]
-      newCart.push({ chosenOptions, image: product.image, name: product.name, price: product.price, noBgImages: product.noBgImages, qty })
+      newCart.push({
+        chosenOptions,
+        image: product.image,
+        name: product.name,
+        price: product.price,
+        noBgImages: product.noBgImages,
+        qty: 1,
+      })
       setCartItems(newCart)
     }
   }
@@ -351,7 +354,10 @@ function ThirdCard({ product, index, chosenOptions, setChosenOptions, changeColo
       <section className='mx-auto mb-auto mt-4 flex w-fit flex-col gap-5'>
         <section>
           <h2>select size</h2>
-          <div className='rounded-md bg-gradient-to-tr from-cyan-200 to-cyan-400 dark:bg-gray-900 bg-opacity-80 px-4 py-2'>
+          <div
+            className='rounded-md bg-gradient-to-tr dark:from-emerald-900 dark:to-green-400
+           from-cyan-200 to-cyan-400 dark:bg-gray-900 bg-opacity-80 px-4 py-2'
+          >
             <h3 className='mb-1 font-black'>{chosenOptions.size}</h3>
             <div className='flex justify-around gap-3'>
               {product.noBgImages[index.color].sizes.map((size, i) => (
@@ -369,7 +375,10 @@ function ThirdCard({ product, index, chosenOptions, setChosenOptions, changeColo
         </section>
         <section className='font-mono'>
           <h2>select colour</h2>
-          <div className='rounded-md bg-gradient-to-tr from-cyan-200 to-cyan-400 dark:bg-gray-900 bg-opacity-80 px-4 py-2'>
+          <div
+            className='rounded-md bg-gradient-to-tr dark:from-emerald-900 dark:to-green-400
+           from-cyan-200 to-cyan-400 dark:bg-gray-900 bg-opacity-80 px-4 py-2'
+          >
             <h3
               className='mb-2 rounded-md px-2 py-1 text-2xl shadow-[0_0_15px_10px_inset]'
               style={{
@@ -398,10 +407,9 @@ function ThirdCard({ product, index, chosenOptions, setChosenOptions, changeColo
 }
 
 interface props {
-  product: Product
+  product: DisplayProduct
   showModal: boolean
   setShowModal: Dispatch<SetStateAction<boolean>>
-  reviews: Review[]
 }
 
 interface Tindex {
@@ -416,21 +424,20 @@ interface ReviewInput {
 }
 
 interface FirstCardProps {
-  reviews: Review[]
   reviewInput: ReviewInput
   setReviewInput: Dispatch<SetStateAction<ReviewInput>>
-  productSlug: string
+  product: DisplayProduct
   push: (href: string) => void
 }
 interface SecondCardProps {
-  product: Product
+  product: DisplayProduct
   index: Tindex
   setIndex: Dispatch<SetStateAction<Tindex>>
   chosenOptions: ProductOptions
   push: (href: string) => void
 }
 interface ThirdCardProps {
-  product: Product
+  product: DisplayProduct
   index: Tindex
   chosenOptions: ProductOptions
   setChosenOptions: Dispatch<SetStateAction<ProductOptions>>

@@ -72,7 +72,7 @@ export default function Navbar() {
                         className={classNames(
                           item.current
                             ? 'cursor-default bg-sky-500 font-bold text-white dark:bg-green-500'
-                            : 'bg-gray-700 text-white transition-all duration-200 hover:bg-teal-400 dark:bg-gray-600 dark:hover:bg-emerald-700',
+                            : 'bg-gray-700 text-white transition-all duration-200 hover:bg-sky-400 dark:bg-gray-600 dark:hover:bg-emerald-700',
                           'rounded-md px-3 py-2 text-sm font-medium'
                         )}
                         aria-current={item.current ? 'page' : undefined}

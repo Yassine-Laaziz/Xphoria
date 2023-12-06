@@ -4,14 +4,18 @@ import { useLayoutContext } from '../lib/contexts/LayoutContext'
 import { Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
-import { FullCartItem } from '../types'
+import { CartItemWithData } from '../types'
 import { addToBag } from '../lib/serverActions'
 import { removeFromBag } from '../lib/serverActions'
+import { loadStripe } from '@stripe/stripe-js'
+import { pay } from '../lib/serverActions/Stripe'
 
 export default function CartModal() {
   const {
     cart: { showCart, setShowCart, cartItems },
   } = useLayoutContext()
+  // @ts-ignore
+  const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
   return (
     <Transition.Root
       show={showCart}
@@ -47,14 +51,14 @@ export default function CartModal() {
                 leaveTo='translate-x-full'
               >
                 <Dialog.Panel className='pointer-events-auto w-screen max-w-md'>
-                  <div className='flex h-full flex-col overflow-y-scroll bg-white shadow-xl'>
+                  <div className='flex h-full flex-col overflow-y-scroll dark:bg-gray-800 bg-white shadow-xl'>
                     <div className='flex-1 overflow-y-auto px-4 py-6 sm:px-6'>
                       <div className='flex items-start justify-between'>
-                        <Dialog.Title className='text-lg font-medium text-gray-900'>Shopping cart</Dialog.Title>
+                        <Dialog.Title className='text-lg font-medium dark:text-gray-300 text-gray-900'>Shopping cart</Dialog.Title>
                         <div className='ml-3 flex h-7 items-center'>
                           <button
                             type='button'
-                            className='-m-2 p-2 text-gray-400 hover:text-gray-500'
+                            className='-m-2 p-2 text-gray-400 dark:hover:text-gray-300 hover:text-gray-500'
                             onClick={() => setShowCart(false)}
                           >
                             <span className='sr-only'>Close panel</span>
@@ -72,29 +76,28 @@ export default function CartModal() {
                             role='list'
                             className='-my-6 divide-y divide-gray-200'
                           >
-                            {cartItems.map(item => (
-                              <CartItem item={item} />
-                            ))}
+                            {cartItems[0] && cartItems.map(item => <CartItem item={item} />)}
                           </ul>
                         </div>
                       </div>
                     </div>
 
                     <div className='border-t border-gray-200 px-4 py-6 sm:px-6'>
-                      <div className='flex justify-between text-base font-medium text-gray-900'>
+                      <div className='flex justify-between text-base font-medium dark:text-gray-300 text-gray-900'>
                         <p>Subtotal</p>
                         <p>$262.00</p>
                       </div>
-                      <p className='mt-0.5 text-sm text-gray-500'>Shipping and taxes calculated at checkout.</p>
+                      <p className='mt-0.5 text-sm dark:text-gray-300 text-gray-500'>Shipping and taxes calculated at checkout.</p>
                       <div className='mt-6'>
-                        <a
-                          href='#'
-                          className='flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700'
+                        <button
+                          onClick={pay}
+                          className='flex items-center justify-center rounded-md border border-transparent w-full
+                           bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700'
                         >
                           Checkout
-                        </a>
+                        </button>
                       </div>
-                      <div className='mt-6 flex justify-center text-center text-sm text-gray-500'>
+                      <div className='mt-6 flex justify-center text-center text-sm dark:text-gray-200 text-gray-500'>
                         <p>
                           or{' '}
                           <button
@@ -119,7 +122,7 @@ export default function CartModal() {
   )
 }
 
-function CartItem({ item }: { item: FullCartItem }) {
+function CartItem({ item }: { item: CartItemWithData }) {
   return (
     <li
       key={item.name + item.chosenOptions}

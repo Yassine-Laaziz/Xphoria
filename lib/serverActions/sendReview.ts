@@ -3,17 +3,17 @@
 import { connect } from '../mongodb'
 import { err } from '../constants'
 import UserModel from '../../models/Users'
-import { Review, User } from '../../types'
-import ReviewModel from '../../models/Reviews'
-import { getUserByJWT } from '../serverFunctions/getUser'
+import { DatabaseReview, UserReview } from '../../types'
+import ProductModel from '../../models/Products'
+import { getUserByServer } from '../serverFunctions/getUser'
 
 type ReturnT = {
   msg?: string
   redirect?: string
-  updatedReviews?: Review[]
+  updatedReviews?: UserReview[]
 }
 
-export default async function sendReview(comment: string, rating: number, productSlug: string): Promise<ReturnT> {
+export default async function sendReview(comment: string, rating: number, productID: string): Promise<ReturnT> {
   if (!comment) return { msg: 'please comment first' }
   if (!rating) return { msg: 'please rate the product first' }
 
@@ -24,31 +24,27 @@ export default async function sendReview(comment: string, rating: number, produc
   try {
     await connect()
 
-    const userJWT = await getUserByJWT()
-    if (!userJWT) return { redirect: '/Auth' }
-
-    const user: User | null = await UserModel.findById(userJWT?.id)
+    const user = await getUserByServer()
     if (!user) return { redirect: '/Auth' }
 
-    const { id, purchases, reviews, username, img } = user
+    const { _id, purchases, reviews, username, img } = user
 
-    const hasBoughtProduct = purchases.some(purchase => purchase.productSlug === productSlug)
+    const hasBoughtProduct = purchases.some(purchase => purchase.productID === productID)
     if (!hasBoughtProduct) return { msg: 'You need to try the product before reviewing it' }
 
-    const hasReviewedProduct = reviews.some(review => review.productSlug === productSlug)
+    const hasReviewedProduct = reviews.some(review => review.productID === productID)
     if (!hasReviewedProduct) return { msg: err }
 
-    await ReviewModel.create({
-      productSlug,
+    await ProductModel.create({
+      userID: _id,
       username,
-      userId: id,
       img,
       comment,
       rating,
     })
 
-    const updatedReviews: Review[] = [...reviews, { productSlug, username, userID: id, img, comment, rating }]
-    await UserModel.findByIdAndUpdate(userJWT.id, { reviews: updatedReviews })
+    const updatedReviews: UserReview[] = [...reviews, { productID, comment, rating }]
+    await UserModel.findByIdAndUpdate(_id, { reviews: updatedReviews })
 
     return { updatedReviews }
   } catch (e) {
