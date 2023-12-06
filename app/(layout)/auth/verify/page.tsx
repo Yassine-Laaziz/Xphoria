@@ -9,6 +9,7 @@ import Link from 'next/link'
 import { TypingText } from '../../../../components/CustomTexts'
 import { useUserContext } from '../../../../lib/contexts/UserContext'
 import { getUserByServer } from '../../../../lib/serverFunctions/getUser'
+import { FaSpinner } from 'react-icons/fa'
 
 export default function verify() {
   const [status, setStatus] = useState<'pending' | 'success' | 'error'>('pending')
@@ -38,6 +39,7 @@ export default function verify() {
       {status === 'pending' && (
         <>
           <MdMarkEmailUnread className={icon} />
+          <FaSpinner className='animate-spin mx-auto' />
           <TypingText title='verifying..' />
         </>
       )}
@@ -47,16 +49,18 @@ export default function verify() {
           <TypingText title='Verified & logged in successfully!' />
           <Link
             href='/'
-            className='mx-auto my-2 block w-fit border-blue-800 px-4 py-2'
-          />
+            className='mx-auto my-2 block w-fit border-2 rounded-lg border-blue-800 px-4 py-2'
+          >
+            Home
+          </Link>
         </>
       )}
       {status === 'error' && (
         <>
           <BiMessageAltError className={icon} />
           <p className='c:font-bold c:text-blue-700 c:underline'>
-            too much time passed since we sent you the verification email, please <Link href='/auth/login'>Login</Link> or{' '}
-            <Link href='/auth/signup'>Sign up</Link> again
+            too much time passed since we sent you the verification email, please <Link href='/Auth/Login'>Login</Link> or{' '}
+            <Link href='/Auth/Signup'>Sign up</Link> again
           </p>
         </>
       )}

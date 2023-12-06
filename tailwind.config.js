@@ -27,7 +27,7 @@ module.exports = {
         },
       },
       animation: {
-        rotate: 'rotate 10s linear infinite',
+        rotate: 'rotate 10s ease-in-out infinite',
       },
     },
   },

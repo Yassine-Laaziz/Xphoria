@@ -14,7 +14,7 @@ export const urlForImage = (source: object) => imageBuilder?.image(source).auto(
 export const fetchData = async (query: string) => {
   const urlEncodedQuery = encodeURIComponent(query)
   const url = `https://${projectId}.api.sanity.io/v${apiVersion}/data/query/${dataset}?query=${urlEncodedQuery}`
-  const req = await fetch(url, { next: { tags: ['sanity'] } })
+  const req = await fetch(url, { next: { revalidate: 60, tags: ['sanity'] } })
   const response = (await req?.json())?.result
 
   return response

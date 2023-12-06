@@ -16,17 +16,18 @@ export default async function addToBag(productSlug: string, qty: number, chosenO
     await connect()
 
     const user = await getUserByServer()
-    if (!user) {
-      return { redirect: '/auth/login' }
-    }
+    if (!user) return { redirect: '/Auth' }
 
-    user.cart.push({ productSlug, qty, chosenOptions })
-    const cart = await cleanCart(user.cart)
+    const newCart = [...user.cart]
+    newCart.push({ productSlug, qty, chosenOptions })
+    const cart = await cleanCart(newCart)
+    if (!cart) return
 
-    await UserModel.findByIdAndUpdate(user.id, { cart })
+    await UserModel.findByIdAndUpdate(user._id, { cart })
 
     return { cart }
   } catch (e) {
+    console.log(e)
     return
   }
 }

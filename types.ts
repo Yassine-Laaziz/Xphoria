@@ -18,27 +18,33 @@ export interface ProductOptions {
 }
 
 export interface CartItem {
-  productSlug: string
+  name: string
   qty: number
   chosenOptions: ProductOptions
 }
 export interface FullCartItem {
-  productSlug: string
-  img: string
+  name: string
   price: number
   qty: number
+  image: string
   chosenOptions: ProductOptions
+  noBgImages: {
+    color: string
+    colorName: string
+    images: string[]
+    sizes: number[]
+  }[]
 }
 
 export interface Purchase {
   user: string
-  productSlug: string
+  productName: string
   purchaseDate: Date
   quantity: number
 }
 
 export interface Review {
-  productSlug: string
+  productName: string
   username: string
   userID: string
   img?: string
@@ -59,16 +65,16 @@ export interface social {
 export class User {
   username: string
   email: string
-  id: string
+  _id: string
   purchases: Purchase[]
   reviews: Review[]
   cart: CartItem[]
   img?: string
 
-  constructor(username: string, email: string, id: string, purchases: Purchase[], reviews: Review[], cart: CartItem[], img?: string) {
+  constructor(username: string, email: string, _id: string, purchases: Purchase[], reviews: Review[], cart: CartItem[], img?: string) {
     this.username = username
     this.email = email
-    this.id = id
+    this._id = _id
     this.purchases = purchases
     this.reviews = reviews
     this.cart = cart

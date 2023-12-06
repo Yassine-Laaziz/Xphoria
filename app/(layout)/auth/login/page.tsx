@@ -4,6 +4,7 @@ import axios from 'axios'
 import { useState, FormEvent, ChangeEvent } from 'react'
 import EmailLink from '../../../../components/EmailLink'
 import { err } from '../../../../lib/constants'
+import Link from 'next/link'
 
 export default function () {
   const [error, setError] = useState<string>('')
@@ -24,6 +25,7 @@ export default function () {
 
   function submit(e: FormEvent) {
     e.preventDefault()
+
     setDisabled(true)
     axios
       .post('/api/auth/login', { email })
@@ -49,19 +51,32 @@ export default function () {
       onSubmit={submit}
       className='flex flex-col gap-5'
     >
-      <input
-        onChange={handleChange}
-        placeholder='Enter your email address'
-        className='rounded-lg py-3 pl-2 text-blue-700'
-        autoComplete='email'
-      />
-      <button
-        disabled={disabled}
-        className='rounded-xl border-2 border-blue-700 py-2 disabled:text-gray-500'
-      >
-        Login
-      </button>
+      <h1 className='text-center font-bold text-3xl'>Login</h1>
+      <div className='flex flex-col gap-1'>
+        <input
+          onChange={handleChange}
+          placeholder='Enter your email address'
+          className='rounded-lg py-3 text-semibold pl-2 dark:text-emerald-500 text-cyan-400 shadow-2xl
+          bg-black dark:bg-white placeholder:text-white dark:placeholder:text-black placeholder:font-bold font-bold'
+          autoComplete='email'
+          autoFocus
+        />
+        <button
+          disabled={disabled}
+          type='submit'
+          className='py-2 text-lg border-2 dark:border-teal-400 rounded-lg duration-200 dark:hover:text-teal-500
+        disabled:bg-gray-900 border-cyan-400 hover:text-cyan-500 bg-black text-white'
+        >
+          Login
+        </button>
+      </div>
       <div className='text-center text-rose-700'>{error}</div>
+      <Link
+        href='/Auth/Signup'
+        className='mt-6 text-black font-semibold dark:text-white dark:shadow-[0_0_30px_1px_inset_white] px-4 py-2 w-fit rounded-lg'
+      >
+        no account? <span className='text-cyan-400 dark:text-emerald-700'>sign up!</span>
+      </Link>
     </form>
   ) : (
     <EmailLink

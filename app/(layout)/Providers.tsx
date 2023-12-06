@@ -2,7 +2,7 @@
 
 import { PropsWithChildren } from 'react'
 import { UserProvider } from '../../lib/contexts/UserContext'
-import { CartProvider } from '../../lib/contexts/CartContext'
+import { CartProvider } from '../../lib/contexts/LayoutContext'
 import { ThemeProvider } from '../../lib/contexts/ThemeContext'
 
 export default function Providers({ children }: PropsWithChildren) {

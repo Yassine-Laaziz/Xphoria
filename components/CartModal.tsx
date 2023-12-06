@@ -1,6 +1,6 @@
 'use client'
 
-import { useCartContext } from '../lib/contexts/CartContext'
+import { useLayoutContext } from '../lib/contexts/LayoutContext'
 import { Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
@@ -9,8 +9,9 @@ import { addToBag } from '../lib/serverActions'
 import { removeFromBag } from '../lib/serverActions'
 
 export default function CartModal() {
-  const { showCart, setShowCart, cartItems } = useCartContext()
-
+  const {
+    cart: { showCart, setShowCart, cartItems },
+  } = useLayoutContext()
   return (
     <Transition.Root
       show={showCart}
@@ -95,7 +96,7 @@ export default function CartModal() {
                       </div>
                       <div className='mt-6 flex justify-center text-center text-sm text-gray-500'>
                         <p>
-                          or
+                          or{' '}
                           <button
                             type='button'
                             className='font-medium text-indigo-600 hover:text-indigo-500'
@@ -121,13 +122,13 @@ export default function CartModal() {
 function CartItem({ item }: { item: FullCartItem }) {
   return (
     <li
-      key={item.productSlug + item.chosenOptions}
+      key={item.name + item.chosenOptions}
       className='flex py-6'
     >
       <div className='h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200'>
         <img
-          src={item.img}
-          alt={item.productSlug + item.chosenOptions}
+          src={item.image}
+          alt={item.name + item.chosenOptions}
           className='h-full w-full object-cover object-center'
         />
       </div>
@@ -135,7 +136,7 @@ function CartItem({ item }: { item: FullCartItem }) {
       <div className='ml-4 flex flex-1 flex-col'>
         <div>
           <div className='flex justify-between text-base font-medium text-gray-900'>
-            <h3>{item.productSlug}</h3>
+            <h3>{item.name}</h3>
             <p className='ml-4'>{item.price}</p>
           </div>
           <p className='mt-1 text-sm text-gray-500'>{item.chosenOptions.color}</p>

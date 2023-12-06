@@ -8,11 +8,11 @@ export default async function middleware(req: NextRequest) {
 
   // for unverified users
   if (!verified && pathname.startsWith('/checkout')) {
-    return NextResponse.redirect(newUrl('/auth/login'))
+    return NextResponse.redirect(newUrl('/Auth'))
   }
 
   // for verified users
-  if (verified && pathname.startsWith('/auth')) {
+  if (verified && pathname.startsWith('/Auth')) {
     return NextResponse.redirect(newUrl('/'))
   }
 

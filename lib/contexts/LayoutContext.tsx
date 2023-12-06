@@ -3,18 +3,22 @@ import { FullCartItem } from '../../types'
 import { getUserByServer } from '../serverFunctions/getUser'
 import cleanCart from '../utils/cleanCart'
 
-interface CartContextProps {
-  showCart: boolean
-  setShowCart: Dispatch<SetStateAction<boolean>>
-  cartItems: FullCartItem[]
-  setCartItems: Dispatch<SetStateAction<FullCartItem[]>>
+interface LayoutContextProps {
+  cart: {
+    showCart: boolean
+    setShowCart: Dispatch<SetStateAction<boolean>>
+    cartItems: FullCartItem[]
+    setCartItems: Dispatch<SetStateAction<FullCartItem[]>>
+  }
 }
 
-const CartContext = createContext<CartContextProps>({
-  showCart: false,
-  setShowCart: () => {},
-  cartItems: [],
-  setCartItems: () => {},
+const LayoutContext = createContext<LayoutContextProps>({
+  cart: {
+    showCart: false,
+    setShowCart: () => {},
+    cartItems: [],
+    setCartItems: () => {},
+  },
 })
 
 export function CartProvider({ children }: PropsWithChildren<{}>) {
@@ -30,7 +34,7 @@ export function CartProvider({ children }: PropsWithChildren<{}>) {
     })
   }, [])
 
-  return <CartContext.Provider value={{ showCart, setShowCart, cartItems, setCartItems }}>{children}</CartContext.Provider>
+  return <LayoutContext.Provider value={{ cart: { showCart, setShowCart, cartItems, setCartItems } }}>{children}</LayoutContext.Provider>
 }
 
-export const useCartContext = (): CartContextProps => useContext(CartContext)
+export const useLayoutContext = (): LayoutContextProps => useContext(LayoutContext)

@@ -12,7 +12,6 @@ export default async function sendEmail(email: string, subject: string, htmlText
         pass: process.env.PASS,
       },
     })
-
     await transporter.sendMail({
       from: process.env.USER,
       to: email,

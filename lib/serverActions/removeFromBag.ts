@@ -15,7 +15,7 @@ export default async function removeFromBag(product: string, chosenOptions: Prod
 
     const user = await getUserByServer()
     if (!user) {
-      return { redirect: '/auth/login' }
+      return { redirect: '/Auth' }
     }
     const cart = user.cart
 

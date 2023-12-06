@@ -7,7 +7,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import classNames from '../lib/utils/ClassNames'
 import { useUserContext } from '../lib/contexts/UserContext'
-import { useCartContext } from '../lib/contexts/CartContext'
+import { useLayoutContext } from '../lib/contexts/LayoutContext'
 import axios from 'axios'
 import { BsCart } from 'react-icons/bs'
 import { User } from '../types'
@@ -15,13 +15,16 @@ import Switch from './ToggleSwitch'
 import { usePathname } from 'next/navigation'
 
 export default function Navbar() {
+  const {
+    cart: { setShowCart },
+  } = useLayoutContext()
   const { user, setUser } = useUserContext()
-  const { setShowCart } = useCartContext()
   const pathname = usePathname()
 
   const navigation = [
     { name: 'Dashboard', href: '/', current: pathname === '/' },
-    { name: 'Checkout', href: '/Checkout', current: pathname === '/Checkout' },
+    { name: 'Checkout', href: '/Checkout', current: pathname.startsWith('/Checkout') },
+    { name: 'Signup & Login', href: '/Auth', current: pathname.startsWith('/Auth') },
   ]
 
   function signOut() {
@@ -114,7 +117,7 @@ export default function Navbar() {
                   ) : (
                     <Link
                       className='mr-2 rounded-md border-2 px-3 py-2 font-bold text-white transition-all hover:border-sky-500 dark:hover:border-green-300'
-                      href='/auth/login'
+                      href='/Auth'
                     >
                       SIGN IN
                     </Link>
@@ -146,7 +149,7 @@ export default function Navbar() {
                         <Menu.Item>
                           {({ active }) => (
                             <Link
-                              href='/auth/login'
+                              href='/Auth/Login'
                               className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                             >
                               Login
@@ -156,7 +159,7 @@ export default function Navbar() {
                         <Menu.Item>
                           {({ active }) => (
                             <Link
-                              href='/auth/signup'
+                              href='/Auth/Signup'
                               className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                             >
                               Sign up

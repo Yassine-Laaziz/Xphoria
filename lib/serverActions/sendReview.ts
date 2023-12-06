@@ -14,11 +14,10 @@ type ReturnT = {
 }
 
 export default async function sendReview(comment: string, rating: number, productSlug: string): Promise<ReturnT> {
-  if (!comment || !rating) {
-    return { msg: 'please make sure to write a comment and to rate the product' }
-  }
+  if (!comment) return { msg: 'please comment first' }
+  if (!rating) return { msg: 'please rate the product first' }
 
-  if (comment.split('').length > 300 || rating > 5 || rating < 1) {
+  if (comment.split('').length > 200 || rating > 5 || rating < 1) {
     return { msg: err }
   }
 
@@ -26,10 +25,10 @@ export default async function sendReview(comment: string, rating: number, produc
     await connect()
 
     const userJWT = await getUserByJWT()
-    if (!userJWT) return { redirect: '/auth/login' }
+    if (!userJWT) return { redirect: '/Auth' }
 
     const user: User | null = await UserModel.findById(userJWT?.id)
-    if (!user) return { redirect: '/auth/login' }
+    if (!user) return { redirect: '/Auth' }
 
     const { id, purchases, reviews, username, img } = user
 
