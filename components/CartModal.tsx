@@ -8,6 +8,7 @@ import { CartItemWithData } from '../types'
 import { addToBag, removeFromBag } from '../lib/serverFunctions/product'
 import { pay } from '../lib/serverActions/Stripe'
 import { loadStripe } from '@stripe/stripe-js'
+import Image from 'next/image'
 
 export default function CartModal() {
   const {
@@ -62,7 +63,7 @@ export default function CartModal() {
                       <div className="mt-8">
                         <div className="flow-root">
                           <ul role="list" className="-my-6 divide-y divide-gray-200">
-                            {cartItems[0] && cartItems.map(item => <CartItem item={item} />)}
+                            {cartItems[0] && cartItems.map(item => <CartItem key={`${item.productID + item.chosenOptions}`} item={item} />)}
                           </ul>
                         </div>
                       </div>
@@ -112,7 +113,7 @@ export function CartItem({ item: { name, slogan, price, image, options } }: { it
   return (
     <div className="mb-4 flex flex-col rounded-md bg-white p-4 shadow-sm">
       <div className="flex flex-row items-center">
-        <img src={image} alt={name} className="mr-4 h-32 w-32 rounded-lg object-cover" />
+        <Image src={image} alt={name} width={150} height={150} className="mr-4 h-32 w-32 rounded-lg object-cover" />
         <div>
           <h3 className="mb-2 text-xl font-semibold text-gray-800">{name}</h3>
           {slogan && <p className="mb-2 text-gray-600">{slogan}</p>}

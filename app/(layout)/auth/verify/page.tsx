@@ -10,7 +10,7 @@ import { TypingText } from '../../../../components/CustomTexts'
 import { useUserContext } from '../../../../lib/contexts/UserContext'
 import { FaSpinner } from 'react-icons/fa'
 
-export default function verify() {
+export default function Page() {
   const [status, setStatus] = useState<'pending' | 'success' | 'error'>('pending')
 
   const searchParams = useSearchParams()
@@ -32,7 +32,7 @@ export default function verify() {
           setTimeout(() => push('/Auth/Signup'), 10000)
         })
     } else () => setStatus('error')
-  }, [])
+  }, [push, refreshUser, searchParams])
 
   const icon = 'text-7xl mx-auto mb-5'
 
