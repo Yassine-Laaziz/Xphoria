@@ -6,6 +6,7 @@ export async function connect() {
   if (connection.isConnected) return
 
   try {
+    mongoose.set({ strictQuery: true })
     await mongoose.connect(process.env.MONGO_URI)
     connection.isConnected = true
   } catch (error) {

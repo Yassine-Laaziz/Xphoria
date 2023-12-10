@@ -18,12 +18,12 @@ export default async function hydrateCart(cart: CartItem[]): Promise<CartItemWit
 
     const image = urlForImage(product.image).url()
 
-    const noBgImages = product.noBgImages.map(noBgImg => ({
+    const options = product.options.map(noBgImg => ({
       ...noBgImg,
       images: noBgImg.images.map(img => urlForImage(img).url()),
     }))
 
-    cartWithData.push({ ...cartItem, name, image, noBgImages, price, slogan })
+    cartWithData.push({ ...cartItem, name, image, options, price, slogan })
   }
 
   return cartWithData

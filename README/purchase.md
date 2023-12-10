@@ -9,7 +9,7 @@ export interface Product {
   slogan?: string
   price: number
   image: object
-  noBgImages: {
+  options: {
     color: string
     colorName: string
     images: object[]
@@ -27,7 +27,7 @@ interface Review {
 }
 ```
 
-- note: a noBgImages object contains a color and it's colorName, it's images, and it's currently available sizes
+- note: a options object contains a color and it's colorName, it's images, and it's currently available sizes
 - note: the product string in the review object allows us to know to which product this review belongs.
 
 6. the user attempts to add a product to the cart. in the addToBag server action if the user isn't logged in we redirect him to [auth](Authorization.md).

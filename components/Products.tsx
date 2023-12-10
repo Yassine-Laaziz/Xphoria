@@ -1,44 +1,39 @@
-'use client'
+"use client";
 
-import Image from 'next/image'
-import { useEffect, useState } from 'react'
-import { TitleText, TypingText } from './CustomTexts'
-import { motion } from 'framer-motion'
-import { slideIn } from '../lib/motion'
-import { DisplayProduct } from '../types'
-import styles from '../styles'
-import ProductModal from './ProductModal'
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { TitleText, TypingText } from "./CustomTexts";
+import { motion } from "framer-motion";
+import { slideIn } from "../lib/motion";
+import { DisplayProduct } from "../types";
+import styles from "../styles";
+import Link from "next/link";
 
 const Products = ({ products }: { products: DisplayProduct[] }) => {
-  const [isTouchScreen, setIsTouchScreen] = useState<boolean>(false)
-  const [hovered, setHovered] = useState<number>()
-  const [currentProduct, setCurrentProduct] = useState<number>(0)
-  const [showModal, setShowModal] = useState<boolean>(false)
+  const [isTouchScreen, setIsTouchScreen] = useState<boolean>(false);
+  const [hovered, setHovered] = useState<number>();
 
   useEffect(() => {
-    setIsTouchScreen('ontouchstart' in window || navigator.maxTouchPoints > 0)
-  }, [])
+    setIsTouchScreen("ontouchstart" in window || navigator.maxTouchPoints > 0);
+  }, []);
 
   const select = (i: number) => {
-    if (!isTouchScreen) setHovered(i)
-  }
-
-  function handleClick(i: number) {
-    setCurrentProduct(i)
-    setShowModal(true)
-  }
+    if (!isTouchScreen) setHovered(i);
+  };
 
   return (
     products[0] && (
       <>
-        <h2 className='text-5xl my-20 font-bold text-center text-sky-400 dark:text-white'>Products</h2>
-        <div className='m-auto flex w-[70%] max-w-4xl flex-wrap justify-center gap-14 pb-40 text-white'>
+        <h2 className="my-20 text-center text-5xl font-bold text-sky-400 dark:text-white">
+          Products
+        </h2>
+        <div className="m-auto flex w-[70%] max-w-4xl flex-wrap justify-center gap-14 pb-40 text-white">
           {products.map((product, i) => (
-            <div
+            <Link
+              href={`/Product/${product._id}`}
               key={`product-${product.name}`}
-              className='group relative h-64 w-56 cursor-pointer rounded-md shadow-[0_0_25px_6px]  shadow-gray-700'
+              className="group relative h-64 w-56 cursor-pointer rounded-md shadow-[0_0_25px_6px]  shadow-gray-700"
               onMouseOver={() => select(i)}
-              onClick={() => handleClick(i)}
             >
               <Image
                 width={1000}
@@ -46,24 +41,24 @@ const Products = ({ products }: { products: DisplayProduct[] }) => {
                 quality={100}
                 src={product.image}
                 alt={`Xphoria ${product.name}`}
-                className='h-full rounded-md'
+                className="h-full rounded-md"
               />
               {hovered === i ? (
                 <motion.div
                   className={`${styles.absoluteCenter} hidden overflow-hidden
-                  rounded-md shadow-[0_0_50px_6px_inset] shadow-cyan-400 dark:shadow-emerald-900 group-hover:inline-block`}
-                  animate={{ width: '125%', height: '125%' }}
+                  rounded-md shadow-[0_0_50px_6px_inset] shadow-cyan-400 group-hover:inline-block dark:shadow-emerald-900`}
+                  animate={{ width: "125%", height: "125%" }}
                   viewport={{ once: false }}
                 >
                   <motion.div
-                    variants={slideIn('top', 'tween', 0, 0.2)}
-                    className='absolute bottom-0 w-full bg-[hsla(0,0%,0%,50%)]'
-                    initial='hidden'
-                    whileInView='show'
+                    variants={slideIn("top", "tween", 0, 0.2)}
+                    className="absolute bottom-0 w-full bg-[hsla(0,0%,0%,50%)]"
+                    initial="hidden"
+                    whileInView="show"
                   >
                     <TypingText
                       title={product.name}
-                      textStyles='text-2xl font-bold'
+                      textStyles="text-2xl font-bold"
                     />
                     <TitleText
                       title={`$${product.price}`}
@@ -73,10 +68,10 @@ const Products = ({ products }: { products: DisplayProduct[] }) => {
                 </motion.div>
               ) : (
                 isTouchScreen && (
-                  <div className='relative border-b-2 border-cyan-400 dark:border-emerald-500'>
+                  <div className="relative border-b-2 border-cyan-400 dark:border-emerald-500">
                     <TypingText
                       title={product.name}
-                      textStyles='text-2xl font-bold'
+                      textStyles="text-2xl font-bold"
                     />
                     <TitleText
                       title={`$${product.price}`}
@@ -85,18 +80,12 @@ const Products = ({ products }: { products: DisplayProduct[] }) => {
                   </div>
                 )
               )}
-            </div>
+            </Link>
           ))}
         </div>
-        <ProductModal
-          key={`${products[currentProduct].name} Modal`}
-          product={products[currentProduct]}
-          showModal={showModal}
-          setShowModal={setShowModal}
-        />
       </>
     )
-  )
-}
+  );
+};
 
-export default Products
+export default Products;

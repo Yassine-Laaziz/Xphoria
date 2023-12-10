@@ -1,6 +1,6 @@
 import { createContext, Dispatch, PropsWithChildren, SetStateAction, useContext, useEffect, useState } from 'react'
 import { User } from '../../types'
-import { getUserByServer } from '../serverFunctions/getUser'
+import { getFullUser } from '../serverFunctions/getUser'
 
 export const initialUser = new User('', '', '', [], [], [])
 
@@ -19,7 +19,7 @@ const UserContext = createContext<UserContextProps>({
 export function UserProvider({ children }: PropsWithChildren<{}>) {
   const [user, setUser] = useState<User>(initialUser)
   function refreshUser() {
-    getUserByServer().then(user => {
+    getFullUser().then(user => {
       if (user) setUser(user)
     })
   }

@@ -8,7 +8,7 @@ import { BiMessageAltError } from 'react-icons/bi'
 import Link from 'next/link'
 import { TypingText } from '../../../../components/CustomTexts'
 import { useUserContext } from '../../../../lib/contexts/UserContext'
-import { getUserByServer } from '../../../../lib/serverFunctions/getUser'
+import { getDatabaseUser } from '../../../../lib/serverFunctions/getUser'
 import { FaSpinner } from 'react-icons/fa'
 
 export default function verify() {
@@ -25,7 +25,7 @@ export default function verify() {
         .post('/api/auth/verify', { user_token })
         .then(async () => {
           setStatus('success')
-          const updatedUser = await getUserByServer()
+          const updatedUser = await getDatabaseUser()
           if (!updatedUser) return
           setUser(updatedUser)
           setTimeout(() => push('/'), 20000)

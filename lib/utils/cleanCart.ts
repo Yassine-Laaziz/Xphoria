@@ -18,7 +18,7 @@ export default async function cleanCart(cart: CartItem[]): Promise<CartItem[] | 
     if (!matchingProduct) continue
 
     // check if these are valid chosen options
-    const matchingOptions = matchingProduct.noBgImages.find(
+    const matchingOptions = matchingProduct.options.find(
       opt => opt.color === chosenOptions.color && opt.sizes.find(size => size === chosenOptions.size)
     )
     if (!matchingOptions) continue

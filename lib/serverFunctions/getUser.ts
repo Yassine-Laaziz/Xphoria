@@ -2,19 +2,20 @@
 
 import { cookies } from 'next/headers'
 import { verify } from '../jwt'
-import { User, userJWT } from '../../types'
+import { DatabaseUser, User, userJWT } from '../../types'
 import UserModel from '../../models/Users'
 import { connect } from '../mongodb'
-
-const user_token = cookies().get('user_token')?.value
+import ReviewModel from '../../models/Reviews'
+import PurchaseModel from '../../models/Purchases'
 
 export async function getUserByJWT(): Promise<userJWT | null | undefined> {
+  const user_token = cookies().get('user_token')?.value
   if (!user_token) return null
   let user = (await verify(user_token)) as userJWT | null
   return user
 }
 
-export async function getUserByServer(): Promise<User | null | undefined> {
+export async function getDatabaseUser(): Promise<DatabaseUser | null | undefined> {
   const jwtUser = await getUserByJWT()
   if (!jwtUser) return null
   connect()
@@ -24,4 +25,14 @@ export async function getUserByServer(): Promise<User | null | undefined> {
   const sanitizedUser = JSON.parse(JSON.stringify(serverUser))
 
   return sanitizedUser
+}
+
+export async function getFullUser(): Promise<User | null | undefined> {
+  const user = await getDatabaseUser()
+  if (!user) return
+
+  const userPurchases = await PurchaseModel.find({ userID: user })
+  const userReviews = userPurchases ? await ReviewModel.find({ userID: user }) : []
+
+  return { ...user, reviews: userReviews || [], purchases: userPurchases || [] }
 }

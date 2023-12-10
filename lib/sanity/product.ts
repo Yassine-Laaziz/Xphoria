@@ -30,7 +30,7 @@ export default {
       validation: (Rule: Rule) => Rule.required(),
     },
     {
-      name: 'noBgImages',
+      name: 'options',
       title: 'Colours and their Transparent-Background Images',
       type: 'array',
       of: [

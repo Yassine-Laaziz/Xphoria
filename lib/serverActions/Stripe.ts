@@ -3,13 +3,13 @@
 import { redirect } from 'next/navigation'
 import { fetchData } from '../sanity'
 import { urlForImage } from '../sanity'
-import { getUserByServer } from '../serverFunctions/getUser'
+import { getDatabaseUser } from '../serverFunctions/getUser'
 import { Product } from '../../types'
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 
 export async function pay() {
-  const user = await getUserByServer()
+  const user = await getDatabaseUser()
   if (!user?.cart) return redirect('/Auth')
 
   //   const allProducts: Product[] | null = await fetchData(`*[_type == "product"]`)

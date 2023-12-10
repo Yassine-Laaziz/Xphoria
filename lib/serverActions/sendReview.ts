@@ -2,15 +2,15 @@
 
 import { connect } from '../mongodb'
 import { err } from '../constants'
-import UserModel from '../../models/Users'
-import { DatabaseReview, UserReview } from '../../types'
-import ProductModel from '../../models/Products'
-import { getUserByServer } from '../serverFunctions/getUser'
+import { Review } from '../../types'
+import { getDatabaseUser } from '../serverFunctions/getUser'
+import PurchaseModel from '../../models/Purchases'
+import ReviewModel from '../../models/Reviews'
 
 type ReturnT = {
   msg?: string
   redirect?: string
-  updatedReviews?: UserReview[]
+  newReview?: Review
 }
 
 export default async function sendReview(comment: string, rating: number, productID: string): Promise<ReturnT> {
@@ -24,29 +24,21 @@ export default async function sendReview(comment: string, rating: number, produc
   try {
     await connect()
 
-    const user = await getUserByServer()
+    const user = await getDatabaseUser()
     if (!user) return { redirect: '/Auth' }
+    const { _id, username, img } = user
 
-    const { _id, purchases, reviews, username, img } = user
-
-    const hasBoughtProduct = purchases.some(purchase => purchase.productID === productID)
+    // verification
+    const hasBoughtProduct = await PurchaseModel.find({ userID: _id, productID })
     if (!hasBoughtProduct) return { msg: 'You need to try the product before reviewing it' }
+    const hasReviewedProduct = await ReviewModel.find({ userID: _id, productID })
+    if (hasReviewedProduct) return { msg: err }
 
-    const hasReviewedProduct = reviews.some(review => review.productID === productID)
-    if (!hasReviewedProduct) return { msg: err }
+    // update
+    const newReview = { username, comment, rating, productID, userID: _id, userImg: img || '' }
+    await ReviewModel.create({ newReview })
 
-    await ProductModel.create({
-      userID: _id,
-      username,
-      img,
-      comment,
-      rating,
-    })
-
-    const updatedReviews: UserReview[] = [...reviews, { productID, comment, rating }]
-    await UserModel.findByIdAndUpdate(_id, { reviews: updatedReviews })
-
-    return { updatedReviews }
+    return { newReview }
   } catch (e) {
     return { msg: err }
   }

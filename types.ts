@@ -14,7 +14,7 @@ export interface SanityProduct extends SanityMeta {
   slogan?: string
   price: number
   image: Image
-  noBgImages: {
+  options: {
     color: string
     colorName: string
     images: Image[]
@@ -28,13 +28,13 @@ export interface DisplayProduct extends SanityMeta {
   slogan?: string
   price: number
   image: string
-  noBgImages: {
+  options: {
     color: string
     colorName: string
     images: string[]
     sizes: string[]
   }[]
-  reviews: DatabaseReview[]
+  reviews: Review[]
 }
 
 // User Interfaces
@@ -45,7 +45,7 @@ export interface ProductOptions {
 }
 
 export interface CartItem {
-  _id: string
+  productID: string
   qty: number
   chosenOptions: ProductOptions
 }
@@ -55,7 +55,7 @@ export interface CartItemWithData extends CartItem {
   slogan?: string
   price: number
   image: string
-  noBgImages: {
+  options: {
     color: string
     colorName: string
     images: string[]
@@ -69,50 +69,23 @@ export interface Social {
   logo: Image
 }
 
-// Database Interfaces
-export interface DatabasePurchases {
+// Database
+export interface Purchase {
+  ProductID: string
   userID: string
-  purchaseDate: Date
-  quantity: number
-}
-
-export interface UserPurchase {
-  productID: string
-  purchaseDate: Date
-  quantity: number
-}
-
-export interface DatabaseReview {
-  userID: string
+  userImg?: string
   username: string
-  img?: string
-  rating: number
-  comment: string
+  purchaseDate: Date
+  quantity: number
 }
 
-export interface UserReview {
+export interface Review {
   productID: string
+  userID: string
+  userImg?: string
+  username: string
   rating: number
   comment: string
-}
-
-export interface DatabaseProduct {
-  name: string
-  slogan?: string
-  price: number
-  image: Image
-  noBgImages: {
-    color: string
-    colorName: string
-    images: Image[]
-    sizes: string[]
-  }[]
-  sanity_id: string
-  purchases: DatabasePurchases[]
-  reviews: DatabaseReview[]
-  _id: string
-  createdAt: string
-  updatedAt: string
 }
 
 // User Class
@@ -120,20 +93,12 @@ export class User {
   username: string
   email: string
   _id: string
-  purchases: UserPurchase[]
-  reviews: UserReview[]
+  purchases: Purchase[]
+  reviews: Review[]
   cart: CartItem[]
   img?: string
 
-  constructor(
-    username: string,
-    email: string,
-    _id: string,
-    purchases: UserPurchase[],
-    reviews: UserReview[],
-    cart: CartItem[],
-    img?: string
-  ) {
+  constructor(username: string, email: string, _id: string, purchases: Purchase[], reviews: Review[], cart: CartItem[], img?: string) {
     this.username = username
     this.email = email
     this._id = _id
@@ -142,6 +107,14 @@ export class User {
     this.cart = cart
     this.img = img
   }
+}
+
+export interface DatabaseUser {
+  _id: string
+  img?: string
+  username: string
+  email: string
+  cart: CartItem[]
 }
 
 export interface JWT {
