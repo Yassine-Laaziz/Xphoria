@@ -7,9 +7,9 @@ import { connect } from '../mongodb'
 import { fetchData, urlForImage } from '../sanity'
 import { getDatabaseUser } from './getUser'
 
-const sanityProducts: SanityProduct[] | null = await fetchData('*[_type == "product"]')
 const sanitizeObj = (obj: object) => JSON.parse(JSON.stringify(obj))
 export async function getDisplayProducts(): Promise<DisplayProduct[]> {
+  const sanityProducts: SanityProduct[] | null = await fetchData('*[_type == "product"]')
   if (!sanityProducts) return []
 
   const products: DisplayProduct[] = []
@@ -40,6 +40,7 @@ export async function getDisplayProducts(): Promise<DisplayProduct[]> {
 }
 
 export async function getDisplayProduct(id: string): Promise<DisplayProduct | null> {
+  const sanityProducts: SanityProduct[] | null = await fetchData('*[_type == "product"]')
   const product: SanityProduct | undefined = sanityProducts?.find(p => p._id === id)
   if (!product) return null
 
@@ -67,19 +68,25 @@ export async function modifyQty(productID: string, qty: number, chosenOptions: P
 
     const user = await getDatabaseUser()
     if (!user) return { redirect: '/Auth' }
-    const cart = [...user.cart]
+
+    const cart = user.cart.slice() // copy the cart to avoid mutation
     cart.forEach(item => sanitizeObj(item))
 
-    if (!verifyIsActualProduct(chosenOptions, productID)) return
+    if (!(await verifyIsActualProduct(chosenOptions, productID))) return
 
-    // Check if a similar product with similiar options already exists in the sanitized cart
     const foundItem = cart.find(
       item =>
         item.productID === productID && item.chosenOptions.color === chosenOptions.color && item.chosenOptions.size === chosenOptions.size
     )
 
-    if (foundItem && !(foundItem.qty <= 1 && qty < 0)) foundItem.qty += qty
-    else if (!foundItem && qty > 0) cart.push({ productID, qty, chosenOptions })
+    if (foundItem) {
+      if (foundItem.qty <= 1 && qty < 0) return
+      foundItem.qty += qty
+    } else if (qty > 0) {
+      cart.push({ productID, qty, chosenOptions })
+    } else {
+      return // no need to update cart if qty is 0 or negative
+    }
 
     await UserModel.findByIdAndUpdate(user._id, { cart })
     return { cart }
@@ -107,7 +114,8 @@ export async function removeItem(productID: string, chosenOptions: ProductOption
   }
 }
 
-function verifyIsActualProduct(chosenOptions: ProductOptions, productID: string): boolean {
+async function verifyIsActualProduct(chosenOptions: ProductOptions, productID: string): Promise<boolean | undefined> {
+  const sanityProducts: SanityProduct[] | null = await fetchData('*[_type == "product"]')
   if (!sanityProducts) return false
   const matchingProduct = sanityProducts.find(p => p._id === productID)
   if (!matchingProduct) return false
