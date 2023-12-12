@@ -18,24 +18,22 @@ export async function getDisplayProducts(): Promise<DisplayProduct[]> {
     await connect()
     const reviews: Review[] = await ReviewModel.find({ productID: _id })
 
-    sanityProducts.forEach(product => {
-      const image = urlForImage(product.image).url()
+    const image = urlForImage(product.image).url()
 
-      const options = product.options.map(option => ({
-        ...option,
-        images: option.images.map(img => urlForImage(img).url()),
-      }))
+    const options = product.options.map(option => ({
+      ...option,
+      images: option.images.map(img => urlForImage(img).url()),
+    }))
 
-      // Create a new product structure with reviews
-      products.push(
-        sanitizeObj({
-          ...product,
-          image,
-          options,
-          reviews,
-        })
-      )
-    })
+    // Create a new product structure with reviews
+    products.push(
+      sanitizeObj({
+        ...product,
+        image,
+        options,
+        reviews,
+      })
+    )
   }
 
   return products
@@ -58,45 +56,30 @@ export async function getDisplayProduct(id: string): Promise<DisplayProduct | nu
   return sanitizeObj({ ...product, reviews, options, image })
 }
 
-type AddT = {
+type modifyT = {
   redirect?: string
   cart?: CartItem[]
 }
 
-export async function addToBag(productID: string, qty: number, chosenOptions: ProductOptions): Promise<AddT | undefined> {
+export async function modifyQty(productID: string, qty: number, chosenOptions: ProductOptions): Promise<modifyT | undefined> {
   try {
     await connect()
 
     const user = await getDatabaseUser()
     if (!user) return { redirect: '/Auth' }
     const cart = [...user.cart]
+    cart.forEach(item => sanitizeObj(item))
 
-    if (!sanityProducts) return
-
-    // Check if this is an actual product
-    const matchingProduct = sanityProducts.find(p => p._id === productID)
-    if (!matchingProduct) return
-
-    // check if these are valid chosen options
-    const matchingOptions = matchingProduct.options.find(
-      opt => opt.color === chosenOptions.color && opt.sizes.find(size => size === chosenOptions.size)
-    )
-    if (!matchingOptions) return
+    if (!verifyIsActualProduct(chosenOptions, productID)) return
 
     // Check if a similar product with similiar options already exists in the sanitized cart
-    cart.forEach(item => sanitizeObj(item))
-    const existingItemIndex = cart.findIndex(
+    const foundItem = cart.find(
       item =>
         item.productID === productID && item.chosenOptions.color === chosenOptions.color && item.chosenOptions.size === chosenOptions.size
     )
 
-    if (existingItemIndex !== -1) {
-      // Update the quantity of the existing item
-      cart[existingItemIndex].qty += qty
-    } else {
-      // No existing product with the same options, add a new item to the sanitized cart
-      cart.push({ productID, qty, chosenOptions })
-    }
+    if (foundItem && !(foundItem.qty <= 1 && qty < 0)) foundItem.qty += qty
+    else if (!foundItem && qty > 0) cart.push({ productID, qty, chosenOptions })
 
     await UserModel.findByIdAndUpdate(user._id, { cart })
     return { cart }
@@ -105,33 +88,34 @@ export async function addToBag(productID: string, qty: number, chosenOptions: Pr
   }
 }
 
-type RemoveT = {
-  redirect?: string
-  cart?: CartItem[]
-}
-export async function removeFromBag(productID: string, chosenOptions: ProductOptions): Promise<RemoveT | undefined> {
+export async function removeItem(productID: string, chosenOptions: ProductOptions) {
   try {
     await connect()
 
     const user = await getDatabaseUser()
-    if (!user) {
-      return { redirect: '/Auth' }
-    }
-    const cart = user.cart
-
-    // Find the index of the item to be removed
-    const existingItemIndex = cart.findIndex(
+    if (!user) return { redirect: '/Auth' }
+    user.cart.forEach(item => sanitizeObj(item))
+    const cart = user.cart.filter(
       item =>
-        item.productID === productID && item.chosenOptions.color === chosenOptions.color && item.chosenOptions.size === chosenOptions.size
+        item.productID !== productID && item.chosenOptions.color !== chosenOptions.color && item.chosenOptions.size !== chosenOptions.size
     )
 
-    if (existingItemIndex !== -1) cart.splice(existingItemIndex, 1)
-    // Removed the item from the cart
-
     await UserModel.findByIdAndUpdate(user._id, { cart })
-
     return { cart }
   } catch (e) {
     return
   }
+}
+
+function verifyIsActualProduct(chosenOptions: ProductOptions, productID: string): boolean {
+  if (!sanityProducts) return false
+  const matchingProduct = sanityProducts.find(p => p._id === productID)
+  if (!matchingProduct) return false
+
+  const matchingOptions = matchingProduct.options.find(
+    opt => opt.color === chosenOptions.color && opt.sizes.find(size => size === chosenOptions.size)
+  )
+  if (!matchingOptions) return false
+
+  return true
 }

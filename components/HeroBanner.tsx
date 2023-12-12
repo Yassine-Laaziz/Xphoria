@@ -69,23 +69,16 @@ export default function HeroBanner() {
       {/* Scroll Down Button */}
       <motion.div
         className="absolute bottom-8 left-1/2 text-center text-cyan-400 selection:text-sky-300
-        c:mx-auto dark:text-emerald-700 dark:selection:text-emerald-500"
+        c:mx-auto dark:text-emerald-400 dark:selection:text-emerald-500"
         initial={{ opacity: 0, y: -20, x: '-50%' }}
         animate={{ opacity: 1, y: 0, x: '-50%' }}
         transition={{ delay: 3, duration: 1 }}
       >
-        <h2 className="mb-2 font-bold text-red-500">PLEASE NOTE:</h2>
-        <p className="mb-7 text-gray-700 dark:text-gray-400">
-          <span>
-            This website is a <strong>DEMO</strong> for the Company respecting the owner&apos;s wishes
-          </span>
-          <br />
-          <span>so i can&apos;t provide the actual website but this is a good replica</span>
-          <br />
-          -Difference: some functionalities are not complete especially the cart functionality
-        </p>
-        <BsArrowBarDown onClick={scrollDown} className="mt-7 text-3xl" />
-        <div className="h-1 w-60 bg-gradient-to-r from-white via-gray-700 to-white" />
+        <h2 className="text-4xl font-bold tracking-tighter"> We Do it Better!</h2>
+        <BsArrowBarDown
+          onClick={scrollDown}
+          className="mt-7 animate-bounce cursor-pointer text-5xl font-black transition-all hover:scale-110"
+        />
       </motion.div>
     </div>
   )

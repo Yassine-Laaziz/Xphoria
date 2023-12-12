@@ -1,39 +1,42 @@
 'use server'
 
 import { redirect } from 'next/navigation'
-import { fetchData } from '../sanity'
-import { urlForImage } from '../sanity'
 import { getDatabaseUser } from '../serverFunctions/getUser'
-import { Product } from '../../types'
+import hydrateCart from '../serverFunctions/hydrateCart'
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 
 export async function pay() {
-  const user = await getDatabaseUser()
-  if (!user?.cart) return redirect('/Auth')
+  try {
+    const user = await getDatabaseUser()
+    if (!user?.cart) return redirect('/Auth')
+    // user.cart is safe because of the sanitizng in "addToBag.ts" and it comes from the server
 
-  //   const allProducts: Product[] | null = await fetchData(`*[_type == "product"]`)
-  //   if (!allProducts) return
+    const cart = await hydrateCart(user.cart)
 
-  //   // we already know that user.cart is safe because of because of cleanning in "addToBag.ts"
-  //   const line_items = user.cart.map(cartItem => {
-  //     const productWithImage = allProducts.find(product => product.productID)
-  //     return {
-  //     price_data: {
-  //       currency: 'usd',
-  //       unit_amount: cartItem.price * 100,
-  //       product_data: { name, description, images: [imageURL] },
-  //     },
-  //     quantity: 1,
-  //   }}
-  // })
+    const line_items = cart.map(cartItem => {
+      const { name, image, slogan, price } = cartItem
+      return {
+        price_data: {
+          currency: 'usd',
+          unit_amount: price * 100,
+          product_data: { name, description: slogan, image },
+        },
+        quantity: 1,
+      }
+    })
 
-  //   const session = await stripe.checkout.sessions.create({
-  //     line_items,
-  //     customer_email: user.email,
-  //     mode: 'payment',
-  //     success_url: `${process.env.URL}/Success`,
-  //     cancel_url: `${process.env.URL}`,
-  //   })
-  //   redirect(session.url)
+    console.log('reached')
+
+    const session = await stripe.checkout.sessions.create({
+      line_items,
+      customer_email: user.email,
+      mode: 'payment',
+      success_url: `${process.env.URL}/Success`,
+      cancel_url: `${process.env.URL}`,
+    })
+    redirect(session.url)
+  } catch (e) {
+    console.log(e)
+  }
 }

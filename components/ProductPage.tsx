@@ -9,14 +9,14 @@ import { Dispatch, SetStateAction, useState } from 'react'
 import { colord } from 'colord'
 import { ExclamationCircleIcon, StarIcon } from '@heroicons/react/24/outline'
 import { sendReview } from '../lib/serverActions'
-import { addToBag } from '../lib/serverFunctions/product'
+import { modifyQty } from '../lib/serverFunctions/product'
 import { motion } from 'framer-motion'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useRouter } from 'next/navigation'
-import { useUserContext } from '../lib/contexts/UserContext'
 import { err } from '../lib/constants'
-import { useLayoutContext } from '../lib/contexts/LayoutContext'
+import { useUserContext } from '../lib/contexts/UserContext'
+import { useCartContext } from '../lib/contexts/CartContext'
 import hydrateCart from '../lib/serverFunctions/hydrateCart'
 
 export default function ProductPage({ product }: { product: DisplayProduct }) {
@@ -53,6 +53,7 @@ export default function ProductPage({ product }: { product: DisplayProduct }) {
   }
 
   function changeColor(i: number, color: string, colorName: string): void {
+    if (index.color === i) return
     setIndex(prev => ({ ...prev, color: i, mainImage: 0 }))
     setChosenOptions({
       size: product.options[i].sizes[0],
@@ -173,7 +174,7 @@ function FirstCard({ reviewInput, setReviewInput, product, push }: FirstCardProp
   return (
     <>
       <h2 className="pb-2 text-3xl tracking-wider text-white dark:[textShadow:0_0_7px_white] sm:text-4xl">Reviews</h2>
-      {product.reviews ? (
+      {product.reviews?.[0] ? (
         product.reviews.map(review => (
           <div key={'review' + review.userID} className="flex-1 overflow-y-auto py-2">
             <p>{review.rating}</p>
@@ -224,19 +225,15 @@ function FirstCard({ reviewInput, setReviewInput, product, push }: FirstCardProp
   )
 }
 function SecondCard({ product, index, setIndex, chosenOptions, push }: SecondCardProps) {
-  const { refreshUser } = useUserContext()
-  const {
-    cart: { cartItems, setCartItems },
-  } = useLayoutContext()
+  const { setCartItems } = useCartContext()
 
   async function handleAddToBag() {
-    const res = await addToBag(product._id, 1, chosenOptions)
+    const res = await modifyQty(product._id, 1, chosenOptions)
     if (!res) return
     if (res.redirect) push(res.redirect)
     else if (res.cart) {
       toast.success('Added !')
       const newCart = await hydrateCart(res.cart)
-      refreshUser()
       setCartItems(newCart)
     }
   }
@@ -249,7 +246,7 @@ function SecondCard({ product, index, setIndex, chosenOptions, push }: SecondCar
           {product.slogan}
         </h4>
       </section>
-      <section className="relative m-auto aspect-video max-w-full flex-1">
+      <section className="relative m-auto aspect-video max-h-full max-w-full flex-1 object-contain">
         <Image src={product.options[index.color].images[index.mainImage]} fill={true} alt={`Xphoria-${product.name}`} quality={100} />
       </section>
       <section className="relative mx-auto mt-auto flex w-fit justify-center gap-5 pt-4">
@@ -279,19 +276,16 @@ function ThirdCard({ product, index, chosenOptions, setChosenOptions, changeColo
     <>
       <h2 className="pb-2 text-3xl font-black tracking-wider text-white dark:[textShadow:0_0_7px_white] sm:text-4xl">Customize</h2>
       <h3 className="text-3xl font-bold [textShadow:0_0_5px_white]">{product.price}$</h3>
-      <section className="mx-auto mb-auto mt-4 flex w-fit flex-col gap-5">
-        <section>
+      <section className="mx-auto flex max-h-72 w-fit flex-1 flex-col justify-around">
+        <div>
           <h2>select size</h2>
-          <div
-            className="rounded-md bg-opacity-80 bg-gradient-to-tr from-cyan-200
-           to-cyan-400 px-4 py-2 dark:bg-gray-900 dark:from-emerald-900 dark:to-green-400"
-          >
-            <h3 className="mb-1 font-black">{chosenOptions.size}</h3>
-            <div className="flex justify-around gap-3">
+          <div>
+            <h3 className="mx-auto mb-2 mt-1 w-fit flex-wrap rounded-lg px-2 py-1 font-black">{chosenOptions.size}</h3>
+            <div className="flex flex-wrap justify-around gap-3">
               {product.options[index.color].sizes.map((size, i) => (
                 <h2
-                  className={`cursor-pointer rounded-lg bg-white p-2 text-cyan-400 dark:bg-[hsla(0,0%,0%,.8)] dark:text-white
-                      ${chosenOptions.size === size ? 'scale-125' : ''}`}
+                  className={`cursor-pointer rounded-lg bg-white p-2 text-cyan-400 transition-all dark:bg-[hsla(0,0%,0%,.8)] dark:text-white
+                      ${chosenOptions.size === size ? 'scale-125 border-2 border-black dark:border-white' : ''}`}
                   onClick={() => setChosenOptions(prev => ({ ...prev, size }))}
                   key={`sizes-pick-${i}`}
                 >
@@ -300,15 +294,12 @@ function ThirdCard({ product, index, chosenOptions, setChosenOptions, changeColo
               ))}
             </div>
           </div>
-        </section>
-        <section className="font-mono">
+        </div>
+        <div>
           <h2>select colour</h2>
-          <div
-            className="rounded-md bg-opacity-80 bg-gradient-to-tr from-cyan-200
-           to-cyan-400 px-4 py-2 dark:bg-gray-900 dark:from-emerald-900 dark:to-green-400"
-          >
+          <div>
             <h3
-              className="mb-2 rounded-md px-2 py-1 text-2xl shadow-[0_0_15px_10px_inset]"
+              className="mx-auto mb-2 mt-1 w-fit flex-wrap rounded-lg px-2 py-1 text-sm"
               style={{
                 color: chosenOptions.color,
                 textShadow: colord(chosenOptions.color).isDark() ? `0 0 10px ${colord(chosenOptions.color).invert().toHslString()}` : '',
@@ -316,11 +307,11 @@ function ThirdCard({ product, index, chosenOptions, setChosenOptions, changeColo
             >
               {chosenOptions.colorName}
             </h3>
-            <div className="flex justify-around gap-3">
+            <div className="flex flex-wrap justify-center gap-3 before:absolute before:top-[60%] before:-z-20 before:h-[250px] before:w-[400px] before:rounded-full before:bg-radial-gradient before:from-white before:to-transparent before:blur-2xl before:content-[''] dark:before:blur-3xl ">
               {product.options.map((obj, i) => (
                 <div
                   onClick={() => changeColor(i, obj.color, obj.colorName)}
-                  className={`inline-block h-6 w-6 cursor-pointer rounded-full [border:1px_solid_black]
+                  className={`inline-block h-8 w-8 cursor-pointer rounded-full border-2 border-white transition-all
                       ${index.color === i ? 'scale-125' : ''}`}
                   key={`color-pick-${i}`}
                   style={{ backgroundColor: obj.color }}
@@ -328,16 +319,10 @@ function ThirdCard({ product, index, chosenOptions, setChosenOptions, changeColo
               ))}
             </div>
           </div>
-        </section>
+        </div>
       </section>
     </>
   )
-}
-
-interface props {
-  product: DisplayProduct
-  showModal: boolean
-  setShowModal: Dispatch<SetStateAction<boolean>>
 }
 
 interface Tindex {

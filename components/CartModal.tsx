@@ -1,21 +1,20 @@
 'use client'
 
-import { useLayoutContext } from '../lib/contexts/LayoutContext'
+import { useCartContext } from '../lib/contexts/CartContext'
 import { Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
-import { CartItemWithData } from '../types'
-import { addToBag, removeFromBag } from '../lib/serverFunctions/product'
+import { CartItemWithData, ProductOptions } from '../types'
 import { pay } from '../lib/serverActions/Stripe'
 import { loadStripe } from '@stripe/stripe-js'
 import Image from 'next/image'
+import { MdRemoveCircle } from 'react-icons/md'
 
 export default function CartModal() {
-  const {
-    cart: { showCart, setShowCart, cartItems },
-  } = useLayoutContext()
+  const { showCart, setShowCart, cartItems, changeQty, remove, totalPrice, totalQty } = useCartContext()
 
   const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
+
   return (
     <Transition.Root show={showCart} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={setShowCart}>
@@ -63,7 +62,15 @@ export default function CartModal() {
                       <div className="mt-8">
                         <div className="flow-root">
                           <ul role="list" className="-my-6 divide-y divide-gray-200">
-                            {cartItems[0] && cartItems.map(item => <CartItem key={`${item.productID + item.chosenOptions}`} item={item} />)}
+                            {cartItems[0] &&
+                              cartItems.map(item => (
+                                <CartItem
+                                  key={`${item.productID + item.chosenOptions}`}
+                                  changeQty={changeQty}
+                                  remove={remove}
+                                  item={item}
+                                />
+                              ))}
                           </ul>
                         </div>
                       </div>
@@ -72,7 +79,8 @@ export default function CartModal() {
                     <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
                       <div className="flex justify-between text-base font-medium text-gray-900 dark:text-gray-300">
                         <p>Subtotal</p>
-                        <p>$262.00</p>
+                        <p>${totalPrice}</p>
+                        <p>{totalQty} items</p>
                       </div>
                       <p className="mt-0.5 text-sm text-gray-500 dark:text-gray-300">Shipping and taxes calculated at checkout.</p>
                       <div className="mt-6">
@@ -109,35 +117,38 @@ export default function CartModal() {
   )
 }
 
-export function CartItem({ item: { name, slogan, price, image, options } }: { item: CartItemWithData }) {
+export function CartItem({ item, changeQty, remove }: CartItemProps) {
+  const { name, slogan, price, image, chosenOptions, qty, productID } = item
   return (
     <div className="mb-4 flex flex-col rounded-md bg-white p-4 shadow-sm">
       <div className="flex flex-row items-center">
-        <Image src={image} alt={name} width={150} height={150} className="mr-4 h-32 w-32 rounded-lg object-cover" />
+        <Image src={image} alt={name} width={150} height={150} className="mr-4 h-32 w-32 rounded-lg object-contain" />
         <div>
           <h3 className="mb-2 text-xl font-semibold text-gray-800">{name}</h3>
           {slogan && <p className="mb-2 text-gray-600">{slogan}</p>}
           <p className="text-2xl font-bold text-gray-800">${price}</p>
         </div>
       </div>
-      {options.length > 0 && (
-        <div className="mb-2 mt-4">
-          <h4 className="mb-2 text-lg font-medium text-gray-800">Options:</h4>
-          {options.map(option => (
-            <div key={option.color} className="mb-2 flex flex-row items-center">
-              <span className="mr-2 font-medium text-gray-800">{option.colorName}:</span>
-              <span className="mr-2 h-4 w-4 rounded-full" style={{ backgroundColor: option.color }}></span>
-              {option.images.length > 0 && (
-                <span className="text-gray-600">
-                  (See
-                  {option.images.length}
-                  images)
-                </span>
-              )}
-            </div>
-          ))}
+      <div className="mb-2 mt-4 flex flex-row items-center">
+        <span className="mr-2 font-medium text-gray-800">{chosenOptions.size}</span>
+        <span className="mr-2 h-4 w-4 rounded-full" style={{ backgroundColor: chosenOptions.color }} />
+        <div className="flex flex-row items-center">
+          <button onClick={() => changeQty(productID, chosenOptions, -1)} className="mr-2 rounded-lg bg-gray-200 px-2">
+            -
+          </button>
+          <span className="px-2 font-medium text-gray-800">{qty}</span>
+          <button onClick={() => changeQty(productID, chosenOptions, +1)} className="rounded-lg bg-gray-200 px-2">
+            +
+          </button>
+          <MdRemoveCircle onClick={() => remove(productID, chosenOptions)} className="ml-4 cursor-pointer text-2xl text-red-700" />
         </div>
-      )}
+      </div>
     </div>
   )
+}
+
+interface CartItemProps {
+  item: CartItemWithData
+  changeQty: (productID: string, chosenOptions: ProductOptions, qty: number) => void
+  remove: (productID: string, chosenOptions: ProductOptions) => void
 }

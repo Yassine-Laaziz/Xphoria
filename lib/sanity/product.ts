@@ -61,7 +61,7 @@ const productSchema = {
               title: 'Sizes',
               type: 'array',
               of: [{ type: 'string' }],
-              validation: (Rule: Rule) => Rule.required().min(1),
+              validation: (Rule: Rule) => Rule.required().min(1).max(7),
             },
           ],
         },
