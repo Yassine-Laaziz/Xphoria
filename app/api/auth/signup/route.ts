@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
       If this is not you, please ignore this email. We'd love it if you considered visiting our
       <a href="${process.env.BASE_URL}" style="color:rgb(29,78,216)">website</a>.
       </p>
-      <a href="${process.env.BASE_URL}/auth/verify?t=${token}" style="${styles.htmlVerifyButton}">
+      <a href="${process.env.BASE_URL}/Auth/Verify?t=${token}" style="${styles.htmlVerifyButton}">
         Verify
       </a>`
     )

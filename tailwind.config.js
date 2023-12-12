@@ -10,6 +10,10 @@ module.exports = {
   mode: 'jit',
   theme: {
     extend: {
+      fontFamily: {
+        orbitron: ['var(--font-orbitron)'],
+        silkscreen: ['var(--font-silkscreen)'],
+      },
       backgroundImage: {
         'radial-gradient': 'radial-gradient(var(--tw-gradient-stops))',
       },
@@ -27,7 +31,7 @@ module.exports = {
         },
       },
       animation: {
-        rotate: 'rotate 10s linear infinite',
+        rotate: 'rotate 10s ease-in-out infinite',
       },
     },
   },

@@ -31,8 +31,8 @@ export async function POST(request: NextRequest) {
       user.email,
       'Login !',
       `Hello there, someone tried to login to our website using your email address.
-      You can click the verify button below to login. If this is not you, you can still login through the verify button. You're totally safe.
-      <a href="${process.env.BASE_URL}/auth/verify?t=${token}" style="${styles.htmlVerifyButton}">
+        You can click the verify button below to login. If this is not you, you can still login through the verify button. You're totally safe.
+      <a href="${process.env.BASE_URL}/Auth/Verify?t=${token}" style="${styles.htmlVerifyButton}">
         Verify
       </a>`
     )

@@ -4,8 +4,9 @@ import axios from 'axios'
 import { useState, FormEvent, ChangeEvent } from 'react'
 import EmailLink from '../../../../components/EmailLink'
 import { err } from '../../../../lib/constants'
+import Link from 'next/link'
 
-export default function () {
+export default function Page() {
   const [error, setError] = useState<string>('')
   const [email, setEmail] = useState<string>('')
   const [disabled, setDisabled] = useState<boolean>(false)
@@ -24,6 +25,7 @@ export default function () {
 
   function submit(e: FormEvent) {
     e.preventDefault()
+
     setDisabled(true)
     axios
       .post('/api/auth/login', { email })
@@ -45,28 +47,35 @@ export default function () {
   }
 
   return isFirstSection ? (
-    <form
-      onSubmit={submit}
-      className='flex flex-col gap-5'
-    >
-      <input
-        onChange={handleChange}
-        placeholder='Enter your email address'
-        className='rounded-lg py-3 pl-2 text-blue-700'
-        autoComplete='email'
-      />
-      <button
-        disabled={disabled}
-        className='rounded-xl border-2 border-blue-700 py-2 disabled:text-gray-500'
+    <form onSubmit={submit} className="flex flex-col gap-5">
+      <h1 className="text-center text-3xl font-bold">Login</h1>
+      <div className="flex flex-col gap-1">
+        <input
+          onChange={handleChange}
+          placeholder="Enter your email address"
+          className="text-semibold rounded-lg bg-black py-3 pl-2 font-bold text-cyan-400
+          shadow-2xl placeholder:font-bold placeholder:text-white dark:bg-white dark:text-emerald-500 dark:placeholder:text-black"
+          autoComplete="email"
+          autoFocus
+        />
+        <button
+          disabled={disabled}
+          type="submit"
+          className="rounded-lg border-2 border-cyan-400 bg-black py-2 text-lg text-white
+        duration-200 hover:text-cyan-500 disabled:bg-gray-900 dark:border-teal-400 dark:hover:text-teal-500"
+        >
+          Login
+        </button>
+      </div>
+      <div className="text-center text-rose-700">{error}</div>
+      <Link
+        href="/Auth/Signup"
+        className="mt-6 w-fit rounded-lg px-4 py-2 font-semibold text-black dark:text-white dark:shadow-[0_0_30px_1px_inset_white]"
       >
-        Login
-      </button>
-      <div className='text-center text-rose-700'>{error}</div>
+        no account? <span className="text-cyan-400 dark:text-emerald-700">sign up!</span>
+      </Link>
     </form>
   ) : (
-    <EmailLink
-      email={email}
-      goBack={() => setIsFirstSection(true)}
-    />
+    <EmailLink email={email} goBack={() => setIsFirstSection(true)} />
   )
 }

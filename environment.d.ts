@@ -14,6 +14,10 @@ declare global {
       MONGO_URI: string
       BASE_URL: string
       JWT_SECRET_KEY: string
+      // stripe
+      NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: string
+      STRIPE_SECRET_KEY: string
+      STRIPE_WEBHOOK_SECRET: string
     }
   }
 }

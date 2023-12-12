@@ -1,6 +1,6 @@
 import { Rule } from 'sanity'
 
-export default {
+const productSchema = {
   name: 'product',
   title: 'Product',
   type: 'document',
@@ -30,7 +30,7 @@ export default {
       validation: (Rule: Rule) => Rule.required(),
     },
     {
-      name: 'noBgImages',
+      name: 'options',
       title: 'Colours and their Transparent-Background Images',
       type: 'array',
       of: [
@@ -61,7 +61,7 @@ export default {
               title: 'Sizes',
               type: 'array',
               of: [{ type: 'string' }],
-              validation: (Rule: Rule) => Rule.required().min(1),
+              validation: (Rule: Rule) => Rule.required().min(1).max(7),
             },
           ],
         },
@@ -73,3 +73,5 @@ export default {
     },
   ],
 }
+
+export default productSchema

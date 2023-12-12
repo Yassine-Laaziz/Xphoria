@@ -5,7 +5,7 @@ import Navbar from '../../components/Navbar'
 import OfflineModal from '../../components/OfflineModal'
 import CartModal from '../../components/CartModal'
 
-export default function ({ children }: PropsWithChildren) {
+export default function Layout({ children }: PropsWithChildren) {
   return (
     <Providers>
       <OfflineModal />

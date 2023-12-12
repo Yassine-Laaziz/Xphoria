@@ -1,17 +1,13 @@
+import { ObjectId } from 'mongodb'
 import { Schema, model, models } from 'mongoose'
 
 const ReviewSchema = new Schema({
-  productSlug: { type: String, required: true },
+  productID: { type: String, required: true },
+  userID: { type: ObjectId, required: true },
+  userImg: { type: String },
   username: { type: String, required: true },
-  userID: { type: String, required: true },
-  img: { type: String, required: true },
   comment: { type: String, required: true },
-  rating: {
-    type: Number,
-    required: true,
-    min: 1,
-    max: 5,
-  },
+  rating: { type: Number, required: true, min: 1, max: 5 },
 })
 
 const ReviewModel = models.review || model('review', ReviewSchema)
