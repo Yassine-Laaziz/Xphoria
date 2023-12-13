@@ -3,7 +3,7 @@
 import { connect } from '../mongodb'
 import { err } from '../constants'
 import { Review } from '../../types'
-import { getDatabaseUser } from '../serverFunctions/getUser'
+import { getDatabaseUser } from './getUser'
 import PurchaseModel from '../../models/Purchases'
 import ReviewModel from '../../models/Reviews'
 
