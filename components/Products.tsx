@@ -55,7 +55,7 @@ export default function Products({ products }: { products: DisplayProduct[] }) {
                 >
                   <motion.div
                     variants={slideIn('top', 'tween', 0, 0.2)}
-                    className="absolute bottom-0 w-full bg-cyan-300 shadow-[0_0_50px_1px_white]"
+                    className="absolute bottom-0 w-full bg-cyan-300 shadow-[0_0_50px_1px_white] dark:bg-emerald-500"
                     initial="hidden"
                     whileInView="show"
                   >

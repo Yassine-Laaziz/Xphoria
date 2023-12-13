@@ -104,7 +104,11 @@ export async function removeItem(productID: string, chosenOptions: ProductOption
     user.cart.forEach(item => sanitizeObj(item))
     const cart = user.cart.filter(
       item =>
-        item.productID !== productID && item.chosenOptions.color !== chosenOptions.color && item.chosenOptions.size !== chosenOptions.size
+        !(
+          item.productID === productID &&
+          item.chosenOptions.color === chosenOptions.color &&
+          item.chosenOptions.size === chosenOptions.size
+        )
     )
 
     await UserModel.findByIdAndUpdate(user._id, { cart })

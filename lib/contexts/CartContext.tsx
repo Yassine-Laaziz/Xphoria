@@ -1,4 +1,4 @@
-import { createContext, Dispatch, PropsWithChildren, SetStateAction, useContext, useEffect, useState } from 'react'
+import { createContext, Dispatch, PropsWithChildren, SetStateAction, useCallback, useContext, useEffect, useState } from 'react'
 import { CartItemWithData, ProductOptions } from '../../types'
 import { getDatabaseUser } from '../serverFunctions/getUser'
 import hydrateCart from '../serverFunctions/hydrateCart'
@@ -34,6 +34,18 @@ export function CartProvider({ children }: PropsWithChildren<{}>) {
   const [totalPrice, setTotalPrice] = useState(0)
   const [totalQty, setTotalQty] = useState(0)
 
+  const updatePriceAndQuantities = useCallback(() => {
+    let newTotalPrice = 0
+    let newTotalQty = 0
+    for (const item of cartItems) {
+      newTotalPrice += item.price * item.qty
+      newTotalQty += item.qty
+    }
+
+    setTotalPrice(newTotalPrice)
+    setTotalQty(newTotalQty)
+  }, [cartItems])
+
   async function changeQty(productID: string, chosenOptions: ProductOptions, qty: number) {
     const newCart = [...cartItems]
     const item = cartItems.find(
@@ -51,31 +63,18 @@ export function CartProvider({ children }: PropsWithChildren<{}>) {
     refreshCart()
   }
 
-  async function refreshCart() {
+  const refreshCart = useCallback(async () => {
     const user = await getDatabaseUser()
     if (user) {
       const cartWithData = await hydrateCart(user.cart)
       setCartItems(cartWithData)
       updatePriceAndQuantities()
     }
-  }
-
-  function updatePriceAndQuantities() {
-    let newTotalPrice = 0
-    let newTotalQty = 0
-    for (const item of cartItems) {
-      newTotalPrice += item.price * item.qty
-      console.log(newTotalPrice)
-      newTotalQty += item.qty
-    }
-
-    setTotalPrice(newTotalPrice)
-    setTotalQty(newTotalQty)
-  }
+  }, [updatePriceAndQuantities])
 
   useEffect(() => {
     refreshCart()
-  }, [])
+  }, [refreshCart])
 
   return (
     <CartContext.Provider value={{ showCart, setShowCart, cartItems, setCartItems, refreshCart, changeQty, remove, totalPrice, totalQty }}>

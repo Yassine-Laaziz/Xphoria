@@ -13,4 +13,5 @@ const silkscreen = Silkscreen({
   display: 'swap',
 })
 
-export default `${silkscreen.variable} ${orbitron.variable}`
+const fonts = `${silkscreen.variable} ${orbitron.variable}`
+export default fonts

@@ -9,10 +9,16 @@ import { pay } from '../lib/serverActions/Stripe'
 import { loadStripe } from '@stripe/stripe-js'
 import Image from 'next/image'
 import { MdRemoveCircle } from 'react-icons/md'
+import { useRouter } from 'next/navigation'
 
 export default function CartModal() {
   const { showCart, setShowCart, cartItems, changeQty, remove, totalPrice, totalQty } = useCartContext()
 
+  const { push } = useRouter()
+  async function checkout() {
+    const res = await pay()
+    if (res?.redirect) push(res.redirect)
+  }
   const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
 
   return (
@@ -65,7 +71,7 @@ export default function CartModal() {
                             {cartItems[0] &&
                               cartItems.map(item => (
                                 <CartItem
-                                  key={`${item.productID + item.chosenOptions}`}
+                                  key={`${item.productID + JSON.stringify(item.chosenOptions)}`}
                                   changeQty={changeQty}
                                   remove={remove}
                                   item={item}
@@ -85,7 +91,7 @@ export default function CartModal() {
                       <p className="mt-0.5 text-sm text-gray-500 dark:text-gray-300">Shipping and taxes calculated at checkout.</p>
                       <div className="mt-6">
                         <button
-                          onClick={pay}
+                          onClick={checkout}
                           className="flex w-full items-center justify-center rounded-md border border-transparent
                            bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
                         >
