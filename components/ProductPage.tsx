@@ -6,7 +6,6 @@ import Image from 'next/image'
 import { DisplayProduct, ProductOptions, User } from '../types'
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi'
 import { Dispatch, SetStateAction, useState } from 'react'
-import { colord } from 'colord'
 import { ExclamationCircleIcon, StarIcon } from '@heroicons/react/24/outline'
 import sendReview from '../lib/serverFunctions/sendReview'
 import { modifyQty } from '../lib/serverFunctions/product'
@@ -299,11 +298,8 @@ function ThirdCard({ product, index, chosenOptions, setChosenOptions, changeColo
           <h2>select colour</h2>
           <div>
             <h3
-              className="mx-auto mb-2 mt-1 w-fit flex-wrap rounded-lg px-2 py-1 text-sm"
-              style={{
-                color: chosenOptions.color,
-                textShadow: colord(chosenOptions.color).isDark() ? `0 0 10px ${colord(chosenOptions.color).invert().toHslString()}` : '',
-              }}
+              className="mx-auto mb-2 mt-1 w-fit flex-wrap rounded-lg px-2 py-1 text-sm [textShadow:0_0_7px_white]"
+              style={{ color: chosenOptions.color }}
             >
               {chosenOptions.colorName}
             </h3>
