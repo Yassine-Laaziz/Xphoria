@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { getDisplayProduct } from '../../../../lib/serverFunctions/product'
+import { getDisplayProduct } from '../../../../lib/serverFunctions/contollers/product'
 import ProductPage from '../../../../components/ProductPage'
 
 export default async function Stream({ params }: { params: { productID: string } }) {

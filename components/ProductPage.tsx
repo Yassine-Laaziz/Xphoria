@@ -8,7 +8,6 @@ import { HiChevronLeft, HiChevronRight } from 'react-icons/hi'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { ExclamationCircleIcon, StarIcon } from '@heroicons/react/24/outline'
 import sendReview from '../lib/serverFunctions/sendReview'
-import { modifyQty } from '../lib/serverFunctions/product'
 import { motion } from 'framer-motion'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -16,7 +15,6 @@ import { useRouter } from 'next/navigation'
 import { err } from '../lib/constants'
 import { useUserContext } from '../lib/contexts/UserContext'
 import { useCartContext } from '../lib/contexts/CartContext'
-import hydrateCart from '../lib/serverFunctions/hydrateCart'
 
 export default function ProductPage({ product }: { product: DisplayProduct }) {
   const [index, setIndex] = useState<Tindex>({
@@ -223,18 +221,12 @@ function FirstCard({ reviewInput, setReviewInput, product, push }: FirstCardProp
     </>
   )
 }
-function SecondCard({ product, index, setIndex, chosenOptions, push }: SecondCardProps) {
-  const { setCartItems } = useCartContext()
+function SecondCard({ product, index, setIndex, chosenOptions }: SecondCardProps) {
+  const { addItem } = useCartContext()
 
   async function handleAddToBag() {
-    const res = await modifyQty(product._id, 1, chosenOptions)
-    if (!res) return
-    if (res.redirect) push(res.redirect)
-    else if (res.cart) {
-      toast.success('Added !')
-      const newCart = await hydrateCart(res.cart)
-      setCartItems(newCart)
-    }
+    addItem(product, chosenOptions)
+    toast.success('Added !')
   }
 
   return (
@@ -298,7 +290,8 @@ function ThirdCard({ product, index, chosenOptions, setChosenOptions, changeColo
           <h2>select colour</h2>
           <div>
             <h3
-              className="mx-auto mb-2 mt-1 w-fit flex-wrap rounded-lg px-2 py-1 text-sm [textShadow:0_0_7px_white]"
+              className="[textShadow:0_0_7px_black ] mx-auto mb-2 mt-1 w-fit flex-wrap rounded-lg px-2 py-1
+              text-sm"
               style={{ color: chosenOptions.color }}
             >
               {chosenOptions.colorName}

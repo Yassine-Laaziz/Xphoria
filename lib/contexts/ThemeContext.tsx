@@ -1,4 +1,4 @@
-import { createContext, Dispatch, PropsWithChildren, SetStateAction, useContext, useLayoutEffect, useState } from 'react'
+import { createContext, PropsWithChildren, useContext, useLayoutEffect, useState } from 'react'
 
 type Theme = 'light' | 'dark'
 

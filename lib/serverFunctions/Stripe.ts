@@ -1,7 +1,7 @@
 'use server'
 
+import { hydrateCart } from './contollers/cart'
 import { getDatabaseUser } from './getUser'
-import hydrateCart from './hydrateCart'
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 

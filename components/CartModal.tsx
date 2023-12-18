@@ -12,7 +12,7 @@ import { MdRemoveCircle } from 'react-icons/md'
 import { useRouter } from 'next/navigation'
 
 export default function CartModal() {
-  const { showCart, setShowCart, cartItems, changeQty, remove, totalPrice, totalQty } = useCartContext()
+  const { showCart, setShowCart, cartItems, modifyQty, removeItem, totalPrice, totalQty } = useCartContext()
 
   const { push } = useRouter()
   async function checkout() {
@@ -72,8 +72,8 @@ export default function CartModal() {
                               cartItems.map(item => (
                                 <CartItem
                                   key={`${item.productID + JSON.stringify(item.chosenOptions)}`}
-                                  changeQty={changeQty}
-                                  remove={remove}
+                                  modifyQty={modifyQty}
+                                  removeItem={removeItem}
                                   item={item}
                                 />
                               ))}
@@ -123,7 +123,7 @@ export default function CartModal() {
   )
 }
 
-export function CartItem({ item, changeQty, remove }: CartItemProps) {
+export function CartItem({ item, modifyQty, removeItem }: CartItemProps) {
   const { name, slogan, price, image, chosenOptions, qty, productID } = item
   return (
     <div className="mb-4 flex flex-col rounded-md bg-white p-4 shadow-sm">
@@ -139,14 +139,14 @@ export function CartItem({ item, changeQty, remove }: CartItemProps) {
         <span className="mr-2 font-medium text-gray-800">{chosenOptions.size}</span>
         <span className="mr-2 h-4 w-4 rounded-full" style={{ backgroundColor: chosenOptions.color }} />
         <div className="flex flex-row items-center">
-          <button onClick={() => changeQty(productID, chosenOptions, -1)} className="mr-2 rounded-lg bg-gray-200 px-2">
+          <button onClick={() => modifyQty(productID, chosenOptions, -1)} className="mr-2 rounded-lg bg-gray-200 px-2">
             -
           </button>
           <span className="px-2 font-medium text-gray-800">{qty}</span>
-          <button onClick={() => changeQty(productID, chosenOptions, +1)} className="rounded-lg bg-gray-200 px-2">
+          <button onClick={() => modifyQty(productID, chosenOptions, +1)} className="rounded-lg bg-gray-200 px-2">
             +
           </button>
-          <MdRemoveCircle onClick={() => remove(productID, chosenOptions)} className="ml-4 cursor-pointer text-2xl text-red-700" />
+          <MdRemoveCircle onClick={() => removeItem(productID, chosenOptions)} className="ml-4 cursor-pointer text-2xl text-red-700" />
         </div>
       </div>
     </div>
@@ -155,6 +155,6 @@ export function CartItem({ item, changeQty, remove }: CartItemProps) {
 
 interface CartItemProps {
   item: CartItemWithData
-  changeQty: (productID: string, chosenOptions: ProductOptions, qty: number) => void
-  remove: (productID: string, chosenOptions: ProductOptions) => void
+  modifyQty: (productID: string, chosenOptions: ProductOptions, qty: number) => void
+  removeItem: (productID: string, chosenOptions: ProductOptions) => void
 }

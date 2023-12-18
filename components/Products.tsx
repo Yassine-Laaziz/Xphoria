@@ -60,20 +60,14 @@ export default function Products({ products }: { products: DisplayProduct[] }) {
                     whileInView="show"
                   >
                     <TypingText title={product.name} textStyles="text-2xl text-white font-bold pl-2" />
-                    <TitleText
-                      title={`$${product.price}`}
-                      textStyles="text-2xl font-['east_sea_dokdo'] text-black absolute right-2 bottom-0"
-                    />
+                    <TitleText title={`$${product.price}`} textStyles="text-2xl text-black absolute right-2 bottom-0" />
                   </motion.div>
                 </motion.div>
               ) : (
                 isTouchScreen && (
                   <div className="relative border-b-2 border-cyan-400 dark:border-emerald-500">
                     <TypingText title={product.name} textStyles="text-2xl font-bold" />
-                    <TitleText
-                      title={`$${product.price}`}
-                      textStyles="text-2xl font-['east_sea_dokdo'] text-emerald-400 absolute right-2 bottom-0"
-                    />
+                    <TitleText title={`$${product.price}`} textStyles="text-2xl text-emerald-400 absolute right-2 bottom-0" />
                   </div>
                 )
               )}
