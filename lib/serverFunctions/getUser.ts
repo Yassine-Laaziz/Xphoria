@@ -18,7 +18,7 @@ export async function getUserByJWT(): Promise<userJWT | null | undefined> {
 export async function getDatabaseUser(): Promise<DatabaseUser | null | undefined> {
   const jwtUser = await getUserByJWT()
   if (!jwtUser) return null
-  connect()
+  await connect()
   const serverUser: User | null = await UserModel.findById(jwtUser.id)
   if (!serverUser) return null
 
@@ -27,6 +27,9 @@ export async function getDatabaseUser(): Promise<DatabaseUser | null | undefined
   return sanitizedUser
 }
 
+/**
+ * @returns user with purchases and reviews
+ */
 export async function getFullUser(): Promise<User | null | undefined> {
   const user = await getDatabaseUser()
   if (!user) return

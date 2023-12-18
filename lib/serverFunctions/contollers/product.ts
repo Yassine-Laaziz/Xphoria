@@ -1,11 +1,12 @@
 'use server'
 
-import UserModel from '../../models/Users'
-import ReviewModel from '../../models/Reviews'
-import { DisplayProduct, Review, SanityProduct, CartItem, ProductOptions } from '../../types'
-import { connect } from '../mongodb'
-import { fetchData, urlForImage } from '../sanity'
-import { getDatabaseUser } from './getUser'
+import UserModel from '../../../models/Users'
+import ReviewModel from '../../../models/Reviews'
+import { DisplayProduct, Review, SanityProduct, CartItem, ProductOptions, CartItemWithData } from '../../../types'
+import { connect } from '../../mongodb'
+import { fetchData, urlForImage } from '../../sanity'
+import { getDatabaseUser, getUserByJWT } from '../getUser'
+import { hydrateCart, cleanCart } from './cart'
 
 const sanitizeObj = (obj: object) => JSON.parse(JSON.stringify(obj))
 export async function getDisplayProducts(): Promise<DisplayProduct[]> {
@@ -57,6 +58,25 @@ export async function getDisplayProduct(id: string): Promise<DisplayProduct | nu
   return sanitizeObj({ ...product, reviews, options, image })
 }
 
+export async function updateCart(clientCart: CartItem[]): Promise<CartItemWithData[] | undefined> {
+  try {
+    await connect()
+    const user = await getUserByJWT()
+    if (!user) return
+
+    const cart = await cleanCart([...clientCart])
+    if (!cart) return
+    await UserModel.findByIdAndUpdate(user.id, { cart })
+
+    const hydratedCart = await hydrateCart(cart)
+    if (!cart) return
+
+    return hydratedCart
+  } catch (e) {
+    return
+  }
+}
+
 type modifyT = {
   redirect?: string
   cart?: CartItem[]
@@ -69,7 +89,7 @@ export async function modifyQty(productID: string, qty: number, chosenOptions: P
     const user = await getDatabaseUser()
     if (!user) return { redirect: '/Auth' }
 
-    const cart = user.cart.slice() // copy the cart to avoid mutation
+    const cart = [...user.cart]
     cart.forEach(item => sanitizeObj(item))
 
     if (!(await verifyIsActualProduct(chosenOptions, productID))) return
