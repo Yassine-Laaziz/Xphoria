@@ -16,12 +16,12 @@ export default function HeroBanner() {
   const { theme } = useThemeContext()
 
   return (
-    <div className="relative h-[calc(100vh-64px)] flex-col">
+    <div className="relative mt-6 h-[calc(100vh-64px)] flex-col">
       {/* The Circle and two lines */}
-      <div className="relative flex h-1/2 pt-20">
+      <div className="relative flex h-1/2">
         {/* left line */}
         <motion.div
-          className="relative top-[50%] h-[5px] translate-y-[-50%] bg-sky-300 shadow-[2px_0_14px_2px]
+          className="relative top-[50%] h-[5px] translate-y-[-50%] bg-sky-300 shadow-[0_0_14px_2px]
            shadow-sky-300 dark:bg-emerald-700 dark:shadow-emerald-700"
           animate={{ flex: 0.5 }}
           transition={{ duration: 2 }}
@@ -46,7 +46,7 @@ export default function HeroBanner() {
         </div>
         {/* right line */}
         <motion.div
-          className="relative top-[50%] h-[5px] translate-y-[-50%] bg-sky-300 shadow-[2px_0_14px_2px]
+          className="relative top-[50%] h-[5px] translate-y-[-50%] bg-sky-300 shadow-[0_0_14px_2px]
                   shadow-sky-300 dark:bg-emerald-700 dark:shadow-emerald-700"
           animate={{ flex: 0.5 }}
           transition={{ duration: 2 }}
