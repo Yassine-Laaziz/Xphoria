@@ -13,13 +13,14 @@ export async function pay(): Promise<{ success?: boolean; redirect?: string } | 
     const cart = await hydrateCart(user.cart)
 
     const line_items = cart.map(cartItem => {
-      const { name, slogan, price, options, chosenOptions, qty } = cartItem
+      const { name, price, options, chosenOptions, qty } = cartItem
+      const description = `options: ${chosenOptions.size} ${chosenOptions.colorName}`
       const images = options.find(opt => opt.color === chosenOptions.color)?.images
       return {
         price_data: {
           currency: 'usd',
           unit_amount: price * 100,
-          product_data: { name, description: slogan, images },
+          product_data: { name, description, images },
         },
         quantity: qty,
       }
