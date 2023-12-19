@@ -21,7 +21,6 @@ export default function Navbar() {
 
   const navigation = [
     { name: 'Dashboard', href: '/', current: pathname === '/' },
-    { name: 'Checkout', href: '/Checkout', current: pathname.startsWith('/Checkout') },
     { name: 'Signup & Login', href: '/Auth', current: pathname.startsWith('/Auth') },
   ]
 
@@ -40,7 +39,6 @@ export default function Navbar() {
           <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
             <div className="relative flex h-16 items-center justify-between">
               <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-                {/* Mobile menu button*/}
                 <Disclosure.Button
                   className="inline-flex items-center justify-center rounded-md p-2 text-gray-400
                 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
@@ -54,7 +52,9 @@ export default function Navbar() {
                 </Disclosure.Button>
               </div>
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-                <h2 className="self-center text-lg font-bold text-white">Xphoria</h2>
+                <Link href="/" className="self-center text-lg font-bold text-white">
+                  Xphoria
+                </Link>
                 <div className="hidden border-l-2 border-gray-200 pl-4 sm:ml-6 sm:block">
                   <div className="flex space-x-4">
                     {navigation.map(item => (
@@ -99,7 +99,7 @@ export default function Navbar() {
                     </>
                   ) : (
                     <Link
-                      className="mr-2 rounded-md border-2 px-3 py-2 font-bold text-white transition-all hover:border-sky-500 dark:hover:border-green-300"
+                      className="mr-2 rounded-2xl border-2 px-3 py-2 font-bold text-white transition-all hover:border-sky-500 dark:hover:border-green-300"
                       href="/Auth"
                     >
                       SIGN IN
@@ -157,6 +157,7 @@ export default function Navbar() {
             </div>
           </div>
 
+          {/* Mobile menu button*/}
           <Disclosure.Panel className="sm:hidden">
             <div className="space-y-1 px-2 pb-3 pt-2">
               {navigation.map(item => (
@@ -165,7 +166,9 @@ export default function Navbar() {
                   as="a"
                   href={item.href}
                   className={classNames(
-                    item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                    item.current
+                      ? 'bg-sky-400 text-black dark:bg-gray-900 dark:text-white'
+                      : 'bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-300',
                     'block rounded-md px-3 py-2 text-base font-medium'
                   )}
                   aria-current={item.current ? 'page' : undefined}

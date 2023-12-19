@@ -41,13 +41,13 @@ const productSchema = {
               name: 'color',
               type: 'string',
               title: 'Color Hex code',
-              validation: (Rule: Rule) => Rule.required(),
+              validation: (Rule: Rule) => Rule.required().unique(),
             },
             {
               name: 'colorName',
               type: 'string',
               title: 'Color name',
-              validation: (Rule: Rule) => Rule.required(),
+              validation: (Rule: Rule) => Rule.required().unique(),
             },
             {
               name: 'images',

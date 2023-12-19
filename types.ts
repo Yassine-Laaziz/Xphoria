@@ -42,6 +42,7 @@ export interface ProductOptions {
   size: string
   color: string
   colorName: string
+  mainImage: string
 }
 
 export interface CartItem {

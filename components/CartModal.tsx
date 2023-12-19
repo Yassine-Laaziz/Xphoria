@@ -85,7 +85,7 @@ export default function CartModal() {
                     <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
                       <div className="flex justify-between text-base font-medium text-gray-900 dark:text-gray-300">
                         <p>Subtotal</p>
-                        <p>${totalPrice}</p>
+                        <p className="font-silkscreen">${totalPrice}</p>
                         <p>{totalQty} items</p>
                       </div>
                       <p className="mt-0.5 text-sm text-gray-500 dark:text-gray-300">Shipping and taxes calculated at checkout.</p>
@@ -124,29 +124,28 @@ export default function CartModal() {
 }
 
 export function CartItem({ item, modifyQty, removeItem }: CartItemProps) {
-  const { name, slogan, price, image, chosenOptions, qty, productID } = item
+  const { name, price, chosenOptions, qty, productID } = item
   return (
     <div className="mb-4 flex flex-col rounded-md bg-white p-4 shadow-sm">
       <div className="flex flex-row items-center">
-        <Image src={image} alt={name} width={150} height={150} className="mr-4 h-32 w-32 rounded-lg object-contain" />
+        <Image src={chosenOptions.mainImage} alt={name} width={175} height={175} className="w-h-40 mr-4 h-40 rounded-lg object-contain" />
         <div>
           <h3 className="mb-2 text-xl font-semibold text-gray-800">{name}</h3>
-          {slogan && <p className="mb-2 text-gray-600">{slogan}</p>}
-          <p className="text-2xl font-bold text-gray-800">${price}</p>
-        </div>
-      </div>
-      <div className="mb-2 mt-4 flex flex-row items-center">
-        <span className="mr-2 font-medium text-gray-800">{chosenOptions.size}</span>
-        <span className="mr-2 h-4 w-4 rounded-full" style={{ backgroundColor: chosenOptions.color }} />
-        <div className="flex flex-row items-center">
-          <button onClick={() => modifyQty(productID, chosenOptions, -1)} className="mr-2 rounded-lg bg-gray-200 px-2">
-            -
-          </button>
-          <span className="px-2 font-medium text-gray-800">{qty}</span>
-          <button onClick={() => modifyQty(productID, chosenOptions, +1)} className="rounded-lg bg-gray-200 px-2">
-            +
-          </button>
-          <MdRemoveCircle onClick={() => removeItem(productID, chosenOptions)} className="ml-4 cursor-pointer text-2xl text-red-700" />
+          <p className="font-silkscreen text-2xl font-bold text-gray-800">${price}</p>
+          <span className="mr-2 font-medium text-gray-800">{chosenOptions.size}</span>
+          <span className="mr-2 inline-block h-4 w-4 rounded-full" style={{ backgroundColor: chosenOptions.color }} />
+          <div className="mb-2 mt-4 flex flex-row items-center">
+            <div className="flex flex-row items-center">
+              <button onClick={() => modifyQty(productID, chosenOptions, -1)} className="mr-2 rounded-lg bg-gray-200 px-2">
+                -
+              </button>
+              <span className="px-2 font-medium text-gray-800">{qty}</span>
+              <button onClick={() => modifyQty(productID, chosenOptions, +1)} className="rounded-lg bg-gray-200 px-2">
+                +
+              </button>
+              <MdRemoveCircle onClick={() => removeItem(productID, chosenOptions)} className="ml-4 cursor-pointer text-2xl text-red-700" />
+            </div>
+          </div>
         </div>
       </div>
     </div>

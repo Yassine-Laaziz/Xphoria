@@ -26,6 +26,7 @@ export default function ProductPage({ product }: { product: DisplayProduct }) {
     size: product.options[0].sizes[0],
     color: product.options[0].color,
     colorName: product.options[0].colorName,
+    mainImage: product.options[index.color].images[0],
   })
   const [animating, setAnimating] = useState<boolean>(false)
   const [reviewInput, setReviewInput] = useState<ReviewInput>({
@@ -56,6 +57,7 @@ export default function ProductPage({ product }: { product: DisplayProduct }) {
       size: product.options[i].sizes[0],
       color,
       colorName,
+      mainImage: product.options[i].images[0],
     })
   }
 
@@ -88,9 +90,9 @@ export default function ProductPage({ product }: { product: DisplayProduct }) {
 
         {/* slides container */}
         <div
-          className="cards relative flex h-[90%] w-full items-center font-black uppercase
-        [perspective:1000px] [transform-style:preserve-3d] c:absolute c:left-0 c:right-0 c:m-auto c:flex c:h-full c:w-[80%]
-        c:flex-col c:justify-between c:rounded-[35px] c:p-6 c:transition-all c:duration-500 sm:c:w-[60%] sm:c:p-9 md:c:w-[50%] lg:c:w-1/3"
+          className="cards relative flex h-[90%] w-full items-center font-black uppercase [perspective:1000px]
+        [transform-style:preserve-3d] c:absolute c:left-0 c:right-0 c:m-auto c:flex c:h-full c:min-h-fit c:w-[60%]
+        c:flex-col c:justify-between c:rounded-[35px] c:p-6 c:transition-all c:duration-500 sm:c:p-9 md:c:w-[50%] lg:c:w-1/3"
         >
           {/* First Slide */}
           <label htmlFor="s1" id="slide1">
@@ -237,7 +239,7 @@ function SecondCard({ product, index, setIndex, chosenOptions }: SecondCardProps
           {product.slogan}
         </h4>
       </section>
-      <section className="relative m-auto aspect-video max-h-full max-w-full flex-1 object-contain">
+      <section className="relative m-auto aspect-video h-full w-auto max-w-full flex-1 object-contain">
         <Image src={product.options[index.color].images[index.mainImage]} fill={true} alt={`Xphoria-${product.name}`} quality={100} />
       </section>
       <section className="relative mx-auto mt-auto flex w-fit justify-center gap-5 pt-4">
@@ -248,7 +250,7 @@ function SecondCard({ product, index, setIndex, chosenOptions }: SecondCardProps
             ${index.mainImage === i ? 'border-2' : 'border-[1px] border-cyan-400'}`}
             onMouseOver={() => setIndex(prev => ({ ...prev, mainImage: i }))}
           >
-            <Image src={img} alt={`Xphoria-${product.name}${i}`} quality={100} width={1200} height={1200} />
+            <Image src={img} alt={`Xphoria-${product.name}${i}`} width={1200} height={1200} />
           </div>
         ))}
       </section>
@@ -266,7 +268,7 @@ function ThirdCard({ product, index, chosenOptions, setChosenOptions, changeColo
   return (
     <>
       <h2 className="pb-2 text-3xl font-black tracking-wider text-white dark:[textShadow:0_0_7px_white] sm:text-4xl">Customize</h2>
-      <h3 className="text-3xl font-bold [textShadow:0_0_5px_white]">{product.price}$</h3>
+      <h3 className="font-silkscreen text-3xl font-bold [textShadow:0_0_5px_white]">{product.price}$</h3>
       <section className="mx-auto flex max-h-72 w-fit flex-1 flex-col justify-around">
         <div>
           <h2>select size</h2>

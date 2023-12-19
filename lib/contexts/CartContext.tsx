@@ -30,7 +30,7 @@ export function CartProvider({ children }: PropsWithChildren<{}>) {
   const [showCart, setShowCart] = useState<boolean>(false)
   const [cartState, dispatch]: [CartState, Dispatch<CartAction>] = useReducer(cartReducer, { cartItems: [], totalPrice: 0, totalQty: 0 })
   const { cartItems, totalPrice, totalQty } = cartState
-  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | undefined>()
+  const [timeoutID, setTimeoutID] = useState<NodeJS.Timeout | undefined>()
 
   useEffect(() => {
     async function initialize() {
@@ -44,17 +44,17 @@ export function CartProvider({ children }: PropsWithChildren<{}>) {
 
   useEffect(() => {
     // Clear any existing timeout
-    clearTimeout(timeoutId)
+    clearTimeout(timeoutID)
 
     // Set a new timeout for the debounced execution
-    const newTimeoutId = setTimeout(async () => {
+    const newTimeoutID = setTimeout(async () => {
       const verifiedCart = await updateCart(cartItems)
       if (verifiedCart) dispatch({ type: 'REFRESH', cartItems: verifiedCart })
     }, 10000)
-    setTimeoutId(newTimeoutId)
+    setTimeoutID(newTimeoutID)
 
     // Return a cleanup function to cancel the pending timeout
-    return () => clearTimeout(newTimeoutId)
+    return () => clearTimeout(newTimeoutID)
   }, [cartItems])
 
   function addItem(product: DisplayProduct, chosenOptions: ProductOptions) {
@@ -99,7 +99,6 @@ function cartReducer(state: CartState, action: CartAction): CartState {
 
   switch (action.type) {
     case 'ADD_ITEM': {
-      console.log('reacheedd')
       const { product, chosenOptions } = action
 
       const foundItem = updatedCart.find(
@@ -108,7 +107,6 @@ function cartReducer(state: CartState, action: CartAction): CartState {
           item.chosenOptions.color === chosenOptions.color &&
           item.chosenOptions.size === chosenOptions.size
       )
-      console.log(foundItem)
 
       if (foundItem) foundItem.qty = Math.max(1, foundItem.qty + 1)
       else {

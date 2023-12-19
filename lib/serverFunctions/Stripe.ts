@@ -15,7 +15,7 @@ export async function pay(): Promise<{ success?: boolean; redirect?: string } | 
     const line_items = cart.map(cartItem => {
       const { name, price, options, chosenOptions, qty } = cartItem
       const description = `options: ${chosenOptions.size} ${chosenOptions.colorName}`
-      const images = options.find(opt => opt.color === chosenOptions.color)?.images
+      const images = options.find(opt => opt.color === chosenOptions.color)?.images.unshift(chosenOptions.mainImage)
       return {
         price_data: {
           currency: 'usd',

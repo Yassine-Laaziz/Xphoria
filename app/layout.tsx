@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={fonts}>
-      <body className="font-orbitron transition-all duration-500 dark:bg-black">{children}</body>
+      <body className="font-orbitron font-normal transition-all duration-500 dark:bg-black">{children}</body>
     </html>
   )
 }

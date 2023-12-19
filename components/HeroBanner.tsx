@@ -8,7 +8,7 @@ import { useThemeContext } from '../lib/contexts/ThemeContext'
 export default function HeroBanner() {
   const scrollDown = () => {
     window.scrollTo({
-      top: document.documentElement.clientHeight + 160 - 20,
+      top: document.documentElement.clientHeight + 130 - 20,
       behavior: 'smooth',
     })
   }
@@ -38,9 +38,9 @@ export default function HeroBanner() {
             transition={{ delay: 4, duration: 1 }}
           >
             {theme === 'dark' ? (
-              <Image className="object-cover" src="/logo.png" alt="Xphoria logo" width={300} height={300} quality={100} />
+              <Image className="object-cover" src="/logo.png" alt="Xphoria logo" width={300} height={300} quality={100} priority />
             ) : (
-              <Image className="object-cover" src="/cyan_logo.png" alt="Xphoria logo" width={300} height={300} quality={100} />
+              <Image className="object-cover" src="/cyan_logo.png" alt="Xphoria logo" width={300} height={300} quality={100} priority />
             )}
           </motion.div>
         </div>
@@ -74,11 +74,15 @@ export default function HeroBanner() {
         animate={{ opacity: 1, y: 0, x: '-50%' }}
         transition={{ delay: 3, duration: 1 }}
       >
-        <h2 className="text-4xl font-bold tracking-tighter"> We Do it Better!</h2>
-        <BsArrowBarDown
-          onClick={scrollDown}
-          className="mt-7 animate-bounce cursor-pointer text-5xl font-black transition-all hover:scale-110"
-        />
+        <h2 className="text-4xl font-bold text-black [textShadow:0_0_10px_cyan] dark:text-white dark:[textShadow:0_0_10px_green]">
+          We Do it Better!
+        </h2>
+        <a href="#Products">
+          <BsArrowBarDown
+            onClick={scrollDown}
+            className="mt-7 animate-bounce cursor-pointer text-5xl font-black transition-all hover:scale-110"
+          />
+        </a>
       </motion.div>
     </div>
   )

@@ -8,6 +8,7 @@ const CartItemSchema = new Schema({
       size: { type: String, required: true },
       color: { type: String, required: true },
       colorName: { type: String, required: true },
+      mainImage: { type: String, required: true },
     },
     required: true,
   },

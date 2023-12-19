@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import { useLayoutEffect, useState } from 'react'
 import { TitleText, TypingText } from './CustomTexts'
 import { motion } from 'framer-motion'
 import { slideIn } from '../lib/motion'
@@ -15,7 +15,7 @@ export default function Products({ products }: { products: DisplayProduct[] }) {
   const [currentProduct, setCurrentProduct] = useState<number>(0)
   const [showModal, setShowModal] = useState<boolean>(false)
 
-  useEffect(() => setIsTouchScreen('ontouchstart' in window || navigator.maxTouchPoints > 0), [])
+  useLayoutEffect(() => setIsTouchScreen('ontouchstart' in window || navigator.maxTouchPoints > 0), [])
 
   const hover = (i: number) => {
     if (!isTouchScreen) setHovered(i)
@@ -29,8 +29,10 @@ export default function Products({ products }: { products: DisplayProduct[] }) {
   return (
     products[0] && (
       <>
-        <h2 className="my-20 text-center text-5xl font-bold text-sky-400 [textShadow:0_0_20px_cyan] dark:text-white">Products</h2>
-        <div className="m-auto flex w-[70%] max-w-4xl flex-wrap justify-center gap-14 pb-40 text-white">
+        <h2 className="my-20 text-center text-5xl font-bold text-sky-400 [textShadow:0_0_20px_cyan] dark:text-white" id="Products">
+          Products
+        </h2>
+        <div className="m-auto flex w-[70%] max-w-4xl flex-wrap justify-center gap-14 pb-40 text-black dark:text-white">
           {products.map((product, i) => (
             <div
               key={`product-${product._id}`}
@@ -59,15 +61,18 @@ export default function Products({ products }: { products: DisplayProduct[] }) {
                     initial="hidden"
                     whileInView="show"
                   >
-                    <TypingText title={product.name} textStyles="text-2xl text-white font-bold pl-2" />
-                    <TitleText title={`$${product.price}`} textStyles="text-2xl text-black absolute right-2 bottom-0" />
+                    <TypingText title={product.name} textStyles="text-2xl font-bold pl-2" />
+                    <TitleText title={`$${product.price}`} textStyles="text-2xl absolute right-2 bottom-0 font-silkscreen" />
                   </motion.div>
                 </motion.div>
               ) : (
                 isTouchScreen && (
                   <div className="relative border-b-2 border-cyan-400 dark:border-emerald-500">
-                    <TypingText title={product.name} textStyles="text-2xl font-bold" />
-                    <TitleText title={`$${product.price}`} textStyles="text-2xl text-emerald-400 absolute right-2 bottom-0" />
+                    <TitleText title={product.name} textStyles="text-2xl font-bold" />
+                    <TypingText
+                      title={`$${product.price}`}
+                      textStyles="text-2xl text-emerald-400 absolute right-2 bottom-0 font-silkscreen"
+                    />
                   </div>
                 )
               )}
