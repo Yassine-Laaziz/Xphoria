@@ -38,9 +38,9 @@ export default function HeroBanner() {
             transition={{ delay: 4, duration: 1 }}
           >
             {theme === 'dark' ? (
-              <Image className="object-cover" src="/logo.png" alt="Xphoria logo" width={300} height={300} quality={100} priority />
+              <Image className="object-cover" src="/logo.png" alt="Xphoria logo" width={400} height={400} priority />
             ) : (
-              <Image className="object-cover" src="/cyan_logo.png" alt="Xphoria logo" width={300} height={300} quality={100} priority />
+              <Image className="object-cover" src="/cyan_logo.png" alt="Xphoria logo" width={400} height={400} priority />
             )}
           </motion.div>
         </div>
@@ -77,12 +77,10 @@ export default function HeroBanner() {
         <h2 className="text-4xl font-bold text-black [textShadow:0_0_10px_cyan] dark:text-white dark:[textShadow:0_0_10px_green]">
           We Do it Better!
         </h2>
-        <a href="#Products">
-          <BsArrowBarDown
-            onClick={scrollDown}
-            className="mt-7 animate-bounce cursor-pointer text-5xl font-black transition-all hover:scale-110"
-          />
-        </a>
+        <BsArrowBarDown
+          onClick={scrollDown}
+          className="mt-7 animate-bounce cursor-pointer text-5xl font-black transition-all hover:scale-110"
+        />
       </motion.div>
     </div>
   )

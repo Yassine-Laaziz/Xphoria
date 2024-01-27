@@ -66,10 +66,10 @@ export default function ProductPage({ product }: { product: DisplayProduct }) {
   return (
     <>
       <div
-        className="[transform-style: preserve-3d] relative mx-auto flex h-screen max-h-[500px] w-full
-       max-w-7xl select-none items-center justify-center overflow-hidden rounded-2xl
-       bg-[hsla(183,100%,50%,.1)] text-center text-white dark:bg-gradient-to-tr dark:from-emerald-900
-        dark:to-green-400 dark:shadow-emerald-200 sm:h-[90vh]"
+        className="[transform-style: preserve-3d] relative mx-auto flex h-[90vh] max-h-[500px]
+       w-full max-w-7xl select-none items-center justify-center overflow-hidden
+       rounded-2xl bg-[hsla(183,100%,50%,.1)] text-center text-white dark:bg-gradient-to-tr
+        dark:from-emerald-900 dark:to-green-400 dark:shadow-emerald-200"
       >
         {/* inputs for the slides */}
         <input type="radio" name="slider" className="hidden" id="s1" checked={index.slide.s1} readOnly />
@@ -78,7 +78,7 @@ export default function ProductPage({ product }: { product: DisplayProduct }) {
 
         {/* Arrows */}
         <div
-          className={`z-50 flex h-0 w-[calc(80%+50px)] items-center justify-between text-cyan-400 transition-all 
+          className={`z-50 flex h-0 w-[calc(90%+50px)] items-center justify-between text-cyan-400 transition-all 
             c:cursor-pointer c:rounded-full c:bg-white c:text-[50px] c:shadow-[0_0_20px_2px_white] dark:text-green-500 dark:c:bg-black
             dark:c:bg-opacity-75 dark:c:shadow-[0_0_20px_2px_black] sm:w-[calc(60%+50px)] md:w-[calc(50%+50px)]  lg:w-[calc(33.33%+50px)]
           ${styles.absoluteCenter}
@@ -91,8 +91,8 @@ export default function ProductPage({ product }: { product: DisplayProduct }) {
         {/* slides container */}
         <div
           className="cards relative flex h-[90%] w-full items-center font-black uppercase [perspective:1000px]
-        [transform-style:preserve-3d] c:absolute c:left-0 c:right-0 c:m-auto c:flex c:h-full c:min-h-fit c:w-[60%]
-        c:flex-col c:justify-between c:rounded-[35px] c:p-6 c:transition-all c:duration-500 sm:c:p-9 md:c:w-[50%] lg:c:w-1/3"
+        [transform-style:preserve-3d] c:absolute c:left-0 c:right-0 c:m-auto c:flex c:h-fit c:min-h-full c:w-[90%]
+        c:flex-col c:justify-between c:rounded-[35px] c:p-6 c:transition-all c:duration-500 sm:c:w-3/5 sm:c:p-9 md:c:w-1/2 lg:c:w-1/3"
         >
           {/* First Slide */}
           <label htmlFor="s1" id="slide1">
@@ -191,6 +191,7 @@ function FirstCard({ reviewInput, setReviewInput, product, push }: FirstCardProp
         <section className="flex flex-col gap-3">
           <div className="flex overflow-hidden rounded-md border-2 border-black dark:border-gray-400">
             <input
+              inputMode="none"
               className="flex-1 px-2 text-blue-400 outline-0 placeholder:text-cyan-400 dark:bg-black dark:text-emerald-600 dark:placeholder:text-emerald-600"
               value={reviewInput.comment}
               maxLength={200}
@@ -228,7 +229,7 @@ function SecondCard({ product, index, setIndex, chosenOptions }: SecondCardProps
 
   async function handleAddToBag() {
     addItem(product, chosenOptions)
-    toast.success('Added !')
+    toast.success(`${chosenOptions.size} ${chosenOptions.colorName.replace(' ', '-')} ${product.name}`)
   }
 
   return (
@@ -240,7 +241,12 @@ function SecondCard({ product, index, setIndex, chosenOptions }: SecondCardProps
         </h4>
       </section>
       <section className="relative m-auto aspect-video h-full w-auto max-w-full flex-1 object-contain">
-        <Image src={product.options[index.color].images[index.mainImage]} fill={true} alt={`Xphoria-${product.name}`} quality={100} />
+        <Image
+          src={product.options[index.color].images[index.mainImage]}
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          fill
+          alt={`Xphoria-${product.name}`}
+        />
       </section>
       <section className="relative mx-auto mt-auto flex w-fit justify-center gap-5 pt-4">
         {product.options[index.color].images.map((img, i) => (
@@ -250,7 +256,7 @@ function SecondCard({ product, index, setIndex, chosenOptions }: SecondCardProps
             ${index.mainImage === i ? 'border-2' : 'border-[1px] border-cyan-400'}`}
             onMouseOver={() => setIndex(prev => ({ ...prev, mainImage: i }))}
           >
-            <Image src={img} alt={`Xphoria-${product.name}${i}`} width={1200} height={1200} />
+            <Image src={img} alt={`Xphoria-${product.name}${i}`} width={50} height={50} />
           </div>
         ))}
       </section>
@@ -271,34 +277,30 @@ function ThirdCard({ product, index, chosenOptions, setChosenOptions, changeColo
       <h3 className="font-silkscreen text-3xl font-bold [textShadow:0_0_5px_white]">{product.price}$</h3>
       <section className="mx-auto flex max-h-72 w-fit flex-1 flex-col justify-around">
         <div>
-          <h2>select size</h2>
-          <div>
-            <h3 className="mx-auto mb-2 mt-1 w-fit flex-wrap rounded-lg px-2 py-1 font-black">{chosenOptions.size}</h3>
-            <div className="flex flex-wrap justify-around gap-3">
-              {product.options[index.color].sizes.map((size, i) => (
-                <h2
-                  className={`cursor-pointer rounded-lg bg-white p-2 text-cyan-400 transition-all dark:bg-[hsla(0,0%,0%,.8)] dark:text-white
-                      ${chosenOptions.size === size ? 'scale-125 border-2 border-black dark:border-white' : ''}`}
-                  onClick={() => setChosenOptions(prev => ({ ...prev, size }))}
-                  key={`sizes-pick-${i}`}
-                >
-                  {size}
-                </h2>
-              ))}
-            </div>
+          <h2 className="mb-2 text-black underline decoration-black dark:text-white dark:decoration-white">select size</h2>
+          <div className="mb-1 flex flex-wrap justify-center gap-1">
+            {product.options[index.color].sizes.map((size, i) => (
+              <h2
+                className={`cursor-pointer rounded-lg bg-white p-2 transition-all dark:bg-[hsla(0,0%,0%,.8)]
+                      ${chosenOptions.size === size ? 'text-cyan-400 dark:text-white' : 'text-black  dark:text-white'}`}
+                onClick={() => setChosenOptions(prev => ({ ...prev, size }))}
+                key={`sizes-pick-${i}`}
+              >
+                {size}
+              </h2>
+            ))}
           </div>
         </div>
         <div>
-          <h2>select colour</h2>
+          <h2 className="text-black underline decoration-black dark:text-white dark:decoration-white">select colour</h2>
           <div>
             <h3
-              className="[textShadow:0_0_7px_black ] mx-auto mb-2 mt-1 w-fit flex-wrap rounded-lg px-2 py-1
-              text-sm"
+              className="mx-auto mb-2 mt-1 w-fit flex-wrap rounded-lg px-2 py-1 text-sm [textShadow:0_0_7px_black]"
               style={{ color: chosenOptions.color }}
             >
               {chosenOptions.colorName}
             </h3>
-            <div className="flex flex-wrap justify-center gap-3 before:absolute before:top-[60%] before:-z-20 before:h-[250px] before:w-[400px] before:rounded-full before:bg-radial-gradient before:from-white before:to-transparent before:blur-2xl before:content-[''] dark:before:blur-3xl ">
+            <div className="flex flex-wrap justify-center gap-3 before:absolute before:top-[60%] before:-z-20 before:h-[250px] before:w-[400px] before:rounded-full before:bg-radial-gradient before:from-white before:to-transparent  before:blur-2xl before:content-[''] dark:before:from-black dark:before:blur-3xl ">
               {product.options.map((obj, i) => (
                 <div
                   onClick={() => changeColor(i, obj.color, obj.colorName)}

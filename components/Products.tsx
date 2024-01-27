@@ -42,8 +42,8 @@ export default function Products({ products }: { products: DisplayProduct[] }) {
               onClick={() => handleClick(i)}
             >
               <Image
-                width={1000}
-                height={1200}
+                width={250}
+                height={300}
                 quality={100}
                 src={product.image}
                 alt={`Xphoria ${product.name}`}

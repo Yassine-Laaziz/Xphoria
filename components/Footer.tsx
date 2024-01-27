@@ -12,7 +12,7 @@ export default function Footer() {
       <div className="footer-gradient" />
       <div className={`${styles.innerWidth} mx-auto flex flex-col gap-8`}>
         <div className="flex flex-wrap items-center justify-between gap-5">
-          <h4 className="text-[44px] font-bold [text-shadow:_0_0_5px_white] dark:text-white md:text-[64px]">{footerText}</h4>
+          <span className="text-[44px] font-bold [text-shadow:_0_0_5px_white] dark:text-white md:text-[64px]">{footerText}</span>
           <div className="text-2xl font-bold text-cyan-400 dark:text-emerald-700">{brand}</div>
         </div>
         <div className="flex flex-col">
